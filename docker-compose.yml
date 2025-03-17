@@ -1,0 +1,5 @@
+services:
+  site:
+    image: sugamdocker35/website:v3
+    ports:
+      - "80:80"
