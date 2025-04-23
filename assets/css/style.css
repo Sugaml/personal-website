@@ -1119,10 +1119,13 @@ section {
   max-width: 40px;
 }
 
+/* Tooltip Styles */
 .tech-icon::after {
   content: attr(data-tooltip);
   position: absolute;
-  top: -35px; /* ⬅️ move tooltip above */
+  top: -45px; /* Adjust position above the icon */
+  left: 50%;
+  transform: translateX(-50%);
   background-color: #333;
   color: #fff;
   font-size: 12px;
@@ -1131,8 +1134,9 @@ section {
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;
+  z-index: 10; /* Ensure the tooltip is on top */
   transition: opacity 0.2s ease, transform 0.2s ease;
-  transform: translateY(-5px); /* ⬅️ animate from higher position */
+  transform: translateY(-5px);
 }
 
 .tech-icon:hover::after {
