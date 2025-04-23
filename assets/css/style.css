@@ -1094,24 +1094,48 @@ section {
 }
 
 .tech-icon {
+  position: relative;
   width: 80px;
   height: 80px;
   border-radius: 50%;
   background-color: #ffffff;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
 }
 
 .tech-icon:hover {
   transform: scale(1.1) rotate(5deg);
-  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
 }
 
-.tech-icon i, .tech-icon img {
+.tech-icon i,
+.tech-icon img {
   font-size: 36px;
   max-height: 40px;
   max-width: 40px;
+}
+
+.tech-icon::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: -35px;
+  background-color: #333;
+  color: #fff;
+  font-size: 12px;
+  padding: 5px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  transform: translateY(5px);
+}
+
+.tech-icon:hover::after {
+  opacity: 1;
+  transform: translateY(0);
 }
