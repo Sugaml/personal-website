@@ -1122,7 +1122,7 @@ section {
 .tech-icon::after {
   content: attr(data-tooltip);
   position: absolute;
-  bottom: -35px;
+  top: -35px; /* ⬅️ move tooltip above */
   background-color: #333;
   color: #fff;
   font-size: 12px;
@@ -1132,7 +1132,7 @@ section {
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.2s ease, transform 0.2s ease;
-  transform: translateY(5px);
+  transform: translateY(-5px); /* ⬅️ animate from higher position */
 }
 
 .tech-icon:hover::after {
