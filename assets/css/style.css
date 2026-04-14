@@ -34,6 +34,46 @@ h6 {
 }
 
 /*--------------------------------------------------------------
+# Skip Navigation Link (accessibility)
+--------------------------------------------------------------*/
+.skip-link {
+  position: absolute;
+  top: -999px;
+  left: 0;
+  z-index: 99999;
+  padding: 8px 16px;
+  background: #149ddd;
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+  border-radius: 0 0 4px 0;
+}
+
+.skip-link:focus {
+  top: 0;
+  outline: 3px solid #0a6fa8;
+  outline-offset: 0;
+}
+
+/*--------------------------------------------------------------
+# Focus Styles (keyboard navigation)
+--------------------------------------------------------------*/
+:focus-visible {
+  outline: 3px solid #149ddd;
+  outline-offset: 2px;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 3px solid #149ddd;
+  outline-offset: 2px;
+}
+
+/*--------------------------------------------------------------
 # Back to top button
 --------------------------------------------------------------*/
 .back-to-top {
@@ -202,7 +242,7 @@ h6 {
   border: 0;
   font-size: 24px;
   transition: all 0.4s;
-  outline: none !important;
+  outline: none;
   background-color: #149ddd;
   color: #fff;
   width: 40px;
@@ -213,6 +253,12 @@ h6 {
   line-height: 0;
   border-radius: 50px;
   cursor: pointer;
+  padding: 0;
+}
+
+.mobile-nav-toggle:focus-visible {
+  outline: 3px solid #0a6fa8;
+  outline-offset: 2px;
 }
 
 .mobile-nav-active {
@@ -250,6 +296,15 @@ h6 {
   min-width: 300px;
 }
 
+#hero .hero-greeting {
+  margin: 0 0 10px 0;
+  font-size: 64px;
+  font-weight: 700;
+  line-height: 56px;
+  color: #fff;
+  font-family: "Raleway", sans-serif;
+}
+
 #hero h1 {
   margin: 0 0 10px 0;
   font-size: 64px;
@@ -279,12 +334,13 @@ h6 {
 }
 
 @media (max-width: 768px) {
+  #hero .hero-greeting,
   #hero h1 {
     font-size: 28px;
     line-height: 36px;
   }
 
-  #hero h2 {
+  #hero p {
     font-size: 18px;
     line-height: 24px;
     margin-bottom: 30px;
@@ -418,8 +474,15 @@ section {
 }
 
 /*--------------------------------------------------------------
-# Akills
+# Skills
 --------------------------------------------------------------*/
+.skills-category {
+  font-size: 16px;
+  font-weight: 600;
+  color: #149ddd;
+  margin-bottom: 12px;
+  margin-top: 8px;
+}
 .skills .progress {
   height: 60px;
   display: block;
@@ -1123,23 +1186,103 @@ section {
 .tech-icon::after {
   content: attr(data-tooltip);
   position: absolute;
-  top: -45px; /* Adjust position above the icon */
+  top: -45px;
   left: 50%;
-  transform: translateX(-50%);
-  background-color: #28a745; /* Green background */
-  color: #fff; /* White text color */
+  transform: translateX(-50%) translateY(-5px);
+  background-color: #149ddd;
+  color: #fff;
   font-size: 12px;
   padding: 5px 8px;
   border-radius: 4px;
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;
-  z-index: 10; /* Ensure the tooltip is on top */
+  z-index: 10;
   transition: opacity 0.2s ease, transform 0.2s ease;
-  transform: translateY(-5px);
 }
 
 .tech-icon:hover::after {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateX(-50%) translateY(0);
+}
+
+/*--------------------------------------------------------------
+# Responsive Map
+--------------------------------------------------------------*/
+.map-iframe {
+  display: block;
+  width: 100%;
+  height: 270px;
+  border: 0;
+  margin-top: 20px;
+}
+
+/*--------------------------------------------------------------
+# Certifications
+--------------------------------------------------------------*/
+.certifications .card {
+  border: none;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.certifications .card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.certifications .card-img-top {
+  height: 200px;
+  object-fit: cover;
+}
+
+.certifications .card-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #173b6c;
+}
+
+.certifications .card-text {
+  font-size: 13px;
+  color: #555;
+}
+
+.certifications .carousel-indicators [data-bs-target] {
+  background-color: #149ddd;
+}
+
+.certifications .carousel-control-prev,
+.certifications .carousel-control-next {
+  width: 40px;
+  height: 40px;
+  background-color: #149ddd;
+  border-radius: 50%;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.8;
+}
+
+.certifications .carousel-control-prev {
+  left: -20px;
+}
+
+.certifications .carousel-control-next {
+  right: -20px;
+}
+
+.certifications .carousel-control-prev:hover,
+.certifications .carousel-control-next:hover {
+  opacity: 1;
+}
+
+@media (max-width: 768px) {
+  .certifications .carousel-control-prev {
+    left: 0;
+  }
+
+  .certifications .carousel-control-next {
+    right: 0;
+  }
 }
