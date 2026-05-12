@@ -978,3 +978,8 @@ body.theme-v2 .blog-article .blog-prose {
 body.theme-v2 .blog-article .blog-prose h2 {
   color: var(--v2-heading, #0f172a);
 }
+
+body.theme-v2 #blog .blog-index-card .card-body > a.link-primary:hover,
+body.theme-v2 #blog .blog-index-card .card-body > a.link-primary:focus {
+  text-decoration: underline !important;
+}
