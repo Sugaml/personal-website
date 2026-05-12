@@ -1065,6 +1065,120 @@ section {
   background: #37b3ed;
 }
 
+/* Static / JS contact form (same layout as php-email-form) */
+.contact .contact-email-form {
+  width: 100%;
+  padding: 30px;
+  background: #fff;
+  box-shadow: 0 0 24px 0 rgba(0, 0, 0, 0.12);
+}
+
+.contact .contact-email-form .form-group {
+  padding-bottom: 8px;
+  margin-bottom: 15px;
+}
+
+.contact .contact-email-form .validate {
+  display: none;
+  color: red;
+  margin: 0 0 15px 0;
+  font-weight: 400;
+  font-size: 13px;
+}
+
+.contact .contact-email-form .error-message {
+  display: none;
+  color: #fff;
+  background: #ed3c0d;
+  text-align: left;
+  padding: 15px;
+  font-weight: 600;
+}
+
+.contact .contact-email-form .error-message br+br {
+  margin-top: 25px;
+}
+
+.contact .contact-email-form .sent-message {
+  display: none;
+  color: #fff;
+  background: #18d26e;
+  text-align: center;
+  padding: 15px;
+  font-weight: 600;
+}
+
+.contact .contact-email-form .loading {
+  display: none;
+  background: #fff;
+  text-align: center;
+  padding: 15px;
+}
+
+.contact .contact-email-form .loading:before {
+  content: "";
+  display: inline-block;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  margin: 0 10px -6px 0;
+  border: 3px solid #18d26e;
+  border-top-color: #eee;
+  animation: animate-loading 1s linear infinite;
+}
+
+.contact .contact-email-form label {
+  padding-bottom: 8px;
+}
+
+.contact .contact-email-form input,
+.contact .contact-email-form textarea {
+  border-radius: 0;
+  box-shadow: none;
+  font-size: 14px;
+}
+
+.contact .contact-email-form input {
+  height: 44px;
+}
+
+.contact .contact-email-form textarea {
+  padding: 10px 15px;
+}
+
+.contact .contact-email-form button[type=submit] {
+  background: #149ddd;
+  border: 0;
+  padding: 10px 24px;
+  color: #fff;
+  transition: 0.4s;
+  border-radius: 4px;
+}
+
+.contact .contact-email-form button[type=submit]:hover {
+  background: #37b3ed;
+}
+
+.contact .contact-email-form .field-hint {
+  display: block;
+  font-size: 12px;
+  color: #6c757d;
+  margin-top: 4px;
+}
+
+.contact .contact-email-form .field-hint.is-invalid {
+  color: #c0392b;
+}
+
+.contact .contact-email-form input.is-invalid,
+.contact .contact-email-form textarea.is-invalid {
+  border-color: #c0392b;
+}
+
+.contact .contact-email-form .form-status {
+  margin-top: 0.5rem;
+}
+
 @keyframes animate-loading {
   0% {
     transform: rotate(0deg);
@@ -1337,4 +1451,54 @@ section {
 .certifications .credly-badge-desc {
   font-size: 13px;
   color: #555;
+}
+
+/*--------------------------------------------------------------
+# Survey (Google Form + mobile redirect)
+--------------------------------------------------------------*/
+.survey-mobile-hint {
+  background: rgba(20, 157, 221, 0.08);
+  border: 1px solid rgba(20, 157, 221, 0.35);
+  color: #272829;
+}
+
+.survey-open-fab {
+  position: fixed;
+  right: 15px;
+  bottom: 70px;
+  z-index: 997;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #149ddd;
+  color: #fff;
+  font-size: 1.45rem;
+  line-height: 1;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.22);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.25s ease, visibility 0.25s ease, transform 0.25s ease, background 0.2s ease;
+}
+
+.survey-open-fab.is-visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.survey-open-fab:hover,
+.survey-open-fab:focus {
+  color: #fff;
+  background: #117fad;
+  transform: scale(1.05);
+}
+
+@media (min-width: 992px) {
+  .survey-open-fab {
+    display: none !important;
+  }
 }

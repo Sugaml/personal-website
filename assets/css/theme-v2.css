@@ -60,15 +60,113 @@ body.theme-v2 #header {
   box-shadow: 8px 0 40px rgba(0, 0, 0, 0.12);
 }
 
-body.theme-v2 #header .profile img {
-  border: 3px solid rgba(34, 211, 238, 0.45);
-  box-shadow: var(--v2-glow);
-  transition: transform 0.5s var(--v2-ease-out), box-shadow 0.5s;
+/* ----- Sidebar profile ----- */
+body.theme-v2 #header .sidebar-profile {
+  text-align: center;
+  padding: 0.75rem 0 1.35rem;
+  margin-bottom: 0.35rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-body.theme-v2 #header .profile img:hover {
-  transform: scale(1.04);
-  box-shadow: 0 0 48px rgba(34, 211, 238, 0.35);
+body.theme-v2 #header .profile-avatar-wrap {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  margin: 0 auto 1rem;
+  padding: 4px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, var(--v2-accent), rgba(129, 140, 248, 0.85), var(--v2-accent-deep));
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+}
+
+body.theme-v2 #header .profile-avatar-wrap::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 1px solid rgba(34, 211, 238, 0.2);
+  pointer-events: none;
+}
+
+body.theme-v2 #header .profile-avatar {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  max-width: none;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+  border: 3px solid rgba(7, 11, 20, 0.95);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+  transition: transform 0.45s var(--v2-ease-out), box-shadow 0.45s;
+}
+
+body.theme-v2 #header .profile-avatar-wrap:hover .profile-avatar {
+  transform: scale(1.03);
+}
+
+body.theme-v2 #header .profile-name {
+  margin: 0 0 0.35rem;
+  padding: 0;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  font-family: var(--v2-font-display), "Poppins", sans-serif;
+}
+
+body.theme-v2 #header .profile-name a,
+body.theme-v2 #header .profile-name a:hover {
+  color: #f8fafc;
+  text-decoration: none;
+}
+
+body.theme-v2 #header .profile-name a:hover {
+  color: var(--v2-accent);
+}
+
+body.theme-v2 #header .profile-tagline {
+  margin: 0 0 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(165, 243, 252, 0.88);
+  font-family: var(--v2-font-sans), sans-serif;
+}
+
+body.theme-v2 #header .profile-location {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  font-size: 0.8125rem;
+  color: rgba(226, 232, 240, 0.65);
+  font-family: var(--v2-font-sans), sans-serif;
+}
+
+body.theme-v2 #header .profile-location i {
+  color: var(--v2-accent);
+  font-size: 0.9rem;
+}
+
+body.theme-v2 #header .profile .social-links.profile-social {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 1rem !important;
+}
+
+body.theme-v2 #header .profile .social-links.profile-social a {
+  margin-right: 0;
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
 }
 
 body.theme-v2 #header .profile .social-links a {
@@ -159,8 +257,48 @@ body.theme-v2 #hero::before {
   background: linear-gradient(180deg, rgba(7, 11, 20, 0.2) 0%, rgba(7, 11, 20, 0.75) 100%);
 }
 
-body.theme-v2 #hero .hero-container {
+body.theme-v2 #hero .hero-skills-bg {
+  position: absolute;
+  inset: 0;
   z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+body.theme-v2 #hero .hero-skill-tag {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  --dx: 12px;
+  --dy: -10px;
+  --dur: 20s;
+  --delay: 0s;
+  --rot: -3deg;
+  font-family: var(--v2-font-sans);
+  font-size: clamp(0.62rem, 1.15vw, 0.88rem);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(165, 243, 252, 0.22);
+  text-shadow: 0 0 28px rgba(34, 211, 238, 0.12);
+  white-space: nowrap;
+  transform-origin: center center;
+  animation: hero-skill-drift var(--dur) ease-in-out infinite;
+  animation-delay: var(--delay);
+}
+
+body.theme-v2 #hero .hero-skill-tag:nth-child(3n) {
+  color: rgba(129, 140, 248, 0.18);
+  text-shadow: 0 0 24px rgba(99, 102, 241, 0.1);
+}
+
+body.theme-v2 #hero .hero-skill-tag:nth-child(5n) {
+  font-size: clamp(0.58rem, 1vw, 0.78rem);
+  opacity: 0.85;
+}
+
+body.theme-v2 #hero .hero-container {
+  z-index: 3;
   text-align: center;
   padding: 0 1.25rem;
 }
@@ -252,7 +390,7 @@ body.theme-v2 .hero-scroll-hint {
   bottom: 2rem;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 2;
+  z-index: 3;
   color: rgba(255, 255, 255, 0.45);
   font-size: 0.75rem;
   letter-spacing: 0.12em;
@@ -291,6 +429,31 @@ body.theme-v2 .hero-scroll-hint i {
   }
   50% {
     transform: translateX(-50%) translateY(6px);
+  }
+}
+
+@keyframes hero-skill-drift {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(calc(var(--rot) * -0.4));
+    opacity: 0.35;
+  }
+  50% {
+    transform: translate(var(--dx), var(--dy)) rotate(var(--rot));
+    opacity: 0.75;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.theme-v2 #hero .hero-skill-tag {
+    animation: none;
+    opacity: 0.2;
+  }
+}
+
+@media (max-width: 576px) {
+  body.theme-v2 #hero .hero-skills-bg .hero-skill-tag:nth-child(n + 15) {
+    display: none;
   }
 }
 
@@ -497,7 +660,8 @@ body.theme-v2 #what-i-use .tech-icon:hover {
 
 /* Contact */
 body.theme-v2 .contact .info,
-body.theme-v2 .contact .php-email-form {
+body.theme-v2 .contact .php-email-form,
+body.theme-v2 .contact .contact-email-form {
   border-radius: var(--v2-radius);
   border: 1px solid rgba(15, 23, 42, 0.06);
   box-shadow: 0 12px 40px rgba(15, 23, 42, 0.08);
@@ -516,19 +680,24 @@ body.theme-v2 .contact .info .phone:hover i {
 }
 
 body.theme-v2 .contact .php-email-form input,
-body.theme-v2 .contact .php-email-form textarea {
+body.theme-v2 .contact .php-email-form textarea,
+body.theme-v2 .contact .contact-email-form input,
+body.theme-v2 .contact .contact-email-form textarea {
   border-radius: var(--v2-radius-sm);
   border: 1px solid rgba(15, 23, 42, 0.12);
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 body.theme-v2 .contact .php-email-form input:focus,
-body.theme-v2 .contact .php-email-form textarea:focus {
+body.theme-v2 .contact .php-email-form textarea:focus,
+body.theme-v2 .contact .contact-email-form input:focus,
+body.theme-v2 .contact .contact-email-form textarea:focus {
   border-color: var(--v2-accent);
   box-shadow: 0 0 0 3px var(--v2-accent-soft);
 }
 
-body.theme-v2 .contact .php-email-form button[type="submit"] {
+body.theme-v2 .contact .php-email-form button[type="submit"],
+body.theme-v2 .contact .contact-email-form button[type="submit"] {
   background: linear-gradient(135deg, var(--v2-accent), var(--v2-accent-deep));
   border: none;
   border-radius: 999px;
@@ -537,9 +706,17 @@ body.theme-v2 .contact .php-email-form button[type="submit"] {
   transition: transform 0.25s, box-shadow 0.25s;
 }
 
-body.theme-v2 .contact .php-email-form button[type="submit"]:hover {
+body.theme-v2 .contact .php-email-form button[type="submit"]:hover,
+body.theme-v2 .contact .contact-email-form button[type="submit"]:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 28px rgba(6, 182, 212, 0.35);
+}
+
+body.theme-v2 .contact .contact-email-form button[type="submit"]:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 body.theme-v2 .contact .map-iframe {
@@ -605,6 +782,10 @@ body.theme-v2 .skip-link {
 
   body.theme-v2 .section-title h2::after {
     animation: none;
+  }
+
+  body.theme-v2 #header .profile-avatar-wrap:hover .profile-avatar {
+    transform: none;
   }
 }
 

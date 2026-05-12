@@ -9,6 +9,25 @@
   let forms = document.querySelectorAll('.php-email-form');
 
   forms.forEach( function(e) {
+    let actionAttr = (e.getAttribute('action') || '').trim();
+    // Relative *.php URLs need a PHP server; static hosting returns 501 on POST.
+    if (/\.php(\?|$)/i.test(actionAttr) && !/^https?:\/\//i.test(actionAttr)) {
+      e.addEventListener('submit', function(event) {
+        event.preventDefault();
+        let load = e.querySelector('.loading');
+        let msg = e.querySelector('.error-message');
+        let sent = e.querySelector('.sent-message');
+        if (load) load.classList.remove('d-block');
+        if (sent) sent.classList.remove('d-block');
+        if (msg) {
+          msg.innerHTML =
+            'This preview has no PHP backend. Use the home page contact form (JavaScript) or email the address in the Contact section.';
+          msg.classList.add('d-block');
+        }
+      });
+      return;
+    }
+
     e.addEventListener('submit', function(event) {
       event.preventDefault();
 

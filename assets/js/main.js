@@ -273,4 +273,44 @@
    */
   new PureCounter();
 
+  /**
+   * Survey section: floating “open in Google Forms” control on small viewports
+   * while #survey is in view (embedded Google Forms are unreliable in mobile iframes).
+   */
+  const surveyFab = select('#survey-open-fab')
+  const surveySection = select('#survey')
+  if (surveyFab && surveySection && 'IntersectionObserver' in window) {
+    const mq = window.matchMedia('(max-width: 991.98px)')
+    let inView = false
+    const syncFab = () => {
+      if (mq.matches && inView) {
+        surveyFab.classList.add('is-visible')
+        surveyFab.removeAttribute('hidden')
+      } else {
+        surveyFab.classList.remove('is-visible')
+        surveyFab.setAttribute('hidden', 'hidden')
+      }
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.target === surveySection) {
+            inView = entry.isIntersecting
+            syncFab()
+          }
+        })
+      },
+      { threshold: 0.06, rootMargin: '0px 0px -12% 0px' }
+    )
+    io.observe(surveySection)
+    if (mq.addEventListener) {
+      mq.addEventListener('change', syncFab)
+    } else if (mq.addListener) {
+      mq.addListener(syncFab)
+    }
+    syncFab()
+  } else if (surveyFab) {
+    surveyFab.setAttribute('hidden', 'hidden')
+  }
+
 })()
