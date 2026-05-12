@@ -92,13 +92,17 @@
    * Mobile nav toggle
    */
   on('click', '.mobile-nav-toggle', function(e) {
-    select('body').classList.toggle('mobile-nav-active')
-    this.classList.toggle('bi-list')
-    this.classList.toggle('bi-x')
+    const isActive = select('body').classList.toggle('mobile-nav-active')
+    const icon = this.querySelector('i')
+    if (icon) {
+      icon.classList.toggle('bi-list')
+      icon.classList.toggle('bi-x')
+    }
+    this.setAttribute('aria-expanded', isActive ? 'true' : 'false')
   })
 
   /**
-   * Scrool with ofset on links with a class name .scrollto
+   * Scroll with offset on links with a class name .scrollto
    */
   on('click', '.scrollto', function(e) {
     if (select(this.hash)) {
@@ -108,8 +112,12 @@
       if (body.classList.contains('mobile-nav-active')) {
         body.classList.remove('mobile-nav-active')
         let navbarToggle = select('.mobile-nav-toggle')
-        navbarToggle.classList.toggle('bi-list')
-        navbarToggle.classList.toggle('bi-x')
+        const icon = navbarToggle.querySelector ? navbarToggle.querySelector('i') : navbarToggle
+        if (icon) {
+          icon.classList.add('bi-list')
+          icon.classList.remove('bi-x')
+        }
+        navbarToggle.setAttribute('aria-expanded', 'false')
       }
       scrollto(this.hash)
     }
