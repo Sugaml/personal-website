@@ -452,7 +452,7 @@ body.theme-v2 .hero-scroll-hint i {
 }
 
 @media (max-width: 576px) {
-  body.theme-v2 #hero .hero-skills-bg .hero-skill-tag:nth-child(n + 15) {
+  body.theme-v2 #hero .hero-skills-bg .hero-skill-tag:nth-child(n + 26) {
     display: none;
   }
 }
