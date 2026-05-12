@@ -1,0 +1,104 @@
+{
+  "profileUrl": "https://www.credly.com/users/babulal-tamang/badges",
+  "badges": [
+    {
+      "id": "5c81857b-4253-4159-90f2-3e5c70551393",
+      "name": "ISO/IEC 42001:2023 Lead Auditor",
+      "imageUrl": "https://images.credly.com/images/a2684117-2e56-45f9-b736-2adbbe187a60/blob",
+      "issued": "2026-04-26",
+      "issuer": "Mastermind Assurance",
+      "description": "The ISO/IEC 42001:2023 Lead Auditor certification is awarded to practitioners who demonstrate advanced expertise in assessing artificial intelligence management system (AIMS) scopes. This credential equates to mastery in leading audit\u2026",
+      "assertionUrl": "https://www.credly.com/badges/5c81857b-4253-4159-90f2-3e5c70551393"
+    },
+    {
+      "id": "dd1f265c-d1b6-49e7-abcd-ed166196c456",
+      "name": "AWS Academy Graduate - Generative AI Foundations - Training Badge",
+      "imageUrl": "https://images.credly.com/images/7fa09e71-4149-4d59-9066-14fc8a3e0f39/blob",
+      "issued": "2026-04-25",
+      "issuer": "Amazon Web Services Training and Certification",
+      "description": "Earners of this badge have completed the AWS Academy Generative AI Foundations course.",
+      "assertionUrl": "https://www.credly.com/badges/dd1f265c-d1b6-49e7-abcd-ed166196c456"
+    },
+    {
+      "id": "b5de4f9c-8e49-40f2-bf2f-9daeee9d8426",
+      "name": "AWS Academy Graduate - Machine Learning Foundations - Training Badge",
+      "imageUrl": "https://images.credly.com/images/727c2754-d727-4e27-a1aa-3de2425ce239/blob",
+      "issued": "2026-04-25",
+      "issuer": "Amazon Web Services Training and Certification",
+      "description": "Earners of this badge have completed the AWS Academy Machine Learning Foundations course.",
+      "assertionUrl": "https://www.credly.com/badges/b5de4f9c-8e49-40f2-bf2f-9daeee9d8426"
+    },
+    {
+      "id": "7afb7357-7f9a-4c4e-8e8c-2d280af294bb",
+      "name": "AWS Academy Graduate - Cloud Architecting - Training Badge",
+      "imageUrl": "https://images.credly.com/images/fcafd0c9-42da-4703-a191-0c397203dc1b/blob",
+      "issued": "2026-02-21",
+      "issuer": "Amazon Web Services Training and Certification",
+      "description": "Earners of this badge have taken the AWS Academy Cloud Architecting course.",
+      "assertionUrl": "https://www.credly.com/badges/7afb7357-7f9a-4c4e-8e8c-2d280af294bb"
+    },
+    {
+      "id": "a8df749a-17b2-468b-97e3-1cb083bf64c3",
+      "name": "ISO/IEC 27001:2022 Lead Auditor",
+      "imageUrl": "https://images.credly.com/images/1a92e79e-4b58-44ae-b4bd-1f63e83c5294/blob",
+      "issued": "2026-01-13",
+      "issuer": "Mastermind Assurance",
+      "description": "The ISO/IEC 27001:2022 Lead Auditor certification is awarded to practitioners who demonstrate advanced expertise in assessing information security management system (ISMS) scopes. This credential equates to mastery in leading audit\u2026",
+      "assertionUrl": "https://www.credly.com/badges/a8df749a-17b2-468b-97e3-1cb083bf64c3"
+    },
+    {
+      "id": "c6217226-8f76-4259-924e-10c1a5d2f759",
+      "name": "OPSWAT Introduction to Critical Infrastructure Protection (ICIP)",
+      "imageUrl": "https://images.credly.com/images/f9f3c533-9b5a-47eb-8a3e-5734663116c0/image.png",
+      "issued": "2026-01-10",
+      "issuer": "OPSWAT",
+      "description": "This certification program introduces users to fundamental critical infrastructure protection concepts, how to navigate the OPSWAT certification program requirements, and how to operate the OPSWAT Academy user interface. Topics include\u2026",
+      "assertionUrl": "https://www.credly.com/badges/c6217226-8f76-4259-924e-10c1a5d2f759"
+    },
+    {
+      "id": "f0e05b10-d1e8-46be-affb-d38e3f66791a",
+      "name": "AWS Academy Graduate - Cloud Security Foundations - Training Badge",
+      "imageUrl": "https://images.credly.com/images/7f7ea828-a10d-44f8-8baa-58a9c1af7671/blob",
+      "issued": "2025-12-20",
+      "issuer": "Amazon Web Services Training and Certification",
+      "description": "Earners of this badge have completed AWS Academy Cloud Security Foundations",
+      "assertionUrl": "https://www.credly.com/badges/f0e05b10-d1e8-46be-affb-d38e3f66791a"
+    },
+    {
+      "id": "3f44b9f4-4ce7-4efb-9932-9dfc0842bf30",
+      "name": "AWS Certified Cloud Practitioner",
+      "imageUrl": "https://images.credly.com/images/00634f82-b07f-4bbd-a6bb-53de397fc3a6/image.png",
+      "issued": "2025-12-16",
+      "issuer": "Amazon Web Services Training and Certification",
+      "description": "Earners of this certification have a fundamental understanding of IT services and their uses in the AWS Cloud. They demonstrated cloud fluency and foundational AWS knowledge. Badge owners are able to identify essential AWS services\u2026",
+      "assertionUrl": "https://www.credly.com/badges/3f44b9f4-4ce7-4efb-9932-9dfc0842bf30"
+    },
+    {
+      "id": "b6241c8b-b6f9-406e-b4d8-a8f83daa6581",
+      "name": "AWS Partner: Sales Accreditation - Training Badge",
+      "imageUrl": "https://images.credly.com/images/46ea4542-72a8-46a1-8d68-b72c4ca50820/blob",
+      "issued": "2025-12-03",
+      "issuer": "Amazon Web Services Training and Certification",
+      "description": "Earners of this new badge are AWS Partners who have demonstrated a foundational knowledge of the business value of cloud, how to overcome common customer objections, and how to co-sell with AWS.",
+      "assertionUrl": "https://www.credly.com/badges/b6241c8b-b6f9-406e-b4d8-a8f83daa6581"
+    },
+    {
+      "id": "4e93f3f5-240f-41c9-8265-ceb3b757d23b",
+      "name": "AWS Partner: Technical Accredited - Training Badge",
+      "imageUrl": "https://images.credly.com/images/8f006312-3154-45bf-a845-4a043641e83c/blob",
+      "issued": "2025-12-03",
+      "issuer": "Amazon Web Services Training and Certification",
+      "description": "Earners of this badge are AWS Partners who have developed fundamental, technical knowledge of AWS cloud computing, global infrastructure, services, solutions, migration and security.",
+      "assertionUrl": "https://www.credly.com/badges/4e93f3f5-240f-41c9-8265-ceb3b757d23b"
+    },
+    {
+      "id": "32b616a0-b933-4c89-9ee9-c9eaee2418a8",
+      "name": "AWS Academy Graduate - Data Engineering - Training Badge",
+      "imageUrl": "https://images.credly.com/images/8a28a66c-151d-4f2d-b021-ca7d3e146437/blob",
+      "issued": "2025-03-05",
+      "issuer": "Amazon Web Services Training and Certification",
+      "description": "Earners of this badge have completed AWS Academy Data Engineering course.",
+      "assertionUrl": "https://www.credly.com/badges/32b616a0-b933-4c89-9ee9-c9eaee2418a8"
+    }
+  ]
+}

@@ -254,11 +254,13 @@
    * Animation on scroll
    */
   window.addEventListener('load', () => {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     AOS.init({
-      duration: 1000,
+      duration: reduceMotion ? 0 : 1000,
       easing: 'ease-in-out',
       once: true,
-      mirror: false
+      mirror: false,
+      disable: reduceMotion ? true : false
     })
   });
 

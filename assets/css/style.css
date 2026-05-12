@@ -1286,3 +1286,55 @@ section {
     right: 0;
   }
 }
+
+.certifications .credly-wrap .section-title h3 {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #173b6c;
+}
+
+.certifications .credly-badge-card {
+  border: none;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.certifications .credly-badge-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.certifications .credly-badge-img-wrap {
+  background: #f5f8fc;
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+}
+
+.certifications .credly-badge-img {
+  max-height: 180px;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.certifications .credly-badge-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #173b6c;
+}
+
+.certifications .credly-meta {
+  font-size: 12px;
+  color: #6c757d;
+}
+
+.certifications .credly-badge-desc {
+  font-size: 13px;
+  color: #555;
+}

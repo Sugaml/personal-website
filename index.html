@@ -16,6 +16,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- Vendor CSS Files -->
   <link href="assets/vendor/aos/aos.css" rel="stylesheet">
@@ -28,9 +29,10 @@
 
   <!-- Template Main CSS File -->
   <link href="assets/css/style.css" rel="stylesheet">
+  <link href="assets/css/theme-v2.css" rel="stylesheet">
 </head>
 
-<body>
+<body class="theme-v2">
 
   <!-- ======= Skip Navigation ======= -->
   <a class="skip-link" href="#main">Skip to main content</a>
@@ -73,11 +75,17 @@
 
   <!-- ======= Hero Section ======= -->
   <section id="hero" class="d-flex flex-column justify-content-center align-items-center">
+    <div class="hero-bg" aria-hidden="true"></div>
     <div class="hero-container" data-aos="fade-in">
       <p class="hero-greeting">Hello, I'm</p>
       <h1>Babulal Tamang</h1>
       <p>I'm <span class="typed" data-typed-items="Software Engineer,Platform Engineer,Kubernetes Engineer,Freelancer,DevOps Engineer"></span></p>
+      <div class="hero-actions mt-4">
+        <a href="#contact" class="btn-hero-primary scrollto"><i class="bi bi-envelope-fill" aria-hidden="true"></i> Get in touch</a>
+        <a href="assets/img/Babulal-Resume.pdf" class="btn-hero-ghost" download="Babulal-Resume.pdf"><i class="bi bi-download" aria-hidden="true"></i> Download CV</a>
+      </div>
     </div>
+    <a href="#about" class="hero-scroll-hint scrollto" aria-label="Scroll to about section"><span>Explore</span><i class="bi bi-chevron-down" aria-hidden="true"></i></a>
   </section><!-- End Hero -->
 
   <main id="main">
@@ -504,6 +512,21 @@
         <span class="visually-hidden">Next</span>
       </button>
     </div>
+
+    <div class="credly-wrap mt-5 pt-2" id="credly">
+      <div class="section-title">
+        <h3>Digital badges (Credly)</h3>
+        <p>
+          Verifiable credentials from <a href="https://www.credly.com/users/babulal-tamang/badges#credly" target="_blank" rel="noopener noreferrer">Credly</a>.
+          Click a badge to view the public assertion.
+        </p>
+      </div>
+      <div id="credly-badges-root" class="row g-4 justify-content-center" data-credly-src="assets/data/credly-badges.json" data-aos="fade-up">
+        <div class="col-12 text-center text-muted credly-badges-status py-3" role="status">
+          <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>Loading badges…
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 <!-- End Certifications Section -->
@@ -518,15 +541,25 @@
             Estimated time: about 5–7 minutes. Responses are confidential and used for academic purposes only.
           </p>
         </div>
-        <div class="text-center mb-3">
+        <div class="text-center mb-4">
           <a href="https://forms.gle/WE9LrYcEWuXfwawx9" class="btn btn-primary" target="_blank" rel="noopener noreferrer">
             <i class="bi bi-box-arrow-up-right"></i> Open survey in Google Forms
           </a>
         </div>
-        <div class="survey-embed mx-auto" style="max-width: 760px;">
-          <iframe title="Cybersecurity Survey — Nepal University Students (Google Form)"
-            src="https://docs.google.com/forms/d/e/1FAIpQLSccVPbxdKZHsS9yknRicXOIjpxLPGR8h1tnylqQypj-rybIyw/viewform?embedded=true"
-            width="100%" height="1400" style="border:0;" loading="lazy">Loading…</iframe>
+        <div class="row align-items-start justify-content-center g-4">
+          <div class="col-lg-4 col-md-5 text-center" data-aos="fade-up">
+            <figure class="survey-qr mx-auto mb-0" style="max-width: 280px;">
+              <img src="assets/img/survey.png" class="img-fluid rounded shadow" width="280" height="280" alt="QR code to open the cybersecurity survey (Google Form)">
+              <figcaption class="mt-2 small text-muted">Scan with your phone to open the survey</figcaption>
+            </figure>
+          </div>
+          <div class="col-lg-8 col-md-12" data-aos="fade-up" data-aos-delay="100">
+            <div class="survey-embed mx-auto" style="max-width: 760px;">
+              <iframe title="Cybersecurity Survey — Nepal University Students (Google Form)"
+                src="https://docs.google.com/forms/d/e/1FAIpQLSccVPbxdKZHsS9yknRicXOIjpxLPGR8h1tnylqQypj-rybIyw/viewform?embedded=true"
+                width="100%" height="1400" style="border:0;" loading="lazy">Loading…</iframe>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -578,96 +611,9 @@
     </section> -->
     <!-- End Services Section -->
 
-    <!-- ======= Testimonials Section ======= -->
-    <!-- <section id="testimonials" class="testimonials section-bg">
-      <div class="container">
+    <!-- ======= Testimonials Section (disabled — template placeholder) ======= -->
 
-        <div class="section-title">
-          <h2>Testimonials</h2>
-          <p>Magnam dolores commodi suscipit. Necessitatibus eius consequatur ex aliquid fuga eum quidem. Sit sint consectetur velit. Quisquam quos quisquam cupiditate. Et nemo qui impedit suscipit alias ea. Quia fugiat sit in iste officiis commodi quidem hic quas.</p>
-        </div>
-
-        <div class="testimonials-slider swiper" data-aos="fade-up" data-aos-delay="100">
-          <div class="swiper-wrapper">
-
-            <div class="swiper-slide">
-              <div class="testimonial-item" data-aos="fade-up">
-                <p>
-                  <i class="bx bxs-quote-alt-left quote-icon-left"></i>
-                  Proin iaculis purus consequat sem cure digni ssim donec porttitora entum suscipit rhoncus. Accusantium quam, ultricies eget id, aliquam eget nibh et. Maecen aliquam, risus at semper.
-                  <i class="bx bxs-quote-alt-right quote-icon-right"></i>
-                </p>
-                <img src="assets/img/testimonials/testimonials-1.jpg" class="testimonial-img" alt="">
-                <h3>Saul Goodman</h3>
-                <h4>Ceo &amp; Founder</h4>
-              </div>
-            </div><!-- End testimonial item -->
-
-            <!-- <div class="swiper-slide">
-              <div class="testimonial-item" data-aos="fade-up" data-aos-delay="100">
-                <p>
-                  <i class="bx bxs-quote-alt-left quote-icon-left"></i>
-                  Export tempor illum tamen malis malis eram quae irure esse labore quem cillum quid cillum eram malis quorum velit fore eram velit sunt aliqua noster fugiat irure amet legam anim culpa.
-                  <i class="bx bxs-quote-alt-right quote-icon-right"></i>
-                </p>
-                <img src="assets/img/testimonials/testimonials-2.jpg" class="testimonial-img" alt="">
-                <h3>Sara Wilsson</h3>
-                <h4>Designer</h4>
-              </div>
-            </div> --> -->
-            <!-- End testimonial item -->
-
-            <!-- <div class="swiper-slide">
-              <div class="testimonial-item" data-aos="fade-up" data-aos-delay="200">
-                <p>
-                  <i class="bx bxs-quote-alt-left quote-icon-left"></i>
-                  Enim nisi quem export duis labore cillum quae magna enim sint quorum nulla quem veniam duis minim tempor labore quem eram duis noster aute amet eram fore quis sint minim.
-                  <i class="bx bxs-quote-alt-right quote-icon-right"></i>
-                </p>
-                <img src="assets/img/testimonials/testimonials-3.jpg" class="testimonial-img" alt="">
-                <h3>Jena Karlis</h3>
-                <h4>Store Owner</h4>
-              </div>
-            </div> -->
-            <!-- End testimonial item -->
-<!-- 
-            <div class="swiper-slide">
-              <div class="testimonial-item" data-aos="fade-up" data-aos-delay="300">
-                <p>
-                  <i class="bx bxs-quote-alt-left quote-icon-left"></i>
-                  Fugiat enim eram quae cillum dolore dolor amet nulla culpa multos export minim fugiat minim velit minim dolor enim duis veniam ipsum anim magna sunt elit fore quem dolore labore illum veniam.
-                  <i class="bx bxs-quote-alt-right quote-icon-right"></i>
-                </p>
-                <img src="assets/img/testimonials/testimonials-4.jpg" class="testimonial-img" alt="">
-                <h3>Matt Brandon</h3>
-                <h4>Freelancer</h4>
-              </div>
-            </div> -->
-            <!-- End testimonial item -->
-<!-- 
-            <div class="swiper-slide">
-              <div class="testimonial-item" data-aos="fade-up" data-aos-delay="400">
-                <p>
-                  <i class="bx bxs-quote-alt-left quote-icon-left"></i>
-                  Quis quorum aliqua sint quem legam fore sunt eram irure aliqua veniam tempor noster veniam enim culpa labore duis sunt culpa nulla illum cillum fugiat legam esse veniam culpa fore nisi cillum quid.
-                  <i class="bx bxs-quote-alt-right quote-icon-right"></i>
-                </p>
-                <img src="assets/img/testimonials/testimonials-5.jpg" class="testimonial-img" alt="">
-                <h3>John Larson</h3>
-                <h4>Entrepreneur</h4>
-              </div>
-            </div> -->
-            <!-- End testimonial item -->
-
-          <!-- </div>
-          <div class="swiper-pagination"></div>
-        </div>
-
-      </div>
-    </section> -->
-    <!-- End Testimonials Section -->
     <!-- ======= What I Use Section ======= -->
-<!-- ======= What I Use Section ======= -->
 <section id="what-i-use" class="skills section-bg">
   <div class="container">
     <div class="section-title">
@@ -735,9 +681,7 @@
               <div class="phone">
                 <i class="bi bi-phone"></i>
                 <h4>Call:</h4>
-                <p><a href=“tel:+977-9863857035” class=“disable-link” cm_dontconvertlink>
-                  +977-9863857035
-               </a></p>
+                <p><a href="tel:+9779863857035">+977-9863857035</a></p>
               </div>
 
               <iframe class="map-iframe" src="https://maps.google.com/maps?width=900&amp;height=700&amp;hl=en&amp;q=kathmandu&amp;t=&amp;z=14&amp;ie=UTF8&amp;iwloc=B&amp;output=embed" allowfullscreen title="Location map – Kathmandu, Nepal" loading="lazy"></iframe>
@@ -812,6 +756,7 @@
 
   <!-- Template Main JS File -->
   <script src="assets/js/main.js"></script>
+  <script src="assets/js/credly-badges.js"></script>
 
 </body>
 
