@@ -2,6 +2,13 @@
 
 Short log of design decisions and content changes.
 
+## 2026-05-19 — Kubernetes architecture (simple) blog post
+
+- **Title:** “Kubernetes Architecture in Simple Terms” (article); index card uses shorter “Kubernetes architecture (simple)” for scanning.
+- **Intent:** Plain-language map of K8s for readers who already see orchestration in job descriptions but not in diagrams: cluster vs node, control plane (API server, etcd, scheduler, controllers, cloud controller) vs workers (kubelet, runtime, kube-proxy), plus Pod / Deployment / Service and common add-ons (CNI, DNS, ingress). Includes a short troubleshooting mental model and links to the GitOps essay.
+- **Edge case called out:** StatefulSets, volumes, and operators mentioned only as a pointer so the post stays introductory.
+- **Files:** `blogs/kubernetes-architecture-simple.html`, `index.html` (Platform & culture section).
+
 ## 2026-05-19 — Cloud platform evolution blog post
 
 - **Title:** “The Cloud Platform: Why It Matters, How We Use It, and What Comes After the Shift” (article); index card uses shorter “Cloud platform evolution” for scanning.
