@@ -2,6 +2,18 @@
 
 Short log of design decisions and content changes.
 
+## 2026-05-19 — FinOps & GreenOps series (5 posts)
+
+- **Series:** Plain-language sustainability path for a general audience—digital footprint, conservation/sustainability, FinOps, GreenOps, and a closing essay on aligning both disciplines.
+- **Titles (articles):**
+  1. “The Invisible Bill: How Phones, Apps, and Cloud Touch the Real World”
+  2. “Living Within Our Means: Why Conservation and Sustainability Matter to Everyone”
+  3. “FinOps in Plain English: Stop Guessing What the Cloud Costs”
+  4. “GreenOps in Plain English: Running Technology With a Lighter Footprint”
+  5. “Smarter Spending, Lighter Footprint: When FinOps and GreenOps Work as One”
+- **Index layout:** Separate blog subsections—**Sustainability & responsible technology** (parts 1, 2, 5), **FinOps** (part 3), **GreenOps** (part 4). Each post includes series navigation.
+- **Files:** `blogs/finops-greenops-{1..5}-*.html`, `index.html`, `scripts/gen-finops-greenops-blogs.py` (regenerates posts 3–5 from gitops shell).
+
 ## 2026-05-19 — How to become an AI developer (guide)
 
 - **Title:** “How to Become an AI Developer: Terminology, Architecture, Tech Stack, and Why It Matters” (article); index card uses shorter “How to become an AI developer”.
