@@ -2,6 +2,12 @@
 
 Short log of design decisions and content changes.
 
+## 2026-05-19 — Cloud platform evolution blog post
+
+- **Title:** “The Cloud Platform: Why It Matters, How We Use It, and What Comes After the Shift” (article); index card uses shorter “Cloud platform evolution” for scanning.
+- **Intent:** Foundational essay covering cloud platform definition (IaaS/PaaS/SaaS), business importance, usage patterns and history, practical migration guidance (6 Rs, landing zones, FinOps), and forward-looking themes (AI-native, platform engineering, hybrid/edge, sovereignty). Cross-links to AWS Academy posts and Platform & culture siblings.
+- **Files:** `blogs/cloud-platform-evolution.html`, `index.html` (Platform & culture section).
+
 ## 2026-05-19 — DevOps life & business value blog post
 
 - **Title:** “Shipping Is the Strategy: DevOps Life and the Business Value It Creates” (article); index card uses shorter “DevOps life & business value” for scanning.
