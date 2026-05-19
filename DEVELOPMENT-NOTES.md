@@ -2,6 +2,12 @@
 
 Short log of design decisions and content changes.
 
+## 2026-05-19 — Kubernetes hands-on course (5 parts)
+
+- **Series:** Beginner path with practice on local clusters (kind, k3s, minikube): lab setup → YAML anatomy → Pod/Deployment/Service → day-one best practices → debugging and next steps.
+- **Intent:** Pair with `kubernetes-architecture-simple.html` and `kubernetes-when-how-why-where.html`; teach manifest structure, selectors, `kubectl explain`, dry-run, namespaces, recommended labels, resource requests/limits, and basic security context before advanced topics.
+- **Files:** `blogs/kubernetes-hands-on-{1..5}-*.html`, `scripts/gen-kubernetes-hands-on-blogs.py`, `index.html` (Platform card), cross-link from architecture post.
+
 ## 2026-05-19 — FinOps & GreenOps series (5 posts)
 
 - **Series:** Plain-language sustainability path for a general audience—digital footprint, conservation/sustainability, FinOps, GreenOps, and a closing essay on aligning both disciplines.
