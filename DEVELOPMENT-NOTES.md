@@ -8,6 +8,11 @@ Short log of design decisions and content changes.
 - **Intent:** Pair with `kubernetes-architecture-simple.html` and `kubernetes-when-how-why-where.html`; teach manifest structure, selectors, `kubectl explain`, dry-run, namespaces, recommended labels, resource requests/limits, and basic security context before advanced topics.
 - **Files:** `blogs/kubernetes-hands-on-{1..5}-*.html`, `scripts/gen-kubernetes-hands-on-blogs.py`, `index.html` (Platform card), cross-link from architecture post.
 
+## 2026-05-19 — FinOps & GreenOps Part 5 (cloud architect rewrite)
+
+- **Change:** Part 5 reframed for solution/cloud architects—Well-Architected cost + sustainability, tagging/landing zones, ARB questions, pattern table, trade-off ADRs, 90-day playbook. Plain-language series parts 1–4 unchanged.
+- **Files:** `scripts/gen-finops-greenops-blogs.py`, `blogs/finops-greenops-5-smarter-lighter.html`, `index.html` (card blurb).
+
 ## 2026-05-19 — FinOps & GreenOps series (5 posts)
 
 - **Series:** Plain-language sustainability path for a general audience—digital footprint, conservation/sustainability, FinOps, GreenOps, and a closing essay on aligning both disciplines.
@@ -16,7 +21,7 @@ Short log of design decisions and content changes.
   2. “Living Within Our Means: Why Conservation and Sustainability Matter to Everyone”
   3. “FinOps in Plain English: Stop Guessing What the Cloud Costs”
   4. “GreenOps in Plain English: Running Technology With a Lighter Footprint”
-  5. “Smarter Spending, Lighter Footprint: When FinOps and GreenOps Work as One”
+  5. “Designing for Both Ledgers: When FinOps and GreenOps Belong in Architecture” (cloud architect perspective)
 - **Index layout:** Separate blog subsections—**Sustainability & responsible technology** (parts 1, 2, 5), **FinOps** (part 3), **GreenOps** (part 4). Each post includes series navigation.
 - **Files:** `blogs/finops-greenops-{1..5}-*.html`, `index.html`, `scripts/gen-finops-greenops-blogs.py` (regenerates posts 3–5 from gitops shell).
 
