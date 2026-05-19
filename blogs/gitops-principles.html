@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Git as the Control Plane — GitOps Principles — Babulal Tamang</title>
+  <meta content="What GitOps is, why teams adopt it, and the principles that make it reliable: declarative state, Git as source of truth, continuous reconciliation, security, and observability." name="description">
+  <link href="../assets/img/favicon.png" rel="icon">
+  <link href="../assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="../assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="../assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="../assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="../assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <link href="../assets/css/style.css" rel="stylesheet">
+  <link href="../assets/css/theme-v2.css" rel="stylesheet">
+</head>
+<body class="theme-v2">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <button class="mobile-nav-toggle d-xl-none" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navbar"><i class="bi bi-list" aria-hidden="true"></i></button>
+  <header id="header">
+    <div class="d-flex flex-column">
+      <div class="profile sidebar-profile">
+        <div class="profile-avatar-wrap">
+          <img src="../assets/img/profile-img.jpg" class="profile-avatar img-fluid" width="132" height="132" alt="Portrait of Babulal Tamang">
+        </div>
+        <h1 class="text-light profile-name"><a href="../index.html">Babulal Tamang</a></h1>
+        <p class="profile-tagline">Platform · DevOps · Software · Cloud Architect · AI/ML Enthusiast</p>
+        <p class="profile-location"><i class="bi bi-geo-alt-fill" aria-hidden="true"></i><span>Kathmandu, Nepal</span></p>
+        <div class="social-links profile-social mt-3 text-center">
+          <a href="https://twitter.com/SugamLa20062317" class="twitter" aria-label="Twitter"><i class="bx bxl-twitter" aria-hidden="true"></i></a>
+          <a href="https://github.com/sugaml/" class="github" aria-label="GitHub"><i class="bx bxl-github" aria-hidden="true"></i></a>
+          <a href="https://www.linkedin.com/in/babulal-tamang-b6507121b/" class="linkedin" aria-label="LinkedIn"><i class="bx bxl-linkedin" aria-hidden="true"></i></a>
+        </div>
+      </div>
+      <nav id="navbar" class="nav-menu navbar" aria-label="Main navigation">
+        <ul>
+          <li><a href="../index.html#hero" class="nav-link scrollto"><i class="bx bx-home" aria-hidden="true"></i> <span>Home</span></a></li>
+          <li><a href="../index.html#about" class="nav-link scrollto"><i class="bx bx-user" aria-hidden="true"></i> <span>About</span></a></li>
+          <li><a href="../index.html#skills" class="nav-link scrollto"><i class="bx bx-code-block" aria-hidden="true"></i> <span>Skills</span></a></li>
+          <li><a href="../index.html#resume" class="nav-link scrollto"><i class="bx bx-file-blank" aria-hidden="true"></i> <span>Resume</span></a></li>
+          <li><a href="../index.html#certifications" class="nav-link scrollto"><i class="bx bx-award" aria-hidden="true"></i> <span>Certifications</span></a></li>
+          <li><a href="../index.html#blog" class="nav-link scrollto active"><i class="bx bx-book-content" aria-hidden="true"></i> <span>Blog</span></a></li>
+          <li><a href="../index.html#survey" class="nav-link scrollto"><i class="bx bx-shield-quarter" aria-hidden="true"></i> <span>Cybersecurity Survey</span></a></li>
+          <li><a href="../index.html#what-i-use" class="nav-link scrollto"><i class="bx bx-wrench" aria-hidden="true"></i> <span>What I Use</span></a></li>
+          <li><a href="../index.html#contact" class="nav-link scrollto"><i class="bx bx-envelope" aria-hidden="true"></i> <span>Contact</span></a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <main id="main">
+    <section class="breadcrumbs">
+      <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+          <h2>Blog</h2>
+          <ol>
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../index.html#blog">Blog</a></li>
+            <li>GitOps principles</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+    <article class="inner-page blog-article pb-5">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-9 col-xl-8">
+            <header class="mb-4 pb-3 border-bottom" data-aos="fade-up">
+              <p class="text-muted small mb-2">Platform &amp; culture · <time datetime="2026-05-19">19 May 2026</time></p>
+              <h1 class="h2 mb-3">Git as the Control Plane: GitOps Principles That Survive Production</h1>
+              <p class="lead mb-3">GitOps is not “Kubernetes plus a Git repo.” It is an operating model: declare how the world should look, store that declaration where humans collaborate, and let automation reconcile reality with the declaration—continuously, audibly, and safely.</p>
+              <div class="border-start border-primary border-4 ps-3 py-3 bg-light rounded mb-0" role="note">
+                <p class="small text-uppercase text-muted mb-1 fw-semibold">In short</p>
+                <p class="mb-0">Treat Git as the single source of truth for desired state, keep that state declarative, let controllers pull and reconcile changes, and wire governance (reviews, policy, secrets) around the same workflows you already use for code.</p>
+              </div>
+            </header>
+
+            <div class="blog-prose" data-aos="fade-up" data-aos-delay="50">
+
+              <h2 class="h4 mt-4">What GitOps is (and is not)</h2>
+              <p><strong>GitOps</strong> describes a way to operate cloud-native systems—often Kubernetes, but the ideas travel—where the approved configuration of a system lives in version control and automated agents apply it. The name caught on after Weaveworks popularized the pattern; implementations include <strong>Flux</strong>, <strong>Argo CD</strong>, and similar controllers.</p>
+              <p>GitOps is not a replacement for CI/CD, observability, or security. It sits beside them: continuous delivery still builds and tests artifacts; GitOps focuses on <em>which</em> version of infrastructure and workloads should run, <em>how</em> that decision is recorded, and <em>how</em> clusters stay aligned with that record.</p>
+
+              <h2 class="h4 mt-5">1. Declarative desired state</h2>
+              <p>Imperative scripts (“run these fifty commands in order”) are hard to review and brittle when order or timing changes. GitOps favors <strong>declarative</strong> manifests: YAML, Helm, Kustomize, Terraform plans committed as code—artifacts that describe <em>what</em> should exist, not every low-level step to get there.</p>
+              <p>Declarative models make diff-based review possible: a pull request shows how the world will differ after merge. That same diff becomes evidence for auditors and on-call engineers retracing an incident.</p>
+
+              <h2 class="h4 mt-5">2. Version control as the system of record</h2>
+              <p><strong>Git is the source of truth</strong> for what is allowed to run—not a secondary mirror of “what someone clicked in a console last Tuesday.” Commits attach identity, time, and rationale (via messages and linked tickets). Branches and tags model promotion paths: dev → staging → production.</p>
+              <p>This principle breaks if teams still “fix” production by hand without backporting changes to Git. <strong>Drift</strong> between live systems and the repo erodes trust; GitOps works best when the rule is: if it is not in Git, it does not belong in the cluster.</p>
+
+              <h2 class="h4 mt-5">3. Automated delivery through pull-based reconciliation</h2>
+              <p>In a typical GitOps setup, a controller inside the cluster <strong>watches</strong> the Git repository (or an OCI registry of packaged manifests) and <strong>pulls</strong> the desired state. It compares cluster reality to the declaration and applies updates. That pull-based model avoids handing long-lived credentials from CI into the cluster for every deploy; the cluster asserts what it should fetch.</p>
+              <p>Push pipelines still matter for building images and running tests; GitOps usually takes over at the boundary of “this release is approved—now make the platform match.”</p>
+
+              <h2 class="h4 mt-5">4. Continuous reconciliation and drift detection</h2>
+              <p>Reconciliation is not a one-time deploy. The controller re-queues work so that manual changes—or failed partial applies—are <strong>detected and corrected</strong> according to policy. In practice you choose whether unauthorized drift is automatically reverted, flagged, or blocked by admission policy.</p>
+              <p>This is where GitOps intersects <strong>SRE</strong>: the system’s desired state is a contract; the controller’s metrics and alerts expose when the contract cannot be met (sync failures, resource contention, bad manifests).</p>
+
+              <h2 class="h4 mt-5">5. Everything reviewable: the same PR culture as application code</h2>
+              <p>Infrastructure changes flow through <strong>merge requests</strong> with reviewers, CI checks, and optional policy gates. That yields a social layer on top of automation: two keys for production, separation of duties, or platform-team oversight can map cleanly onto branch protection.</p>
+              <p>Edge case: emergency break-glass exists in every organization; the GitOps principle is to <strong>record</strong> the outcome—revert or promote a hotfix through the repo quickly—so the system of record catches up with reality.</p>
+
+              <h2 class="h4 mt-5">6. Security and secrets: defaults, not afterthoughts</h2>
+              <p>GitOps amplifies good hygiene and punishes bad secrets handling.</p>
+              <ul>
+                <li><strong>No long-lived secrets in plain Git.</strong> Use sealed secrets, external secret operators, cloud KMS references, or short-lived identity federation.</li>
+                <li><strong>RBAC and tenancy</strong> limit which namespaces or clusters a controller may touch; blast radius should match team boundaries.</li>
+                <li><strong>Supply chain</strong>: sign commits or artifacts where policy requires it; pin Helm charts and container images to digests when stability matters.</li>
+                <li><strong>Policy-as-code</strong> (OPA, Kyverno, admission webhooks) encodes constraints—“no privileged containers,” “only approved registries”—at apply time.</li>
+              </ul>
+
+              <h2 class="h4 mt-5">7. Observability: sync status is part of the product</h2>
+              <p>A GitOps rollout is not done when CI turns green; it is done when the controller reports <strong>healthy sync</strong> and workloads meet SLOs. Dashboards and alerts should cover application metrics <em>and</em> sync lag, prune failures, and dependency errors between environments.</p>
+              <p>Remediation paths should be obvious: “which commit is live?,” “which manifest failed validation?,” “which dependency could not be fetched?”—answers your Git URL, commit SHA, and controller UI or metrics should make visible.</p>
+
+              <h2 class="h4 mt-5">Common pitfalls (so principles become practice)</h2>
+              <ul>
+                <li><strong>Treating GitOps as only a tool install.</strong> Without declarative discipline and review culture, you automate confusion faster.</li>
+                <li><strong>Monorepo sprawl without ownership.</strong> Define who approves which paths; use CODEOWNERS or subtree policies.</li>
+                <li><strong>Ignoring bootstrap and cluster lifecycle.</strong> The cluster and the GitOps agent itself need an intentional birth story—often a small, audited seed.</li>
+                <li><strong>Forklift “GitOps” over SSH kubectl from CI.</strong> That can work, but it often forfeits pull-based reconciliation and drift semantics.</li>
+              </ul>
+
+              <h2 class="h4 mt-5">How this fits next to DevOps and platform engineering</h2>
+              <p>GitOps is a <strong>concrete pattern</strong> inside the broader DevOps aim: short feedback loops, shared ownership, and measurable delivery. Platform teams often offer a <em>paved road</em>: golden templates, cluster blueprints, and guardrails so product teams get GitOps benefits without each squad becoming kubectl experts overnight.</p>
+              <p>If you read my earlier note on <a href="devops-historical-foundations.html">DevOps history</a>, think of GitOps as the chapter where <strong>infrastructure as code</strong> meets <strong>continuous reconciliation</strong> and the pull request becomes the control plane for the cloud.</p>
+
+              <h2 class="h4 mt-5">Further reading</h2>
+              <ul>
+                <li>OpenGitOps — community principles and vocabulary</li>
+                <li>Flux and Argo CD documentation — production patterns and security guides</li>
+                <li>Charity Majors — essays on deploys, ownership, and observability (cultural complement to the mechanics)</li>
+                <li>Google — <em>Site Reliability Engineering</em> (SLOs, error budgets, and operations as engineering)</li>
+              </ul>
+
+              <p class="small text-muted mt-4 mb-2"><a href="../index.html#blog">Blog index</a> · <a href="devops-historical-foundations.html">Historical foundations of DevOps</a> · <a href="aws-cloud-architecting.html">Cloud Architecting</a></p>
+              <p class="mb-0"><a href="../index.html#blog" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left" aria-hidden="true"></i> Back to blog list</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+  </main>
+  <footer id="footer">
+    <div class="container">
+      <div class="copyright">&copy; Copyright <strong><span>babulal.com.np</span></strong></div>
+      <div class="credits">Designed by <a href="https://babulal.com.np/">Babulal Tamang</a></div>
+    </div>
+  </footer>
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+  <script src="../assets/vendor/purecounter/purecounter_vanilla.js"></script>
+  <script src="../assets/vendor/aos/aos.js"></script>
+  <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="../assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="../assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="../assets/vendor/typed.js/typed.min.js"></script>
+  <script src="../assets/vendor/waypoints/noframework.waypoints.js"></script>
+  <script src="../assets/js/main.js"></script>
+</body>
+</html>
