@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Kubernetes Hands-On Part 2: YAML Manifest Anatomy — Babulal Tamang</title>
+  <meta content="Part 2: anatomy of a Kubernetes YAML manifest—apiVersion, kind, metadata, spec, labels, selectors, multi-document files, and kubectl explain for beginners." name="description">
+  <link href="../assets/img/favicon.png" rel="icon">
+  <link href="../assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="../assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="../assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="../assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="../assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <link href="../assets/css/style.css" rel="stylesheet">
+  <link href="../assets/css/theme-v2.css" rel="stylesheet">
+</head>
+<body class="theme-v2">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <button class="mobile-nav-toggle d-xl-none" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navbar"><i class="bi bi-list" aria-hidden="true"></i></button>
+  <header id="header">
+    <div class="d-flex flex-column">
+      <div class="profile sidebar-profile">
+        <div class="profile-avatar-wrap">
+          <img src="../assets/img/profile-img.jpg" class="profile-avatar img-fluid" width="132" height="132" alt="Portrait of Babulal Tamang">
+        </div>
+        <h1 class="text-light profile-name"><a href="../index.html">Babulal Tamang</a></h1>
+        <p class="profile-tagline">Platform · DevOps · Software · Cloud Architect · AI/ML Enthusiast</p>
+        <p class="profile-location"><i class="bi bi-geo-alt-fill" aria-hidden="true"></i><span>Kathmandu, Nepal</span></p>
+        <div class="social-links profile-social mt-3 text-center">
+          <a href="https://twitter.com/SugamLa20062317" class="twitter" aria-label="Twitter"><i class="bx bxl-twitter" aria-hidden="true"></i></a>
+          <a href="https://github.com/sugaml/" class="github" aria-label="GitHub"><i class="bx bxl-github" aria-hidden="true"></i></a>
+          <a href="https://www.linkedin.com/in/babulal-tamang-b6507121b/" class="linkedin" aria-label="LinkedIn"><i class="bx bxl-linkedin" aria-hidden="true"></i></a>
+        </div>
+      </div>
+      <nav id="navbar" class="nav-menu navbar" aria-label="Main navigation">
+        <ul>
+          <li><a href="../index.html#hero" class="nav-link scrollto"><i class="bx bx-home" aria-hidden="true"></i> <span>Home</span></a></li>
+          <li><a href="../index.html#about" class="nav-link scrollto"><i class="bx bx-user" aria-hidden="true"></i> <span>About</span></a></li>
+          <li><a href="../index.html#skills" class="nav-link scrollto"><i class="bx bx-code-block" aria-hidden="true"></i> <span>Skills</span></a></li>
+          <li><a href="../index.html#resume" class="nav-link scrollto"><i class="bx bx-file-blank" aria-hidden="true"></i> <span>Resume</span></a></li>
+          <li><a href="../index.html#certifications" class="nav-link scrollto"><i class="bx bx-award" aria-hidden="true"></i> <span>Certifications</span></a></li>
+          <li><a href="../index.html#blog" class="nav-link scrollto active"><i class="bx bx-book-content" aria-hidden="true"></i> <span>Blog</span></a></li>
+          <li><a href="../index.html#survey" class="nav-link scrollto"><i class="bx bx-shield-quarter" aria-hidden="true"></i> <span>Cybersecurity Survey</span></a></li>
+          <li><a href="../index.html#what-i-use" class="nav-link scrollto"><i class="bx bx-wrench" aria-hidden="true"></i> <span>What I Use</span></a></li>
+          <li><a href="../index.html#contact" class="nav-link scrollto"><i class="bx bx-envelope" aria-hidden="true"></i> <span>Contact</span></a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <main id="main">
+    <section class="breadcrumbs">
+      <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+          <h2>Blog</h2>
+          <ol>
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../index.html#blog">Blog</a></li>
+            <li>K8s hands-on (2/5)</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+  <main id="main">
+    <article class="inner-page blog-article pb-5">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-9 col-xl-8">
+            <header class="mb-4 pb-3 border-bottom" data-aos="fade-up">
+              <p class="text-muted small mb-2">Kubernetes hands-on · Part 2 of 5 · <time datetime="2026-05-19">19 May 2026</time></p>
+              <h1 class="h2 mb-3">Anatomy of a Kubernetes Manifest (YAML, Line by Line)</h1>
+              <p class="lead mb-3">Kubernetes is <strong>declarative</strong>: you hand the API a document that says what should exist. That document is usually YAML. Before you memorize twenty resource types, learn the <strong>skeleton</strong> every manifest shares—and how to discover fields you have not memorized yet.</p>
+              <div class="border-start border-primary border-4 ps-3 py-3 bg-light rounded mb-0" role="note">
+                <p class="small text-uppercase text-muted mb-1 fw-semibold">In short</p>
+                <p class="mb-0">Every object has apiVersion, kind, metadata, and spec. Labels identify things; selectors connect controllers to Pods. Use kubectl explain and dry-run to validate before you apply.</p>
+              </div>
+            </header>
+            <div class="blog-prose" data-aos="fade-up" data-aos-delay="50">
+              <nav class="border rounded p-3 mb-4 bg-light" aria-label="Series navigation">
+                <p class="small text-uppercase text-muted mb-2 fw-semibold">Kubernetes hands-on · Part 2 of 5</p>
+                <ol class="small mb-0 ps-3">
+                  <li><a href="kubernetes-hands-on-1-local-lab.html">Your local lab (kind, k3s, minikube)</a></li>
+                  <li><strong>This post:</strong> Anatomy of a Kubernetes manifest</li>
+                  <li><a href="kubernetes-hands-on-3-first-workloads.html">First workloads: Pod, Deployment, Service</a></li>
+                  <li><a href="kubernetes-hands-on-4-day-one-practices.html">Best practices from day one</a></li>
+                  <li><a href="kubernetes-hands-on-5-debug-next-steps.html">Debug, observe, and what to learn next</a></li>
+                </ol>
+              </nav>
+
+              <h2 class="h4 mt-4">YAML rules that save beginners hours</h2>
+              <ul>
+                <li><strong>Indentation matters.</strong> Use spaces, not tabs (two spaces per level is common).</li>
+                <li><strong>Maps vs lists:</strong> <code>key: value</code> is a map; <code>- item</code> under a key is a list.</li>
+                <li><strong>Strings:</strong> Quote values with special characters. Numbers and booleans are unquoted (<code>replicas: 3</code>, not <code>"3"</code> unless you mean a string).</li>
+                <li><strong>One file can hold multiple documents</strong> separated by <code>---</code> on its own line.</li>
+              </ul>
+
+              <h2 class="h4 mt-5">The four top-level fields</h2>
+              <p>Almost every Kubernetes object you create looks like this shape:</p>
+              <pre class="bg-light p-3 rounded small"><code>apiVersion: v1          # which API group and version
+kind: Pod               # what type of object
+metadata:               # identity and labels
+  name: demo
+  namespace: default
+  labels:
+    app.kubernetes.io/name: demo
+spec:                   # desired state — shape depends on kind
+  containers:
+    - name: app
+      image: nginx:1.25-alpine
+      ports:
+        - containerPort: 80</code></pre>
+
+              <h3 class="h5 mt-4">apiVersion</h3>
+              <p>Tells the API server which schema to validate against. Examples:</p>
+              <ul>
+                <li><code>v1</code> — core resources: Pod, Service, ConfigMap, Namespace.</li>
+                <li><code>apps/v1</code> — Deployment, ReplicaSet, StatefulSet, DaemonSet.</li>
+                <li><code>batch/v1</code> — Job, CronJob.</li>
+              </ul>
+              <p>Wrong <code>apiVersion</code> usually fails at apply time with a clear error. Use <code>kubectl api-resources</code> to see kinds and versions your cluster supports.</p>
+
+              <h3 class="h5 mt-4">kind</h3>
+              <p>The resource type: <code>Pod</code>, <code>Deployment</code>, <code>Service</code>, and so on. It must match <code>apiVersion</code> (you cannot put a Deployment in <code>v1</code>).</p>
+
+              <h3 class="h5 mt-4">metadata</h3>
+              <ul>
+                <li><strong>name</strong> — unique within the namespace for most types.</li>
+                <li><strong>namespace</strong> — scope; omit to use <code>default</code> or set with <code>kubectl apply -n team-a -f file.yaml</code>.</li>
+                <li><strong>labels</strong> — key/value tags for selection, governance, and observability (Part 4).</li>
+                <li><strong>annotations</strong> — non-identifying metadata (tooling hints, last-applied URLs); not used in label selectors.</li>
+              </ul>
+
+              <h3 class="h5 mt-4">spec</h3>
+              <p>What you want. The API fills in <strong>status</strong> for you (phase, conditions, Pod IPs). Beginners should read <code>spec</code> in Git and <code>status</code> with <code>kubectl describe</code> when debugging.</p>
+
+              <h2 class="h4 mt-5">Labels and selectors: how objects find each other</h2>
+              <p>A <strong>Deployment</strong> does not list Pod names. It says: “keep three Pods that match these labels.” A <strong>Service</strong> routes traffic to Pods with matching labels.</p>
+              <pre class="bg-light p-3 rounded small"><code># Fragment — Deployment template labels
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: demo
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: demo</code></pre>
+              <p>The Deployment’s <code>spec.selector</code> must match <code>spec.template.metadata.labels</code>. If they diverge, the controller cannot adopt Pods—or worse, adopts the wrong ones. This is one of the most common copy-paste mistakes in workshops.</p>
+
+              <h2 class="h4 mt-5">Read the schema instead of guessing</h2>
+              <pre class="bg-light p-3 rounded small"><code>kubectl explain pod
+kubectl explain pod.spec.containers
+kubectl explain deployment.spec.template</code></pre>
+              <p>Think of <code>kubectl explain</code> as structured help for YAML authors. Pair it with the official Kubernetes API reference when you need field-level semantics.</p>
+
+              <h2 class="h4 mt-5">Validate before you mutate the cluster</h2>
+              <pre class="bg-light p-3 rounded small"><code># Client-side dry run — catches many typos
+kubectl apply -f demo.yaml --dry-run=client
+
+# Server-side dry run (when enabled) — API validates admission
+kubectl apply -f demo.yaml --dry-run=server</code></pre>
+              <p>Dry-run does not replace review in Git, but it catches “wrong indentation under <code>containers</code>” faster than a crash loop.</p>
+
+              <h2 class="h4 mt-5">Imperative vs declarative (why YAML wins)</h2>
+              <p>You <em>can</em> run <code>kubectl run</code> and <code>kubectl expose</code> for quick experiments. For anything you will repeat, prefer <strong>manifests in Git</strong>—the same discipline as <a href="gitops-principles.html">GitOps</a>, even before you install Flux or Argo CD.</p>
+
+              <h2 class="h4 mt-5">Practice exercise</h2>
+              <ol>
+                <li>Save the Pod example above as <code>demo-pod.yaml</code>.</li>
+                <li>Run <code>kubectl apply -f demo-pod.yaml</code> on your lab from <a href="kubernetes-hands-on-1-local-lab.html">Part 1</a>.</li>
+                <li>Change the image tag, run <code>kubectl apply</code> again, and observe that Pod spec fields are largely immutable—Kubernetes may recreate the Pod.</li>
+                <li>Delete with <code>kubectl delete -f demo-pod.yaml</code>.</li>
+              </ol>
+
+              
+              <p class="small text-muted mt-4 mb-2"><a href="kubernetes-hands-on-1-local-lab.html">← Part 1</a> · <a href="../index.html#blog">Blog index</a> · <a href="kubernetes-hands-on-3-first-workloads.html">Part 3 →</a></p>
+              <p class="mb-0"><a href="kubernetes-hands-on-1-local-lab.html" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left" aria-hidden="true"></i> Part 1</a>
+              <a href="kubernetes-hands-on-3-first-workloads.html" class="btn btn-primary btn-sm ms-2">Part 3 <i class="bi bi-arrow-right" aria-hidden="true"></i></a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+  </main>
+  <footer id="footer">
+    <div class="container">
+      <div class="copyright">&copy; Copyright <strong><span>babulal.com.np</span></strong></div>
+      <div class="credits">Designed by <a href="https://babulal.com.np/">Babulal Tamang</a></div>
+    </div>
+  </footer>
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+  <script src="../assets/vendor/purecounter/purecounter_vanilla.js"></script>
+  <script src="../assets/vendor/aos/aos.js"></script>
+  <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="../assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="../assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="../assets/vendor/typed.js/typed.min.js"></script>
+  <script src="../assets/vendor/waypoints/noframework.waypoints.js"></script>
+  <script src="../assets/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Kubernetes Hands-On Part 3: Pod, Deployment, Service — Babulal Tamang</title>
+  <meta content="Part 3 hands-on: run your first Pod, scale with a Deployment, expose traffic with a Service, and use port-forward on kind, k3s, or minikube." name="description">
+  <link href="../assets/img/favicon.png" rel="icon">
+  <link href="../assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="../assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="../assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="../assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="../assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <link href="../assets/css/style.css" rel="stylesheet">
+  <link href="../assets/css/theme-v2.css" rel="stylesheet">
+</head>
+<body class="theme-v2">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <button class="mobile-nav-toggle d-xl-none" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navbar"><i class="bi bi-list" aria-hidden="true"></i></button>
+  <header id="header">
+    <div class="d-flex flex-column">
+      <div class="profile sidebar-profile">
+        <div class="profile-avatar-wrap">
+          <img src="../assets/img/profile-img.jpg" class="profile-avatar img-fluid" width="132" height="132" alt="Portrait of Babulal Tamang">
+        </div>
+        <h1 class="text-light profile-name"><a href="../index.html">Babulal Tamang</a></h1>
+        <p class="profile-tagline">Platform · DevOps · Software · Cloud Architect · AI/ML Enthusiast</p>
+        <p class="profile-location"><i class="bi bi-geo-alt-fill" aria-hidden="true"></i><span>Kathmandu, Nepal</span></p>
+        <div class="social-links profile-social mt-3 text-center">
+          <a href="https://twitter.com/SugamLa20062317" class="twitter" aria-label="Twitter"><i class="bx bxl-twitter" aria-hidden="true"></i></a>
+          <a href="https://github.com/sugaml/" class="github" aria-label="GitHub"><i class="bx bxl-github" aria-hidden="true"></i></a>
+          <a href="https://www.linkedin.com/in/babulal-tamang-b6507121b/" class="linkedin" aria-label="LinkedIn"><i class="bx bxl-linkedin" aria-hidden="true"></i></a>
+        </div>
+      </div>
+      <nav id="navbar" class="nav-menu navbar" aria-label="Main navigation">
+        <ul>
+          <li><a href="../index.html#hero" class="nav-link scrollto"><i class="bx bx-home" aria-hidden="true"></i> <span>Home</span></a></li>
+          <li><a href="../index.html#about" class="nav-link scrollto"><i class="bx bx-user" aria-hidden="true"></i> <span>About</span></a></li>
+          <li><a href="../index.html#skills" class="nav-link scrollto"><i class="bx bx-code-block" aria-hidden="true"></i> <span>Skills</span></a></li>
+          <li><a href="../index.html#resume" class="nav-link scrollto"><i class="bx bx-file-blank" aria-hidden="true"></i> <span>Resume</span></a></li>
+          <li><a href="../index.html#certifications" class="nav-link scrollto"><i class="bx bx-award" aria-hidden="true"></i> <span>Certifications</span></a></li>
+          <li><a href="../index.html#blog" class="nav-link scrollto active"><i class="bx bx-book-content" aria-hidden="true"></i> <span>Blog</span></a></li>
+          <li><a href="../index.html#survey" class="nav-link scrollto"><i class="bx bx-shield-quarter" aria-hidden="true"></i> <span>Cybersecurity Survey</span></a></li>
+          <li><a href="../index.html#what-i-use" class="nav-link scrollto"><i class="bx bx-wrench" aria-hidden="true"></i> <span>What I Use</span></a></li>
+          <li><a href="../index.html#contact" class="nav-link scrollto"><i class="bx bx-envelope" aria-hidden="true"></i> <span>Contact</span></a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <main id="main">
+    <section class="breadcrumbs">
+      <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+          <h2>Blog</h2>
+          <ol>
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../index.html#blog">Blog</a></li>
+            <li>K8s hands-on (3/5)</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+  <main id="main">
+    <article class="inner-page blog-article pb-5">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-9 col-xl-8">
+            <header class="mb-4 pb-3 border-bottom" data-aos="fade-up">
+              <p class="text-muted small mb-2">Kubernetes hands-on · Part 3 of 5 · <time datetime="2026-05-19">19 May 2026</time></p>
+              <h1 class="h2 mb-3">Your First Workloads: Pod, Deployment, and Service</h1>
+              <p class="lead mb-3">A lone <strong>Pod</strong> is a teaching tool; a <strong>Deployment</strong> is how you run stateless apps in production; a <strong>Service</strong> gives stable networking to ephemeral Pods. This post walks through all three on your local cluster—with commands you can run in ten minutes.</p>
+              <div class="border-start border-primary border-4 ps-3 py-3 bg-light rounded mb-0" role="note">
+                <p class="small text-uppercase text-muted mb-1 fw-semibold">In short</p>
+                <p class="mb-0">Create a Deployment with multiple replicas, confirm Pods with labels, expose port 80 with a ClusterIP Service, and reach the app via port-forward. Delete with the same YAML file you applied.</p>
+              </div>
+            </header>
+            <div class="blog-prose" data-aos="fade-up" data-aos-delay="50">
+              <nav class="border rounded p-3 mb-4 bg-light" aria-label="Series navigation">
+                <p class="small text-uppercase text-muted mb-2 fw-semibold">Kubernetes hands-on · Part 3 of 5</p>
+                <ol class="small mb-0 ps-3">
+                  <li><a href="kubernetes-hands-on-1-local-lab.html">Your local lab (kind, k3s, minikube)</a></li>
+                  <li><a href="kubernetes-hands-on-2-yaml-anatomy.html">Anatomy of a Kubernetes manifest</a></li>
+                  <li><strong>This post:</strong> First workloads: Pod, Deployment, Service</li>
+                  <li><a href="kubernetes-hands-on-4-day-one-practices.html">Best practices from day one</a></li>
+                  <li><a href="kubernetes-hands-on-5-debug-next-steps.html">Debug, observe, and what to learn next</a></li>
+                </ol>
+              </nav>
+
+              <h2 class="h4 mt-4">Mental model</h2>
+              <ul>
+                <li><strong>Pod</strong> — one or more containers that share network and storage; smallest schedulable unit.</li>
+                <li><strong>Deployment</strong> — declares desired replicas and rollout strategy; owns ReplicaSets, which own Pods.</li>
+                <li><strong>Service</strong> — stable DNS name and virtual IP targeting Pods by label.</li>
+              </ul>
+              <p>For architecture context see <a href="kubernetes-architecture-simple.html">Kubernetes architecture in simple terms</a>.</p>
+
+              <h2 class="h4 mt-5">Step 1 — Deployment (three replicas)</h2>
+              <p>Save as <code>web.yaml</code>:</p>
+              <pre class="bg-light p-3 rounded small"><code>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+  labels:
+    app.kubernetes.io/name: web
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: web
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: web
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:1.25-alpine
+          ports:
+            - containerPort: 80</code></pre>
+              <pre class="bg-light p-3 rounded small"><code>kubectl apply -f web.yaml
+kubectl get deployment web
+kubectl get pods -l app.kubernetes.io/name=web</code></pre>
+              <p>You should see three Pods, each with a unique name suffix. Kill one Pod with <code>kubectl delete pod &lt;name&gt;</code> and watch the Deployment replace it—<strong>reconciliation</strong> in action.</p>
+
+              <h2 class="h4 mt-5">Step 2 — Service (ClusterIP)</h2>
+              <p>Append to the same file after <code>---</code> or save as <code>web-svc.yaml</code>:</p>
+              <pre class="bg-light p-3 rounded small"><code>apiVersion: v1
+kind: Service
+metadata:
+  name: web
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: web
+  ports:
+    - port: 80
+      targetPort: 80</code></pre>
+              <pre class="bg-light p-3 rounded small"><code>kubectl apply -f web-svc.yaml   # or combined file
+kubectl get svc web
+kubectl get endpoints web</code></pre>
+              <p><code>endpoints</code> should list Pod IPs. If empty, your Service selector does not match Pod labels—return to Part 2’s selector section.</p>
+
+              <h2 class="h4 mt-5">Step 3 — Reach the app locally</h2>
+              <p>On a laptop cluster there is usually no cloud load balancer. Use port-forward:</p>
+              <pre class="bg-light p-3 rounded small"><code>kubectl port-forward svc/web 8080:80
+# In another terminal:
+curl -s -o /dev/null -w "%{http_code}\n" http://127.0.0.1:8080/</code></pre>
+              <p>Expect HTTP <code>200</code>. For minikube you can also try <code>minikube service web</code> when using certain addons—port-forward works everywhere.</p>
+
+              <h2 class="h4 mt-5">Optional — one-off Pod (know the difference)</h2>
+              <pre class="bg-light p-3 rounded small"><code>apiVersion: v1
+kind: Pod
+metadata:
+  name: debug-once
+spec:
+  containers:
+    - name: shell
+      image: busybox:1.36
+      command: ["sh", "-c", "echo hello && sleep 30"]</code></pre>
+              <p>Pods created alone are not self-healing. Use them for debugging or Jobs—not for serving customer traffic.</p>
+
+              <h2 class="h4 mt-5">Rollout exercise</h2>
+              <pre class="bg-light p-3 rounded small"><code>kubectl set image deployment/web nginx=nginx:1.27-alpine
+kubectl rollout status deployment/web
+kubectl rollout history deployment/web</code></pre>
+              <p>Prefer changing image tags in YAML and <code>kubectl apply</code> when practicing GitOps habits. Imperative <code>set image</code> is fine for labs.</p>
+
+              <h2 class="h4 mt-5">Clean up</h2>
+              <pre class="bg-light p-3 rounded small"><code>kubectl delete -f web.yaml
+# include Service manifest if separate</code></pre>
+
+              
+              <p class="small text-muted mt-4 mb-2"><a href="kubernetes-hands-on-2-yaml-anatomy.html">← Part 2</a> · <a href="../index.html#blog">Blog index</a> · <a href="kubernetes-hands-on-4-day-one-practices.html">Part 4 →</a></p>
+              <p class="mb-0"><a href="kubernetes-hands-on-2-yaml-anatomy.html" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left" aria-hidden="true"></i> Part 2</a>
+              <a href="kubernetes-hands-on-4-day-one-practices.html" class="btn btn-primary btn-sm ms-2">Part 4 <i class="bi bi-arrow-right" aria-hidden="true"></i></a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+  </main>
+  <footer id="footer">
+    <div class="container">
+      <div class="copyright">&copy; Copyright <strong><span>babulal.com.np</span></strong></div>
+      <div class="credits">Designed by <a href="https://babulal.com.np/">Babulal Tamang</a></div>
+    </div>
+  </footer>
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+  <script src="../assets/vendor/purecounter/purecounter_vanilla.js"></script>
+  <script src="../assets/vendor/aos/aos.js"></script>
+  <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="../assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="../assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="../assets/vendor/typed.js/typed.min.js"></script>
+  <script src="../assets/vendor/waypoints/noframework.waypoints.js"></script>
+  <script src="../assets/js/main.js"></script>
+</body>
+</html>

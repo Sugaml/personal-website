@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Kubernetes Hands-On Part 1: kind, k3s, or minikube — Babulal Tamang</title>
+  <meta content="Part 1 of a beginner Kubernetes course: pick a local cluster (kind, k3s, minikube), install prerequisites, create a lab, and verify kubectl works—before writing YAML." name="description">
+  <link href="../assets/img/favicon.png" rel="icon">
+  <link href="../assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="../assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="../assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="../assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="../assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <link href="../assets/css/style.css" rel="stylesheet">
+  <link href="../assets/css/theme-v2.css" rel="stylesheet">
+</head>
+<body class="theme-v2">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <button class="mobile-nav-toggle d-xl-none" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navbar"><i class="bi bi-list" aria-hidden="true"></i></button>
+  <header id="header">
+    <div class="d-flex flex-column">
+      <div class="profile sidebar-profile">
+        <div class="profile-avatar-wrap">
+          <img src="../assets/img/profile-img.jpg" class="profile-avatar img-fluid" width="132" height="132" alt="Portrait of Babulal Tamang">
+        </div>
+        <h1 class="text-light profile-name"><a href="../index.html">Babulal Tamang</a></h1>
+        <p class="profile-tagline">Platform · DevOps · Software · Cloud Architect · AI/ML Enthusiast</p>
+        <p class="profile-location"><i class="bi bi-geo-alt-fill" aria-hidden="true"></i><span>Kathmandu, Nepal</span></p>
+        <div class="social-links profile-social mt-3 text-center">
+          <a href="https://twitter.com/SugamLa20062317" class="twitter" aria-label="Twitter"><i class="bx bxl-twitter" aria-hidden="true"></i></a>
+          <a href="https://github.com/sugaml/" class="github" aria-label="GitHub"><i class="bx bxl-github" aria-hidden="true"></i></a>
+          <a href="https://www.linkedin.com/in/babulal-tamang-b6507121b/" class="linkedin" aria-label="LinkedIn"><i class="bx bxl-linkedin" aria-hidden="true"></i></a>
+        </div>
+      </div>
+      <nav id="navbar" class="nav-menu navbar" aria-label="Main navigation">
+        <ul>
+          <li><a href="../index.html#hero" class="nav-link scrollto"><i class="bx bx-home" aria-hidden="true"></i> <span>Home</span></a></li>
+          <li><a href="../index.html#about" class="nav-link scrollto"><i class="bx bx-user" aria-hidden="true"></i> <span>About</span></a></li>
+          <li><a href="../index.html#skills" class="nav-link scrollto"><i class="bx bx-code-block" aria-hidden="true"></i> <span>Skills</span></a></li>
+          <li><a href="../index.html#resume" class="nav-link scrollto"><i class="bx bx-file-blank" aria-hidden="true"></i> <span>Resume</span></a></li>
+          <li><a href="../index.html#certifications" class="nav-link scrollto"><i class="bx bx-award" aria-hidden="true"></i> <span>Certifications</span></a></li>
+          <li><a href="../index.html#blog" class="nav-link scrollto active"><i class="bx bx-book-content" aria-hidden="true"></i> <span>Blog</span></a></li>
+          <li><a href="../index.html#survey" class="nav-link scrollto"><i class="bx bx-shield-quarter" aria-hidden="true"></i> <span>Cybersecurity Survey</span></a></li>
+          <li><a href="../index.html#what-i-use" class="nav-link scrollto"><i class="bx bx-wrench" aria-hidden="true"></i> <span>What I Use</span></a></li>
+          <li><a href="../index.html#contact" class="nav-link scrollto"><i class="bx bx-envelope" aria-hidden="true"></i> <span>Contact</span></a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <main id="main">
+    <section class="breadcrumbs">
+      <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+          <h2>Blog</h2>
+          <ol>
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../index.html#blog">Blog</a></li>
+            <li>K8s hands-on (1/5)</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+  <main id="main">
+    <article class="inner-page blog-article pb-5">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-9 col-xl-8">
+            <header class="mb-4 pb-3 border-bottom" data-aos="fade-up">
+              <p class="text-muted small mb-2">Kubernetes hands-on · Part 1 of 5 · <time datetime="2026-05-19">19 May 2026</time></p>
+              <h1 class="h2 mb-3">Start Here: A Local Kubernetes Lab on Your Laptop</h1>
+              <p class="lead mb-3">You do not need a cloud account to learn Kubernetes. A <strong>local cluster</strong> on your machine is enough to practice Pods, Deployments, and debugging—safely and for free. This post helps you choose between <strong>kind</strong>, <strong>k3s</strong>, and <strong>minikube</strong>, install the tools, and confirm your lab is ready.</p>
+              <div class="border-start border-primary border-4 ps-3 py-3 bg-light rounded mb-0" role="note">
+                <p class="small text-uppercase text-muted mb-1 fw-semibold">In short</p>
+                <p class="mb-0">Install kubectl and one local distribution (kind is a strong default for learners). Run a smoke test: nodes Ready, a test Pod runs, you can read logs. Then continue to YAML anatomy in Part 2.</p>
+              </div>
+            </header>
+            <div class="blog-prose" data-aos="fade-up" data-aos-delay="50">
+              <nav class="border rounded p-3 mb-4 bg-light" aria-label="Series navigation">
+                <p class="small text-uppercase text-muted mb-2 fw-semibold">Kubernetes hands-on · Part 1 of 5</p>
+                <ol class="small mb-0 ps-3">
+                  <li><strong>This post:</strong> Your local lab (kind, k3s, minikube)</li>
+                  <li><a href="kubernetes-hands-on-2-yaml-anatomy.html">Anatomy of a Kubernetes manifest</a></li>
+                  <li><a href="kubernetes-hands-on-3-first-workloads.html">First workloads: Pod, Deployment, Service</a></li>
+                  <li><a href="kubernetes-hands-on-4-day-one-practices.html">Best practices from day one</a></li>
+                  <li><a href="kubernetes-hands-on-5-debug-next-steps.html">Debug, observe, and what to learn next</a></li>
+                </ol>
+              </nav>
+
+              <h2 class="h4 mt-4">Who this series is for</h2>
+              <p>This five-part course is for developers and operators who want <strong>depth with practice</strong>, not only diagrams. If you want the business case first, read <a href="kubernetes-when-how-why-where.html">Kubernetes for business leaders</a>. If you want architecture in plain language, read <a href="kubernetes-architecture-simple.html">Kubernetes architecture in simple terms</a>. This series assumes you are ready to type commands and apply manifests.</p>
+
+              <h2 class="h4 mt-5">Prerequisites (keep it small)</h2>
+              <ul>
+                <li><strong>A laptop</strong> with macOS, Linux, or Windows (WSL2 works well on Windows).</li>
+                <li><strong>About 4–8 GB free RAM</strong> for a comfortable local cluster (you can run leaner, but debugging gets painful).</li>
+                <li><strong>Terminal comfort</strong>—copy/paste commands, read errors, retry once after fixing typos.</li>
+                <li><strong>Docker or a compatible container runtime</strong> for kind and minikube (k3s can run without Docker on Linux using its bundled containerd).</li>
+              </ul>
+              <p>You do <em>not</em> need prior production Kubernetes experience. Basic containers help (“an image is a packaged app; a container is a running instance”), but we explain as we go.</p>
+
+              <h2 class="h4 mt-5">Three local clusters, one idea</h2>
+              <p>All three tools below run a <strong>real</strong> Kubernetes API on your machine. Your <code>kubectl</code> commands talk to that API the same way they would in AWS, GCP, or Azure—only the scale is tiny.</p>
+              <div class="table-responsive">
+                <table class="table table-sm table-bordered align-middle">
+                  <thead><tr><th>Tool</th><th>Best for</th><th>Trade-offs</th></tr></thead>
+                  <tbody>
+                    <tr><td><strong>kind</strong> (Kubernetes in Docker)</td><td>CI-like clusters, multi-node tests, learning controllers</td><td>Runs nodes as Docker containers; needs Docker. Very popular in tutorials and KinD-based test pipelines.</td></tr>
+                    <tr><td><strong>k3s</strong></td><td>Lightweight “real” clusters, edge, Raspberry Pi, fast startup</td><td>Smaller binary; some components differ (e.g. SQLite instead of etcd by default in single-node). Great when RAM is tight.</td></tr>
+                    <tr><td><strong>minikube</strong></td><td>Beginner-friendly single cluster, many drivers</td><td>One command mental model; can feel heavier than k3s on small machines. Excellent docs and add-ons.</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p><strong>Pick one and stick with it</strong> for this series. Switching mid-course is fine later, but not necessary on day one. If you have no preference, use <strong>kind</strong>—it matches what many platform teams use in automated tests.</p>
+
+              <h2 class="h4 mt-5">Install kubectl (all paths)</h2>
+              <p><code>kubectl</code> is the CLI for the Kubernetes API. Install a version within one minor release of your cluster when possible (e.g. cluster 1.30.x, kubectl 1.30.x).</p>
+              <ul>
+                <li>macOS (Homebrew): <code>brew install kubectl</code></li>
+                <li>Linux: follow the official “Install kubectl” guide for your distro, or <code>curl -LO</code> the stable binary from Kubernetes release artifacts.</li>
+                <li>Verify: <code>kubectl version --client</code></li>
+              </ul>
+
+              <h2 class="h4 mt-5">Option A — kind (recommended default)</h2>
+              <pre class="bg-light p-3 rounded small"><code># Install kind (macOS example)
+brew install kind
+
+# Create a cluster named "learn"
+kind create cluster --name learn
+
+# Point kubectl at it (kind usually merges kubeconfig for you)
+kubectl cluster-info
+kubectl get nodes</code></pre>
+              <p>Expected: one node (or more if you used a multi-node config) in <code>Ready</code> state.</p>
+
+              <h2 class="h4 mt-5">Option B — k3s</h2>
+              <pre class="bg-light p-3 rounded small"><code># Linux one-liner (check k3s.io for your OS)
+curl -sfL https://get.k3s.io | sh -
+
+# kubeconfig is often at /etc/rancher/k3s/k3s.yaml — copy or export KUBECONFIG
+export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+kubectl get nodes</code></pre>
+              <p>On macOS, many learners run k3s inside a VM or use <code>k3d</code> (k3s in Docker)—treat that like kind with a k3s distribution inside.</p>
+
+              <h2 class="h4 mt-5">Option C — minikube</h2>
+              <pre class="bg-light p-3 rounded small"><code>brew install minikube   # or use the installer from minikube docs
+minikube start
+kubectl get nodes</code></pre>
+              <p>Minikube can use Docker, Hyperkit, KVM, and other drivers. If <code>minikube start</code> fails, read the suggested driver flag—this is the most common beginner stumbling block.</p>
+
+              <h2 class="h4 mt-5">Smoke test: prove the cluster works</h2>
+              <p>Run a disposable Pod and read its logs. If this succeeds, your lab is real enough for the rest of the series.</p>
+              <pre class="bg-light p-3 rounded small"><code>kubectl run hello --image=busybox:1.36 --restart=Never -- sleep 3600
+kubectl wait --for=condition=Ready pod/hello --timeout=90s
+kubectl logs hello
+kubectl delete pod hello</code></pre>
+              <p>If the Pod stays <code>Pending</code>, run <code>kubectl describe pod hello</code> and read <strong>Events</strong> at the bottom—image pull errors, insufficient CPU, or CNI not ready are the usual suspects on local clusters.</p>
+
+              <h2 class="h4 mt-5">kubectl habits to start now</h2>
+              <ul>
+                <li><strong>Context and namespace:</strong> <code>kubectl config get-contexts</code> and <code>kubectl get ns</code>. Most tutorials use <code>default</code>; in Part 4 we move workloads into named namespaces.</li>
+                <li><strong>Help built in:</strong> <code>kubectl explain pod.spec.containers</code> — your offline documentation (Part 2 goes deeper).</li>
+                <li><strong>Do not learn production on <code>kube-system</code>:</strong> avoid deleting platform Pods; practice in <code>default</code> or a dedicated namespace.</li>
+              </ul>
+
+              <h2 class="h4 mt-5">Clean up when you are done for the day</h2>
+              <ul>
+                <li>kind: <code>kind delete cluster --name learn</code></li>
+                <li>minikube: <code>minikube delete</code></li>
+                <li>k3s: use your install method’s uninstall script</li>
+              </ul>
+              <p>Stopping the cluster frees RAM. Your manifests (YAML files) should live in Git on your machine—clusters are cattle, files are the memory of what you intended.</p>
+
+              <h2 class="h4 mt-5">What comes next</h2>
+              <p>Part 2 dissects a manifest line by line: <code>apiVersion</code>, <code>kind</code>, <code>metadata</code>, <code>spec</code>, labels, and selectors—the vocabulary every other resource reuses.</p>
+
+              <p class="small text-muted mt-4 mb-2"><a href="../index.html#blog">Blog index</a> · <a href="kubernetes-architecture-simple.html">Architecture overview</a> · <a href="kubernetes-hands-on-2-yaml-anatomy.html">Part 2 — YAML anatomy →</a></p>
+              <p class="mb-0"><a href="../index.html#blog" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left" aria-hidden="true"></i> Blog index</a>
+              <a href="kubernetes-hands-on-2-yaml-anatomy.html" class="btn btn-primary btn-sm ms-2">Continue to Part 2 <i class="bi bi-arrow-right" aria-hidden="true"></i></a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+  </main>
+  <footer id="footer">
+    <div class="container">
+      <div class="copyright">&copy; Copyright <strong><span>babulal.com.np</span></strong></div>
+      <div class="credits">Designed by <a href="https://babulal.com.np/">Babulal Tamang</a></div>
+    </div>
+  </footer>
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+  <script src="../assets/vendor/purecounter/purecounter_vanilla.js"></script>
+  <script src="../assets/vendor/aos/aos.js"></script>
+  <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="../assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="../assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="../assets/vendor/typed.js/typed.min.js"></script>
+  <script src="../assets/vendor/waypoints/noframework.waypoints.js"></script>
+  <script src="../assets/js/main.js"></script>
+</body>
+</html>

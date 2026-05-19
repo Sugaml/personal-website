@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Kubernetes Hands-On Part 4: Day-One Best Practices — Babulal Tamang</title>
+  <meta content="Part 4: Kubernetes best practices for beginners—namespaces, recommended labels, resource requests and limits, security contexts, ConfigMaps, and why not to kubectl edit production." name="description">
+  <link href="../assets/img/favicon.png" rel="icon">
+  <link href="../assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="../assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="../assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="../assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="../assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <link href="../assets/css/style.css" rel="stylesheet">
+  <link href="../assets/css/theme-v2.css" rel="stylesheet">
+</head>
+<body class="theme-v2">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <button class="mobile-nav-toggle d-xl-none" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navbar"><i class="bi bi-list" aria-hidden="true"></i></button>
+  <header id="header">
+    <div class="d-flex flex-column">
+      <div class="profile sidebar-profile">
+        <div class="profile-avatar-wrap">
+          <img src="../assets/img/profile-img.jpg" class="profile-avatar img-fluid" width="132" height="132" alt="Portrait of Babulal Tamang">
+        </div>
+        <h1 class="text-light profile-name"><a href="../index.html">Babulal Tamang</a></h1>
+        <p class="profile-tagline">Platform · DevOps · Software · Cloud Architect · AI/ML Enthusiast</p>
+        <p class="profile-location"><i class="bi bi-geo-alt-fill" aria-hidden="true"></i><span>Kathmandu, Nepal</span></p>
+        <div class="social-links profile-social mt-3 text-center">
+          <a href="https://twitter.com/SugamLa20062317" class="twitter" aria-label="Twitter"><i class="bx bxl-twitter" aria-hidden="true"></i></a>
+          <a href="https://github.com/sugaml/" class="github" aria-label="GitHub"><i class="bx bxl-github" aria-hidden="true"></i></a>
+          <a href="https://www.linkedin.com/in/babulal-tamang-b6507121b/" class="linkedin" aria-label="LinkedIn"><i class="bx bxl-linkedin" aria-hidden="true"></i></a>
+        </div>
+      </div>
+      <nav id="navbar" class="nav-menu navbar" aria-label="Main navigation">
+        <ul>
+          <li><a href="../index.html#hero" class="nav-link scrollto"><i class="bx bx-home" aria-hidden="true"></i> <span>Home</span></a></li>
+          <li><a href="../index.html#about" class="nav-link scrollto"><i class="bx bx-user" aria-hidden="true"></i> <span>About</span></a></li>
+          <li><a href="../index.html#skills" class="nav-link scrollto"><i class="bx bx-code-block" aria-hidden="true"></i> <span>Skills</span></a></li>
+          <li><a href="../index.html#resume" class="nav-link scrollto"><i class="bx bx-file-blank" aria-hidden="true"></i> <span>Resume</span></a></li>
+          <li><a href="../index.html#certifications" class="nav-link scrollto"><i class="bx bx-award" aria-hidden="true"></i> <span>Certifications</span></a></li>
+          <li><a href="../index.html#blog" class="nav-link scrollto active"><i class="bx bx-book-content" aria-hidden="true"></i> <span>Blog</span></a></li>
+          <li><a href="../index.html#survey" class="nav-link scrollto"><i class="bx bx-shield-quarter" aria-hidden="true"></i> <span>Cybersecurity Survey</span></a></li>
+          <li><a href="../index.html#what-i-use" class="nav-link scrollto"><i class="bx bx-wrench" aria-hidden="true"></i> <span>What I Use</span></a></li>
+          <li><a href="../index.html#contact" class="nav-link scrollto"><i class="bx bx-envelope" aria-hidden="true"></i> <span>Contact</span></a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <main id="main">
+    <section class="breadcrumbs">
+      <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+          <h2>Blog</h2>
+          <ol>
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../index.html#blog">Blog</a></li>
+            <li>K8s hands-on (4/5)</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+  <main id="main">
+    <article class="inner-page blog-article pb-5">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-9 col-xl-8">
+            <header class="mb-4 pb-3 border-bottom" data-aos="fade-up">
+              <p class="text-muted small mb-2">Kubernetes hands-on · Part 4 of 5 · <time datetime="2026-05-19">19 May 2026</time></p>
+              <h1 class="h2 mb-3">Best Practices From Day One (Before Bad Habits Stick)</h1>
+              <p class="lead mb-3">Local labs forgive sloppiness; production does not. The good news: a small set of habits—namespaces, labels, resource declarations, sane security defaults, and config in objects instead of images—will make your manifests look like a platform team wrote them from the start.</p>
+              <div class="border-start border-primary border-4 ps-3 py-3 bg-light rounded mb-0" role="note">
+                <p class="small text-uppercase text-muted mb-1 fw-semibold">In short</p>
+                <p class="mb-0">Isolate by namespace, label with app.kubernetes.io/*, set requests and limits, run non-root where you can, store config in ConfigMaps, keep secrets out of Git, and treat kubectl apply -f as your default workflow.</p>
+              </div>
+            </header>
+            <div class="blog-prose" data-aos="fade-up" data-aos-delay="50">
+              <nav class="border rounded p-3 mb-4 bg-light" aria-label="Series navigation">
+                <p class="small text-uppercase text-muted mb-2 fw-semibold">Kubernetes hands-on · Part 4 of 5</p>
+                <ol class="small mb-0 ps-3">
+                  <li><a href="kubernetes-hands-on-1-local-lab.html">Your local lab (kind, k3s, minikube)</a></li>
+                  <li><a href="kubernetes-hands-on-2-yaml-anatomy.html">Anatomy of a Kubernetes manifest</a></li>
+                  <li><a href="kubernetes-hands-on-3-first-workloads.html">First workloads: Pod, Deployment, Service</a></li>
+                  <li><strong>This post:</strong> Best practices from day one</li>
+                  <li><a href="kubernetes-hands-on-5-debug-next-steps.html">Debug, observe, and what to learn next</a></li>
+                </ol>
+              </nav>
+
+              <h2 class="h4 mt-4">Namespaces: soft walls between teams and environments</h2>
+              <pre class="bg-light p-3 rounded small"><code>apiVersion: v1
+kind: Namespace
+metadata:
+  name: learn-dev
+  labels:
+    environment: dev</code></pre>
+              <pre class="bg-light p-3 rounded small"><code>kubectl apply -f ns-learn-dev.yaml
+kubectl apply -f web.yaml -n learn-dev
+kubectl get all -n learn-dev</code></pre>
+              <p>Namespaces do not replace security by themselves, but they organize RBAC, quotas, and DNS (<code>service.learn-dev.svc.cluster.local</code>). Avoid dumping everything into <code>default</code> once you share a cluster.</p>
+
+              <h2 class="h4 mt-5">Labels: the address book of the cluster</h2>
+              <p>Use the <strong>recommended labels</strong> where they fit:</p>
+              <ul>
+                <li><code>app.kubernetes.io/name</code> — application name (used in selectors).</li>
+                <li><code>app.kubernetes.io/instance</code> — this deployment of the app (e.g. <code>web-prod</code>).</li>
+                <li><code>app.kubernetes.io/version</code> — version string or image tag.</li>
+                <li><code>app.kubernetes.io/component</code> — <code>api</code>, <code>worker</code>, <code>database</code>.</li>
+                <li><code>app.kubernetes.io/part-of</code> — larger system (e.g. <code>billing</code>).</li>
+                <li><code>app.kubernetes.io/managed-by</code> — <code>helm</code>, <code>kustomize</code>, or your team name.</li>
+              </ul>
+              <p>Consistent labels unlock filtering, NetworkPolicies, cost allocation, and GitOps diffs that humans can read.</p>
+
+              <h2 class="h4 mt-5">Resource requests and limits</h2>
+              <p>Without requests, the scheduler guesses. Without limits, one noisy neighbor can starve a node.</p>
+              <pre class="bg-light p-3 rounded small"><code>resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 250m
+    memory: 256Mi</code></pre>
+              <p>Start conservative in labs; tune with metrics later. <code>cpu</code> is measured in cores (<code>100m</code> = 0.1 core). <code>memory</code> uses binary suffixes (<code>Mi</code>, <code>Gi</code>).</p>
+
+              <h2 class="h4 mt-5">Security context basics (least privilege)</h2>
+              <pre class="bg-light p-3 rounded small"><code>securityContext:
+  runAsNonRoot: true
+  runAsUser: 101
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop: ["ALL"]</code></pre>
+              <p>Not every image supports non-root or read-only roots on day one—nginx and distroless examples differ. Treat these fields as <strong>goals</strong>: fix the image or mount a writable <code>emptyDir</code> for temp paths instead of disabling security “because local.”</p>
+
+              <h2 class="h4 mt-5">Configuration: ConfigMap, not baked into the image</h2>
+              <pre class="bg-light p-3 rounded small"><code>apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: web-config
+  namespace: learn-dev
+data:
+  APP_MODE: "lab"</code></pre>
+              <p>Mount as env vars or files in the Pod template. Changing config becomes a reviewed YAML change, not a rebuild of a golden image for every toggle.</p>
+
+              <h2 class="h4 mt-5">Secrets: never commit real ones</h2>
+              <ul>
+                <li>Local lab: <code>kubectl create secret generic demo --from-literal=token=test</code> is enough to learn wiring.</li>
+                <li>Real clusters: use sealed secrets, external secrets operators, or cloud KMS—see <a href="gitops-principles.html">GitOps principles</a>.</li>
+                <li>Add <code>*.secret.yaml</code> patterns to <code>.gitignore</code> if you must keep local samples.</li>
+              </ul>
+
+              <h2 class="h4 mt-5">Workflow habits that scale</h2>
+              <ul>
+                <li><strong>Prefer <code>kubectl apply -f</code></strong> over <code>kubectl edit</code> for anything you care about—edit drifts from Git.</li>
+                <li><strong>One concern per manifest file</strong> or one kustomization base; avoid thousand-line blobs.</li>
+                <li><strong>Pin images</strong> to tags or digests (<code>nginx:1.25-alpine</code>, not <code>latest</code>).</li>
+                <li><strong>Probes:</strong> add <code>readinessProbe</code> and <code>livenessProbe</code> before you call a Deployment “production ready” (Part 5 shows debugging when they fail).</li>
+                <li><strong>Policy later:</strong> admission controllers (OPA Gatekeeper, Kyverno) encode what you already practice manually.</li>
+              </ul>
+
+              <h2 class="h4 mt-5">Lab challenge</h2>
+              <p>Refactor your Part 3 <code>web</code> Deployment into namespace <code>learn-dev</code> with recommended labels, resource requests/limits, and a ConfigMap env var. Apply from a folder in Git. Delete the namespace to wipe the experiment: <code>kubectl delete namespace learn-dev</code>.</p>
+
+              
+              <p class="small text-muted mt-4 mb-2"><a href="kubernetes-hands-on-3-first-workloads.html">← Part 3</a> · <a href="../index.html#blog">Blog index</a> · <a href="kubernetes-hands-on-5-debug-next-steps.html">Part 5 →</a></p>
+              <p class="mb-0"><a href="kubernetes-hands-on-3-first-workloads.html" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left" aria-hidden="true"></i> Part 3</a>
+              <a href="kubernetes-hands-on-5-debug-next-steps.html" class="btn btn-primary btn-sm ms-2">Part 5 <i class="bi bi-arrow-right" aria-hidden="true"></i></a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+  </main>
+  <footer id="footer">
+    <div class="container">
+      <div class="copyright">&copy; Copyright <strong><span>babulal.com.np</span></strong></div>
+      <div class="credits">Designed by <a href="https://babulal.com.np/">Babulal Tamang</a></div>
+    </div>
+  </footer>
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+  <script src="../assets/vendor/purecounter/purecounter_vanilla.js"></script>
+  <script src="../assets/vendor/aos/aos.js"></script>
+  <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="../assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="../assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="../assets/vendor/typed.js/typed.min.js"></script>
+  <script src="../assets/vendor/waypoints/noframework.waypoints.js"></script>
+  <script src="../assets/js/main.js"></script>
+</body>
+</html>

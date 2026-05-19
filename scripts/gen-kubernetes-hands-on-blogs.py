@@ -51,9 +51,9 @@ def build(p: dict) -> str:
     )
     head = head.replace("<li>GitOps principles</li>", f"<li>{p['crumb']}</li>")
     article = f"""    <article class="inner-page blog-article pb-5">
-      <motion.div class="container">
+      <div class="container">
         <div class="row justify-content-center">
-          <motion.div class="col-lg-9 col-xl-8">
+          <div class="col-lg-9 col-xl-8">
             <header class="mb-4 pb-3 border-bottom" data-aos="fade-up">
               <p class="text-muted small mb-2">{p['category']} · Part {p['part']} of 5 · <time datetime="2026-05-19">19 May 2026</time></p>
               <h1 class="h2 mb-3">{p['h1']}</h1>
@@ -71,13 +71,7 @@ def build(p: dict) -> str:
         </div>
       </div>
     </article>"""
-    return (head + "\n  <main id=\"main\">\n" + article + "\n  </main>\n  " + foot_tpl).replace(
-        "motion.div", "motion.div"
-    )
-
-
-def build_clean(p: dict) -> str:
-    return build(p).replace("motion.div", "div")
+    return head + "\n  <main id=\"main\">\n" + article + "\n  </main>\n  " + foot_tpl
 
 
 def nav_footer(prev_href: str, prev_label: str, next_href: str, next_label: str) -> str:
@@ -122,7 +116,7 @@ POSTS = [
                     <tr><td><strong>minikube</strong></td><td>Beginner-friendly single cluster, many drivers</td><td>One command mental model; can feel heavier than k3s on small machines. Excellent docs and add-ons.</td></tr>
                   </tbody>
                 </table>
-              </motion.div>
+              </div>
               <p><strong>Pick one and stick with it</strong> for this series. Switching mid-course is fine later, but not necessary on day one. If you have no preference, use <strong>kind</strong>—it matches what many platform teams use in automated tests.</p>
 
               <h2 class="h4 mt-5">Install kubectl (all paths)</h2>
@@ -564,13 +558,8 @@ kubectl run tmp-curl --rm -it --image=curlimages/curl --restart=Never -- \\
 ]
 
 
-def build_clean(p: dict) -> str:
-    text = build(p)
-    return text.replace("motion.div", "div")
-
-
 if __name__ == "__main__":
     for p in POSTS:
         out = BLOGS / p["file"]
-        out.write_text(build_clean(p))
+        out.write_text(build(p))
         print("wrote", out.name)
