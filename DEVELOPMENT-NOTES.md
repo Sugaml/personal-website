@@ -2,6 +2,12 @@
 
 Short log of design decisions and content changes.
 
+## 2026-05-19 — How to become an AI developer (guide)
+
+- **Title:** “How to Become an AI Developer: Terminology, Architecture, Tech Stack, and Why It Matters” (article); index card uses shorter “How to become an AI developer”.
+- **Intent:** Hands-on companion to the historical paradigms essay: roles, glossary, layered architecture, foundations order, stack (languages, frameworks, models, cloud/MLOps), phased learning path, pitfalls, and future outlook. Cross-links to AWS ML/Gen AI posts, ISO 42001, cloud platform evolution, and `ai-historical-paradigms.html`.
+- **Files:** `blogs/how-to-become-ai-developer.html`, `index.html` (AI/ML section), cross-link from `ai-historical-paradigms.html`.
+
 ## 2026-05-19 — AI historical paradigms blog post
 
 - **Title:** “From Symbols to Foundation Models: The Historical Paradigms of Artificial Intelligence” (article); index card uses shorter “Historical paradigms of AI” for scanning.
