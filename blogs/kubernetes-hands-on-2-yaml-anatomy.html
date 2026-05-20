@@ -5,6 +5,8 @@
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
   <title>Kubernetes Hands-On Part 2: YAML Manifest Anatomy — Babulal Tamang</title>
   <meta content="Part 2: anatomy of a Kubernetes YAML manifest—apiVersion, kind, metadata, spec, labels, selectors, multi-document files, and kubectl explain for beginners." name="description">
+  <meta name="author" content="Babulal Tamang">
+  <meta name="keywords" content="Kubernetes YAML, manifests, apiVersion, kubectl explain, Babulal Tamang">
   <link href="../assets/img/favicon.png" rel="icon">
   <link href="../assets/img/apple-touch-icon.png" rel="apple-touch-icon">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -72,7 +74,15 @@
         <div class="row justify-content-center">
           <div class="col-lg-9 col-xl-8">
             <header class="mb-4 pb-3 border-bottom" data-aos="fade-up">
-              <p class="text-muted small mb-2">Kubernetes hands-on · Part 2 of 5 · <time datetime="2026-05-19">19 May 2026</time></p>
+                            <div class="blog-article-meta mb-3">
+                <p class="text-muted small mb-2">Kubernetes hands-on · Part 2 of 5 · <time datetime="2026-05-19">19 May 2026</time> · <span class="blog-meta-label">Course</span> · By <a href="../index.html#about" class="blog-author text-reset fw-semibold" rel="author">Babulal Tamang</a></p>
+              <ul class="blog-tags list-unstyled d-flex flex-wrap gap-1 mb-0" aria-label="Tags">
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Kubernetes</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">YAML</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Manifests</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Hands-on</span></li>
+              </ul>
+              </div>
               <h1 class="h2 mb-3">Anatomy of a Kubernetes Manifest (YAML, Line by Line)</h1>
               <p class="lead mb-3">Kubernetes is <strong>declarative</strong>: you hand the API a document that says what should exist. That document is usually YAML. Before you memorize twenty resource types, learn the <strong>skeleton</strong> every manifest shares—and how to discover fields you have not memorized yet.</p>
               <div class="border-start border-primary border-4 ps-3 py-3 bg-light rounded mb-0" role="note">

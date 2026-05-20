@@ -5,6 +5,8 @@
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
   <title>Kubernetes Cluster RBAC — Best Understanding — Babulal Tamang</title>
   <meta content="A clear guide to Kubernetes RBAC: authentication vs authorization, Roles and ClusterRoles, bindings, verbs and resources, least privilege, kubectl can-i, and production pitfalls." name="description">
+  <meta name="author" content="Babulal Tamang">
+  <meta name="keywords" content="Kubernetes RBAC, Role, ClusterRole, least privilege, authorization, Babulal Tamang">
   <link href="../assets/img/favicon.png" rel="icon">
   <link href="../assets/img/apple-touch-icon.png" rel="apple-touch-icon">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -28,7 +30,7 @@
       <div class="profile sidebar-profile">
         <div class="profile-avatar-wrap">
           <img src="../assets/img/profile-img.jpg" class="profile-avatar img-fluid" width="132" height="132" alt="Portrait of Babulal Tamang">
-        </motion>
+        </div>
         <h1 class="text-light profile-name"><a href="../index.html">Babulal Tamang</a></h1>
         <p class="profile-tagline">Platform · DevOps · Software · Cloud Architect · AI/ML Enthusiast</p>
         <p class="profile-location"><i class="bi bi-geo-alt-fill" aria-hidden="true"></i><span>Kathmandu, Nepal</span></p>
@@ -36,8 +38,8 @@
           <a href="https://twitter.com/SugamLa20062317" class="twitter" aria-label="Twitter"><i class="bx bxl-twitter" aria-hidden="true"></i></a>
           <a href="https://github.com/sugaml/" class="github" aria-label="GitHub"><i class="bx bxl-github" aria-hidden="true"></i></a>
           <a href="https://www.linkedin.com/in/babulal-tamang-b6507121b/" class="linkedin" aria-label="LinkedIn"><i class="bx bxl-linkedin" aria-hidden="true"></i></a>
-        </motion>
-      </motion>
+        </div>
+      </div>
       <nav id="navbar" class="nav-menu navbar" aria-label="Main navigation">
         <ul>
           <li><a href="../index.html#hero" class="nav-link scrollto"><i class="bx bx-home" aria-hidden="true"></i> <span>Home</span></a></li>
@@ -51,7 +53,7 @@
           <li><a href="../index.html#contact" class="nav-link scrollto"><i class="bx bx-envelope" aria-hidden="true"></i> <span>Contact</span></a></li>
         </ul>
       </nav>
-    </motion>
+    </div>
   </header>
   <main id="main">
     <section class="breadcrumbs">
@@ -63,21 +65,29 @@
             <li><a href="../index.html#blog">Blog</a></li>
             <li>Kubernetes cluster RBAC</li>
           </ol>
-        </motion>
-      </motion>
+        </div>
+      </div>
     </section>
     <article class="inner-page blog-article pb-5">
       <div class="container">
         <div class="row justify-content-center">
           <div class="col-lg-9 col-xl-8">
             <header class="mb-4 pb-3 border-bottom" data-aos="fade-up">
-              <p class="text-muted small mb-2">Platform &amp; security · <time datetime="2026-05-20">20 May 2026</time></p>
+                            <div class="blog-article-meta mb-3">
+                <p class="text-muted small mb-2">Platform &amp; security · <time datetime="2026-05-20">20 May 2026</time> · <span class="blog-meta-label">Guide</span> · By <a href="../index.html#about" class="blog-author text-reset fw-semibold" rel="author">Babulal Tamang</a></p>
+              <ul class="blog-tags list-unstyled d-flex flex-wrap gap-1 mb-0" aria-label="Tags">
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Kubernetes</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">RBAC</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Security</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">IAM</span></li>
+              </ul>
+              </div>
               <h1 class="h2 mb-3">Kubernetes Cluster RBAC: The Mental Model That Actually Sticks</h1>
               <p class="lead mb-3"><strong>RBAC</strong> (Role-Based Access Control) is how Kubernetes answers one question after it knows <em>who</em> you are: <em>may this identity perform this action on this object?</em> It is not authentication. It is not network policy. It is the authorization layer on the API server—and once you see the four objects and the request path, cluster permissions stop feeling like magic.</p>
               <div class="border-start border-primary border-4 ps-3 py-3 bg-light rounded mb-0" role="note">
                 <p class="small text-uppercase text-muted mb-1 fw-semibold">In short</p>
                 <p class="mb-0">Define <strong>permissions</strong> in a <code>Role</code> or <code>ClusterRole</code> (rules: apiGroups, resources, verbs). Attach them to <strong>subjects</strong> with a <code>RoleBinding</code> or <code>ClusterRoleBinding</code>. Namespace-scoped roles stay inside one namespace; cluster roles can reach cluster-wide resources or be reused across namespaces via bindings. Test with <code>kubectl auth can-i</code> and grant the smallest rule set that still lets work flow.</p>
-              </motion>
+              </div>
             </header>
 
             <div class="blog-prose" data-aos="fade-up" data-aos-delay="50">
@@ -233,17 +243,17 @@ kubectl auth can-i --list -n team-a \
 
               <p class="small text-muted mt-4 mb-2"><a href="../index.html#blog">Blog index</a> · <a href="kubernetes-architecture-simple.html">Kubernetes architecture</a> · <a href="gitops-principles.html">GitOps principles</a> · <a href="aws-iam-policy-json-anatomy.html">IAM policy anatomy</a></p>
               <p class="mb-0"><a href="../index.html#blog" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left" aria-hidden="true"></i> Back to blog list</a></p>
-            </motion>
-          </motion>
-        </motion>
-      </motion>
+            </div>
+          </div>
+        </div>
+      </div>
     </article>
   </main>
   <footer id="footer">
     <div class="container">
-      <div class="copyright">&copy; Copyright <strong><span>babulal.com.np</span></strong></motion>
-      <div class="credits">Designed by <a href="https://babulal.com.np/">Babulal Tamang</a></motion>
-    </motion>
+      <div class="copyright">&copy; Copyright <strong><span>babulal.com.np</span></strong></div>
+      <div class="credits">Designed by <a href="https://babulal.com.np/">Babulal Tamang</a></div>
+    </div>
   </footer>
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
   <script src="../assets/vendor/purecounter/purecounter_vanilla.js"></script>

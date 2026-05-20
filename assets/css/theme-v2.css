@@ -983,3 +983,19 @@ body.theme-v2 #blog .blog-index-card .card-body > a.link-primary:hover,
 body.theme-v2 #blog .blog-index-card .card-body > a.link-primary:focus {
   text-decoration: underline !important;
 }
+
+body.theme-v2 .blog-article .blog-article-meta .blog-meta-label {
+  font-weight: 600;
+  color: var(--v2-accent, #0d6efd);
+}
+
+body.theme-v2 .blog-article .blog-tags .badge {
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+body.theme-v2 .blog-article .blog-author:hover,
+body.theme-v2 .blog-article .blog-author:focus {
+  color: var(--v2-accent, #0d6efd) !important;
+}

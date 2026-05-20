@@ -5,6 +5,8 @@
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
   <title>IAM Policy JSON Anatomy — Babulal Tamang</title>
   <meta content="Line-by-line guide to AWS IAM policy JSON: Version, Statement, Effect, Action, Resource, Principal, Condition keys, evaluation logic, ARNs, and least-privilege patterns." name="description">
+  <meta name="author" content="Babulal Tamang">
+  <meta name="keywords" content="AWS IAM, policy JSON, least privilege, ABAC, security, Babulal Tamang">
   <link href="../assets/img/favicon.png" rel="icon">
   <link href="../assets/img/apple-touch-icon.png" rel="apple-touch-icon">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -71,7 +73,15 @@
         <div class="row justify-content-center">
           <div class="col-lg-9 col-xl-8">
             <header class="mb-4 pb-3 border-bottom" data-aos="fade-up">
-              <p class="text-muted small mb-2">AWS · Security · <time datetime="2026-05-20">20 May 2026</time></p>
+                            <div class="blog-article-meta mb-3">
+                <p class="text-muted small mb-2">AWS · Security · <time datetime="2026-05-20">20 May 2026</time> · <span class="blog-meta-label">Guide</span> · By <a href="../index.html#about" class="blog-author text-reset fw-semibold" rel="author">Babulal Tamang</a></p>
+              <ul class="blog-tags list-unstyled d-flex flex-wrap gap-1 mb-0" aria-label="Tags">
+                <li><span class="badge rounded-pill text-bg-light border text-muted">AWS</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">IAM</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Security</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">JSON</span></li>
+              </ul>
+              </div>
               <h1 class="h2 mb-3">IAM Policy JSON Anatomy: Read Every Field Before You Click Allow</h1>
               <p class="lead mb-3">An IAM policy is a small JSON document that answers one question: <strong>may this principal perform this action on this resource, under these conditions?</strong> Once you know the skeleton—<code>Version</code>, <code>Statement</code>, and the fields inside each statement—you can review policies in pull requests, debug <code>AccessDenied</code> errors, and design least privilege instead of copying console defaults.</p>
               <div class="border-start border-primary border-4 ps-3 py-3 bg-light rounded mb-0" role="note">

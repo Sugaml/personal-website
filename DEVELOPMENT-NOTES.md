@@ -2,6 +2,12 @@
 
 Short log of design decisions and content changes.
 
+## 2026-05-20 — Kubernetes cluster RBAC (guide)
+
+- **Title:** “Kubernetes Cluster RBAC: The Mental Model That Actually Sticks” (article); index card uses shorter “Kubernetes cluster RBAC”.
+- **Intent:** Plain-language RBAC guide—authn vs authz, four objects (Role, ClusterRole, RoleBinding, ClusterRoleBinding), rule anatomy, subjects, evaluation, built-in roles, worked patterns, `kubectl auth can-i`, least privilege, RBAC vs NetworkPolicy/Pod Security/cloud IAM, pitfalls, learning path. Cross-links to architecture, hands-on series, GitOps, AWS IAM anatomy.
+- **Files:** `blogs/kubernetes-cluster-rbac.html`, `index.html` (Platform section after architecture), cross-link from `kubernetes-architecture-simple.html`.
+
 ## 2026-05-20 — IAM policy JSON anatomy (guide)
 
 - **Title:** “IAM Policy JSON Anatomy: Read Every Field Before You Click Allow” (article); index card uses shorter “IAM policy JSON anatomy”.
