@@ -993,6 +993,22 @@ body.theme-v2 .blog-article .blog-article-meta .blog-meta-label {
   color: var(--v2-accent, #0d6efd);
 }
 
+body.theme-v2 #blog .blog-index-toolbar .btn.active {
+  background: var(--v2-accent, #0d6efd);
+  border-color: var(--v2-accent, #0d6efd);
+  color: #fff;
+}
+
+body.theme-v2 #blog .blog-index-card time {
+  font-variant-numeric: tabular-nums;
+}
+
+body.theme-v2 .blog-article-meta .blog-meta-updated,
+body.theme-v2 #blog .blog-meta-updated {
+  color: var(--v2-muted, #64748b);
+  font-size: 0.92em;
+}
+
 body.theme-v2 .blog-article .blog-tags .badge {
   font-size: 0.72rem;
   font-weight: 500;

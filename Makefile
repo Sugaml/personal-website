@@ -1,8 +1,12 @@
-.PHONY: build serve docker-build docker-run extract
+.PHONY: build serve docker-build docker-run extract sync-dates
 
 # Assemble blog pages from content + templates
 build:
 	python3 scripts/build_site.py
+
+# Assign sequential publication dates and sync index + articles
+sync-dates:
+	python3 scripts/sync_blog_dates.py
 
 # Split existing blogs/ into content/ + data/ (migration helper)
 extract:

@@ -165,8 +165,8 @@ Short log of design decisions and content changes.
 - **Titles (articles):**
   1. “The Invisible Bill: How Phones, Apps, and Cloud Touch the Real World”
   2. “Living Within Our Means: Why Conservation and Sustainability Matter to Everyone”
-  3. “FinOps in Plain English: Stop Guessing What the Cloud Costs”
-  4. “GreenOps in Plain English: Running Technology With a Lighter Footprint”
+  3. “FinOps: Stop Guessing What the Cloud Costs”
+  4. “GreenOps: Running Technology With a Lighter Footprint”
   5. “Designing for Both Ledgers: When FinOps and GreenOps Belong in Architecture” (cloud architect perspective)
 - **Index layout:** Separate blog subsections—**Sustainability & responsible technology** (parts 1, 2, 5), **FinOps** (part 3), **GreenOps** (part 4). Each post includes series navigation.
 - **Files:** `blogs/finops-greenops-{1..5}-*.html`, `index.html`, `scripts/gen-finops-greenops-blogs.py` (regenerates posts 3–5 from gitops shell).

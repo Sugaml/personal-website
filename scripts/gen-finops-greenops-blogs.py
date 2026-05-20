@@ -11,8 +11,8 @@ from build_site import build_blogs  # noqa: E402
 NAV = [
     ("Technology’s real-world footprint", "finops-greenops-1-invisible-bill.html"),
     ("Why conservation and sustainability matter", "finops-greenops-2-conservation-matters.html"),
-    ("FinOps in plain English", "finops-greenops-3-finops-plain-english.html"),
-    ("GreenOps in plain English", "finops-greenops-4-greenops-plain-english.html"),
+    ("Stop guessing what the cloud costs", "finops-greenops-3-finops-plain-english.html"),
+    ("Running technology with a lighter footprint", "finops-greenops-4-greenops-plain-english.html"),
     ("When FinOps and GreenOps work together", "finops-greenops-5-smarter-lighter.html"),
 ]
 
@@ -61,12 +61,12 @@ def build_article(p: dict) -> str:
 POSTS = [
     {
         "file": "finops-greenops-3-finops-plain-english.html",
-        "title_page": "FinOps in Plain English: Making Cloud Spend Visible — Babulal Tamang",
+        "title_page": "FinOps: Making Cloud Spend Visible — Babulal Tamang",
         "meta": "Part 3: FinOps explained for everyone—why cloud bills surprise teams, what FinOps practices do, and how financial accountability helps organizations without blocking innovation.",
         "crumb": "FinOps (3/5)",
         "part": 3,
         "category": "FinOps",
-        "h1": "FinOps in Plain English: Stop Guessing What the Cloud Costs",
+        "h1": "FinOps: Stop Guessing What the Cloud Costs",
         "lead": "Cloud lets you rent computers by the minute—but the bill can feel like a mystery that arrives after the party. FinOps is how mature teams bring cloud spending into daylight: shared visibility, smart trade-offs, and everyone taking a little ownership of the meter.",
         "short": "FinOps is a way of working that helps engineering, finance, and leadership understand and improve cloud costs together. It is not about saying “no”—it is about spending deliberately on what matters.",
         "body": """
@@ -119,12 +119,12 @@ POSTS = [
     },
     {
         "file": "finops-greenops-4-greenops-plain-english.html",
-        "title_page": "GreenOps in Plain English: Technology That Respects the Planet — Babulal Tamang",
+        "title_page": "GreenOps: Technology That Respects the Planet — Babulal Tamang",
         "meta": "Part 4: GreenOps explained for everyone—how teams reduce the environmental impact of running software, from cleaner energy and efficient code to measuring carbon and avoiding greenwashing.",
         "crumb": "GreenOps (4/5)",
         "part": 4,
         "category": "GreenOps",
-        "h1": "GreenOps in Plain English: Running Technology With a Lighter Footprint",
+        "h1": "GreenOps: Running Technology With a Lighter Footprint",
         "lead": "GreenOps is the operational side of sustainable technology: the everyday choices teams make so software uses less energy, lasts longer, and relies on cleaner power where possible—without pretending one checkbox fixes the climate.",
         "short": "GreenOps brings environmental thinking into how systems are built and run—measurement, efficiency, renewable power, and honest reporting—so digital growth does not ignore physical limits.",
         "body": """
