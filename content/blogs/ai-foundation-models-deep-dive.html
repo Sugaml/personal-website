@@ -151,7 +151,7 @@
               <p>Prompts are the cheapest adaptation layer. Effective patterns include clear role definitions, step-by-step reasoning requests (with caution—models can confabulate steps), output schemas, and guardrail instructions (“refuse if asked for credentials”). Version prompts like code; A/B test changes against eval sets.</p>
 
               <h3 class="h5 mt-4">RAG (retrieval-augmented generation)</h3>
-              <p>RAG reduces hallucination on proprietary knowledge by retrieving relevant chunks before generation:</p>
+              <p>RAG reduces hallucination on proprietary knowledge by retrieving relevant chunks before generation. For a full pipeline treatment—chunking, hybrid search, reranking, evals, and production ops—see <a href="rag-retrieval-augmented-generation-deep-dive.html">RAG in Depth</a>. At a glance:</p>
               <ol>
                 <li>Chunk and embed documents (and refresh when sources change).</li>
                 <li>On query, retrieve top-k similar chunks (vector DB, OpenSearch, pgvector, etc.).</li>
@@ -234,7 +234,7 @@
                 <li>Anthropic, OpenAI, and major cloud provider documentation on RAG, evals, and safety</li>
               </ul>
 
-              <p class="small text-muted mt-4 mb-2"><a href="../index.html#blog">Blog index</a> · <a href="generative-ai-in-depth.html">Generative AI in depth</a> · <a href="llm-in-depth.html">LLMs in depth</a> · <a href="ai-historical-paradigms.html">AI historical paradigms</a> · <a href="how-to-become-ai-developer.html">How to become an AI developer</a> · <a href="aws-generative-ai-foundations.html">Generative AI Foundations</a> · <a href="aws-machine-learning-foundations.html">ML Foundations</a> · <a href="iso-42001-lead-auditor-ai-management.html">ISO 42001</a></p>
+              <p class="small text-muted mt-4 mb-2"><a href="../index.html#blog">Blog index</a> · <a href="rag-retrieval-augmented-generation-deep-dive.html">RAG in depth</a> · <a href="generative-ai-in-depth.html">Generative AI in depth</a> · <a href="llm-in-depth.html">LLMs in depth</a> · <a href="ai-historical-paradigms.html">AI historical paradigms</a> · <a href="how-to-become-ai-developer.html">How to become an AI developer</a> · <a href="aws-generative-ai-foundations.html">Generative AI Foundations</a> · <a href="aws-machine-learning-foundations.html">ML Foundations</a> · <a href="iso-42001-lead-auditor-ai-management.html">ISO 42001</a></p>
               <p class="mb-0"><a href="../index.html#blog" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left" aria-hidden="true"></i> Back to blog list</a></p>
             </div>
           </div>

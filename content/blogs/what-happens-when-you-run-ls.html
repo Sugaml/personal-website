@@ -1,0 +1,204 @@
+<article class="inner-page blog-article pb-5">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-9 col-xl-8">
+            <header class="mb-4 pb-3 border-bottom" data-aos="fade-up">
+              <div class="blog-article-meta mb-3">
+                <p class="text-muted small mb-2">Platform &amp; culture · <time datetime="2026-05-20">20 May 2026</time> · <span class="blog-meta-label">Deep dive</span> · By <a href="../index.html#about" class="blog-author text-reset fw-semibold" rel="author">Babulal Tamang</a></p>
+              <ul class="blog-tags list-unstyled d-flex flex-wrap gap-1 mb-0" aria-label="Tags">
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Linux</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Shell</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Syscalls</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Kernel</span></li>
+              </ul>
+              </div>
+              <h1 class="h2 mb-3">What Happens When You Type <code>ls</code> and Press Enter</h1>
+              <p class="lead mb-3">You see a list of filenames in under a second. Behind that moment is a chain: terminal emulator, pseudo-terminal, line discipline, shell parser, <code>fork</code>/<code>exec</code>, dynamic linker, GNU coreutils, system calls, the virtual filesystem, and a return trip to your screen. This article walks that path layer by layer—so the next time you debug “command not found” or slow directories, you know where to look.</p>
+              <div class="border-start border-primary border-4 ps-3 py-3 bg-light rounded mb-0" role="note">
+                <p class="small text-uppercase text-muted mb-1 fw-semibold">In short</p>
+                <p class="mb-0">The shell does not “run <code>ls</code>” inside itself—it <strong>starts a child process</strong> that replaces itself with <code>/usr/bin/ls</code>. That program asks the kernel for directory entries via <strong>system calls</strong>, formats them, writes to <strong>stdout</strong>, exits; the shell <strong>waits</strong>, records the exit code, and prints the next prompt.</p>
+              </div>
+            </header>
+
+            <div class="blog-prose" data-aos="fade-up" data-aos-delay="50">
+
+              <h2 class="h4 mt-4">The stack at a glance</h2>
+              <p>Think of seven layers. Each passes work to the one below and results back up:</p>
+              <ol>
+                <li><strong>Terminal UI</strong> — window, font, scrollback (iTerm2, GNOME Terminal, Windows Terminal, VS Code integrated terminal).</li>
+                <li><strong>PTY pair</strong> — pseudo-terminal master/slave; makes the shell believe it talks to a “serial device.”</li>
+                <li><strong>Shell</strong> — bash, zsh, fish; reads a line, parses, dispatches commands.</li>
+                <li><strong><code>ls</code> process</strong> — userspace program from GNU coreutils (or BusyBox on minimal images).</li>
+                <li><strong>C library (glibc/musl)</strong> — wraps syscalls: <code>opendir</code>, <code>readdir</code>, <code>write</code>, etc.</li>
+                <li><strong>Linux kernel</strong> — syscall interface, VFS, scheduler, memory, permissions.</li>
+                <li><strong>Storage</strong> — ext4, xfs, btrfs, NFS, overlayfs in containers—whatever backs the inode you opened.</li>
+              </ol>
+              <pre class="bg-light p-3 rounded small"><code>  [Keys] → Terminal emulator → PTY master
+                ↓ read()
+  [Shell: bash]  parse "ls" → fork() → execve("/usr/bin/ls")
+                ↓ syscalls
+  [Kernel VFS]  → filesystem driver → disk / network FS
+                ↓ write(1, ...)
+  [PTY] → Terminal → pixels on screen</code></pre>
+              <p>Everything below assumes a normal Linux session (local or SSH). macOS and WSL follow the same ideas with different paths and sometimes different utilities (<code>ls</code> from BSD vs GNU).</p>
+
+              <h2 class="h4 mt-5">1. You type — what the terminal actually does</h2>
+              <p>When you press <kbd>l</kbd>, the terminal emulator receives key events from the OS (X11, Wayland, macOS window server, or a remote SSH client decoding network packets). It does <em>not</em> send the letter directly to <code>ls</code>. It writes bytes into the <strong>master</strong> side of a <strong>pseudo-terminal (PTY)</strong>.</p>
+              <p>A PTY is a kernel object that looks like a serial port pair:</p>
+              <ul>
+                <li><strong>Slave</strong> (<code>/dev/pts/3</code>) — attached to your shell’s stdin/stdout/stderr.</li>
+                <li><strong>Master</strong> — held by the terminal emulator; it forwards your keystrokes to the slave and reads output to paint the screen.</li>
+              </ul>
+              <p>The kernel’s <strong>line discipline</strong> (often “cooked” mode) sits on the slave: it handles echo (so you see characters), backspace, and optionally line editing until you press <strong>Enter</strong>. That sends a newline character (<code>\n</code>, sometimes <code>\r\n</code> depending on settings). Only then does the shell’s <code>read()</code> (or libreadline after you pressed Enter) return with a full line: <code>ls\n</code>.</p>
+              <p>If you use <strong>raw</strong> mode (vim, <code>htop</code>), the line discipline stops cooking input—each key can reach the program immediately. The shell uses cooked mode for normal prompts.</p>
+
+              <h2 class="h4 mt-5">2. The shell wakes up: one line of input</h2>
+              <p>Your shell process (e.g. <code>bash</code>, PID 4500) was blocked in <code>read()</code> on file descriptor 0 (stdin). The returned buffer might be exactly three bytes: <code>l</code>, <code>s</code>, <code>\n</code>—plus history and editing handled by <strong>readline</strong> before the line is submitted.</p>
+              <p>Next steps inside bash (simplified but accurate):</p>
+              <ol>
+                <li><strong>History</strong> — append to <code>~/.bash_history</code> (unless <code>HISTCONTROL</code> ignores it).</li>
+                <li><strong>Alias expansion</strong> — if <code>alias ls='ls --color=auto'</code>, the line becomes that before parsing.</li>
+                <li><strong>Tokenization</strong> — split into words respecting quotes: <code>ls -la /tmp</code> → words <code>ls</code>, <code>-la</code>, <code>/tmp</code>.</li>
+                <li><strong>Parsing</strong> — build a simple command (no <code>|</code>, <code>&amp;&amp;</code>, redirects yet in our example).</li>
+                <li><strong>Expansion</strong> — globs (<code>*</code>), variables (<code>$HOME</code>), command substitution—none apply to plain <code>ls</code>.</li>
+              </ol>
+              <p>Bash checks whether <code>ls</code> is a <strong>shell builtin</strong>. On many systems <code>ls</code> is <em>not</em> builtin (unlike <code>cd</code> or <code>echo</code> on some shells). Run <code>type ls</code>—you will usually see <code>ls is hashed (/usr/bin/ls)</code> or similar.</p>
+
+              <h2 class="h4 mt-5">3. Finding the program: PATH and execve</h2>
+              <p>The first word is the command name. For an external command the shell searches directories in <strong>PATH</strong> (colon-separated list in the environment):</p>
+              <pre class="bg-light p-3 rounded small"><code>echo $PATH
+# often: /usr/local/bin:/usr/bin:/bin</code></pre>
+              <p>For each directory it tests <code>/usr/local/bin/ls</code>, then <code>/usr/bin/ls</code>, etc., until an executable file exists and passes permission checks (execute bit + directory traverse for others). The result is often cached in a <strong>hash table</strong> so the next <code>ls</code> skips the search.</p>
+              <p>Then the shell does the Unix dance:</p>
+              <ul>
+                <li><strong><code>fork()</code></strong> — clone the shell process. Parent and child get different PIDs; child inherits open file descriptors (including stdin/stdout/stderr attached to the PTY).</li>
+                <li><strong><code>execve(path, argv, envp)</code></strong> — in the child only: replace the program image with <code>/usr/bin/ls</code>. Same PID, new memory layout, new code. If exec fails (file not found), the child exits with an error and the parent prints “command not found.”</li>
+              </ul>
+              <p>Arguments passed might be:</p>
+              <pre class="bg-light p-3 rounded small"><code>argv[0] = "ls"          # convention: program name
+argv[1] = NULL
+envp    = environ       # PATH, HOME, LANG, LS_COLORS, ...</code></pre>
+              <p>The parent shell typically blocks in <strong><code>wait4()</code></strong> until the child exits, then stores the exit status in <code>$?</code>.</p>
+
+              <h2 class="h4 mt-5">4. Loading <code>/usr/bin/ls</code>: from bytes on disk to main()</h2>
+              <p><code>ls</code> is an <strong>ELF</strong> binary. The kernel’s loader (with help from the dynamic linker if the binary is dynamically linked):</p>
+              <ol>
+                <li>Maps the executable and <strong>interpreter</strong> (<code>/lib64/ld-linux-x86-64.so.2</code>) into memory.</li>
+                <li>Loads shared libraries (<code>libc.so.6</code>, maybe <code>libselinux</code>, etc.) listed in <code>.dynamic</code>.</li>
+                <li>Relocations and symbol resolution run; constructors in libc fire.</li>
+                <li>Control jumps to <code>_start</code> → libc startup → <code>main()</code> in coreutils’ <code>ls.c</code>.</li>
+              </ol>
+              <p>Static binaries skip the dynamic linker but are rare for distro <code>ls</code>. In containers you still hit the same exec path; the binary may be from BusyBox (<code>/bin/ls</code> applet) with a smaller codebase but similar syscalls.</p>
+
+              <h2 class="h4 mt-5">5. Inside <code>ls</code>: logic you trigger with flags</h2>
+              <p>GNU <code>ls</code> parses options (<code>getopt_long</code>): <code>-l</code> long format, <code>-a</code> almost all files, <code>-h</code> human sizes, <code>--color</code> when stdout is a TTY. It determines <strong>which directories to list</strong>—default “.” (current working directory) from the process <strong>cwd</strong> inherited from the shell.</p>
+              <p>For each directory it must obtain names and metadata:</p>
+              <ul>
+                <li><strong>Name only</strong> — read directory entries (see syscalls below).</li>
+                <li><strong><code>ls -l</code></strong> — for each name, <code>lstat()</code> or <code>stat()</code> for mode, owner, size, mtime; may read passwd/group for names.</li>
+                <li><strong>Sorting</strong> — often in userspace after collecting entries; locale (<code>LC_COLLATE</code>) affects order.</li>
+                <li><strong>Colors</strong> — map file type and extension to ANSI escapes from <code>LS_COLORS</code>; enabled when <code>isatty(1)</code> is true (interactive terminal).</li>
+              </ul>
+              <p>Finally it formats columns (or one name per line) into a buffer and writes to <strong>file descriptor 1</strong> (stdout). Errors go to fd 2 (stderr)—e.g. “Permission denied” on a subdirectory with <code>ls dir</code>.</p>
+
+              <h2 class="h4 mt-5">6. System calls: the boundary to the kernel</h2>
+              <p>Userspace cannot read the disk directly. libc functions translate to <strong>system calls</strong>—the controlled API into the kernel (on x86-64 via the <code>syscall</code> instruction with a syscall number and arguments in registers).</p>
+              <p>Typical syscalls for plain <code>ls</code> in the current directory:</p>
+              <div class="table-responsive">
+                <table class="table table-sm table-bordered align-middle">
+                  <thead class="table-light"><tr><th>Syscall (concept)</th><th>Role in <code>ls</code></th></tr></thead>
+                  <tbody>
+                    <tr><td><code>openat(AT_FDCWD, ".", ...)</code></td><td>Open the directory to read</td></tr>
+                    <tr><td><code>getdents64</code> (or <code>getdents</code>)</td><td>Read directory entries (inode + name) in bulk</td></tr>
+                    <tr><td><code>lstat</code> / <code>fstatat</code></td><td>Metadata for <code>-l</code>, type detection for colors</td></tr>
+                    <tr><td><code>write(1, buf, len)</code></td><td>Send formatted listing to stdout</td></tr>
+                    <tr><td><code>close</code></td><td>Release directory fd</td></tr>
+                    <tr><td><code>exit_group</code></td><td>Terminate with exit code 0 (success) or non-zero (error)</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p>Older code paths use <code>opendir</code>/<code>readdir</code> in libc, which still bottom out in <code>openat</code> + <code>getdents64</code> on Linux. Watching syscalls is the best way to see reality:</p>
+              <pre class="bg-light p-3 rounded small"><code>strace -e trace=openat,getdents64,write,close ls
+# or full firehose:
+strace -f ls 2>&amp;1 | head -40</code></pre>
+              <p>You will see the kernel return directory entry structures; libc may filter <code>.</code> and <code>..</code> unless <code>-a</code> is set.</p>
+
+              <h2 class="h4 mt-5">7. Kernel: VFS, inodes, and permissions</h2>
+              <p>When <code>ls</code> asks to open <code>.</code>, the syscall enters the <strong>Virtual File System (VFS)</strong> layer. VFS does not care whether the backing store is ext4 on NVMe, an NFS mount, or overlayfs in a container—it provides uniform <code>struct file</code> operations.</p>
+              <ol>
+                <li><strong>Path lookup</strong> — walk components from the process root (or cwd): resolve <code>.</code> to an inode via the mount table.</li>
+                <li><strong>Permission check</strong> — POSIX permissions (owner/group/other) and optionally MAC (SELinux, AppArmor). Fail → <code>EACCES</code> to userspace.</li>
+                <li><strong>Directory read</strong> — filesystem-specific code reads the directory’s data blocks (or equivalent) and fills syscall buffers with (name, type, inode number) tuples.</li>
+                <li><strong>Stat</strong> — for <code>-l</code>, load the inode: mode, nlink, uid, gid, size, timestamps.</li>
+              </ol>
+              <p>The scheduler may run other processes between syscalls; your <code>ls</code> is not “in the kernel” continuously—it bounces userspace ↔ kernel per call.</p>
+
+              <h2 class="h4 mt-5">8. Output path: from write() to pixels</h2>
+              <p><code>write(1, ...)</code> goes to stdout. Because the shell forked with the PTY slave still open as fd 1, bytes go to the line discipline and then to the PTY <strong>master</strong>. The terminal emulator <code>read()</code>s them, parses ANSI color sequences if present, updates the screen grid and scrollback, and composes a frame for the display server.</p>
+              <p>No network is involved for a local terminal. Over <strong>SSH</strong>, the same byte stream is encrypted inside sshd on the server and decrypted by your local terminal—the PTY is on the remote host; the visual stack on your laptop is still “terminal app → screen.”</p>
+
+              <h2 class="h4 mt-5">9. Child exits; shell returns</h2>
+              <p><code>ls</code> calls <code>exit(0)</code>. The kernel sends <code>SIGCHLD</code> to the parent shell. The parent’s <code>wait4()</code> returns with status 0; bash sets <code>$?=0</code>, may update job control state, and loops: print prompt (<code>PS1</code>), flush, block on <code>read()</code> again.</p>
+              <p>If you typed <code>ls /nonexistent</code>, <code>ls</code> might still exit 2 after printing an error on stderr—the shell still waits and records that code.</p>
+
+              <h2 class="h4 mt-5">Variants that change the story</h2>
+              <div class="table-responsive">
+                <table class="table table-sm table-bordered align-middle">
+                  <thead class="table-light"><tr><th>You type</th><th>What changes</th></tr></thead>
+                  <tbody>
+                    <tr><td><code>ls | grep foo</code></td><td>Shell creates a <strong>pipe</strong>; two children: <code>ls</code> stdout → pipe → <code>grep</code> stdin.</td></tr>
+                    <tr><td><code>ls &gt; out.txt</code></td><td>Shell <code>open()</code>s <code>out.txt</code> and dup2 to child’s fd 1 before exec.</td></tr>
+                    <tr><td><code>ls &amp;</code></td><td>Background job; shell may not wait immediately; job table + <code>jobs</code> command.</td></tr>
+                    <tr><td><code>alias ls='ls --color=auto'</code></td><td>Expanded before exec; still ends in external <code>ls</code> unless builtin.</td></tr>
+                    <tr><td><code>type cd</code></td><td><code>cd</code> is a <strong>builtin</strong>—runs in shell process, changes cwd without exec.</td></tr>
+                    <tr><td><code>./script.sh</code></td><td>Exec needs shebang (<code>#!/bin/bash</code>) or binfmt; another fork/exec for the interpreter.</td></tr>
+                    <tr><td><code>ls -l /proc</code></td><td>Virtual filesystem; kernel synthesizes entries without disk blocks.</td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <h2 class="h4 mt-5">Timing: why it feels instant</h2>
+              <p>A local <code>ls</code> on a small directory costs milliseconds:</p>
+              <ul>
+                <li><strong>fork + exec</strong> — tens of microseconds to low milliseconds (mitigated by kernel optimizations and hash caching).</li>
+                <li><strong>Directory read</strong> — often cached in the <strong>page cache</strong> if you listed recently; cold reads hit disk.</li>
+                <li><strong>Terminal render</strong> — proportional to line count and font complexity.</li>
+              </ul>
+              <p>Slow <code>ls</code> on huge directories (thousands of files) is usually userspace sorting and stat storms for <code>-l</code>, or network filesystem latency—not the shell typing path.</p>
+
+              <h2 class="h4 mt-5">Observe it yourself (lab)</h2>
+              <pre class="bg-light p-3 rounded small"><code># Who is running?
+ps -o pid,ppid,cmd -p $$,$(pgrep -n ls)
+
+# Trace syscalls (Linux)
+strace -f -o /tmp/ls.trace ls
+less /tmp/ls.trace
+
+# See ELF and libraries
+file $(which ls)
+ldd $(which ls)
+
+# Compare builtin vs external
+type cd ls
+/usr/bin/time -f '%e sec' ls /usr/lib &gt; /dev/null</code></pre>
+              <p>On macOS, use <code>dtruss</code> or <code>fs_usage</code> instead of <code>strace</code>; the conceptual stack is the same, but <code>ls</code> is often the BSD implementation.</p>
+
+              <h2 class="h4 mt-5">How this connects to the rest of your stack</h2>
+              <p>Every CLI tool—<code>kubectl</code>, <code>docker</code>, <code>terraform</code>—follows the same fork/exec pattern unless it is a shell builtin. Containers add namespaces so the <code>ls</code> you run in a pod still sees its own rootfs and cgroup limits, but the syscall interface is the same Linux kernel on the node. Kubernetes debugging on a node often means <code>crictl exec</code> → shell → <code>ls</code> in a mount namespace.</p>
+              <p>For a broader Linux handbook (commands, permissions, systemd), see <a href="linux-in-depth.html">Linux in depth</a>. For how containers reuse the kernel without a full VM, see <a href="docker-containerization-hidden-side.html">Docker’s hidden side</a>.</p>
+
+              <h2 class="h4 mt-5">Further reading</h2>
+              <ul>
+                <li>Michael Kerrisk — <em>The Linux Programming Interface</em> (processes, syscalls, filesystems)</li>
+                <li>William Shotts — <em>The Linux Command Line</em> (shell and navigation)</li>
+                <li>GNU coreutils manual — <code>info ls</code> and source at savannah.gnu.org</li>
+                <li>Linux man pages — <code>pty(7)</code>, <code>fork(2)</code>, <code>execve(2)</code>, <code>getdents64(2)</code>, <code>path_resolution(7)</code></li>
+              </ul>
+
+              <p class="small text-muted mt-4 mb-2"><a href="../index.html#blog">Blog index</a> · <a href="linux-in-depth.html">Linux in depth</a> · <a href="docker-containerization-hidden-side.html">Docker hidden side</a> · <a href="git-github-course-in-depth.html">Git &amp; GitHub in depth</a></p>
+              <p class="mb-0"><a href="../index.html#blog" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left" aria-hidden="true"></i> Back to blog list</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>

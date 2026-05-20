@@ -94,7 +94,7 @@
 
               <h2 class="h4 mt-4">The vocabulary people mix up</h2>
               <p><strong>Image</strong> is a packaged filesystem plus metadata (default command, env vars, exposed ports). It is built in layers and usually stored in a registry. <strong>Container</strong> is a running instance of an image: writable layer on top, process(es) inside, network identity, mounts. You can have many containers from one image.</p>
-              <p><strong>Virtual machine</strong> runs a guest operating system on emulated or virtual hardware. A container shares the <em>host kernel</em> and only <em>looks</em> like its own environment. That is why containers start fast and stay smaller—but also why a Linux container on Linux is native, while “Linux container on Windows” involves extra plumbing.</p>
+              <p><strong>Virtual machine</strong> runs a guest operating system on emulated or virtual hardware. A container shares the <em>host kernel</em> and only <em>looks</em> like its own environment. That is why containers start fast and stay smaller—but also why a Linux container on Linux is native, while “Linux container on Windows” involves extra plumbing. If namespaces and cgroups are new, start with <a href="linux-in-depth.html">Linux in depth</a> for the host OS fundamentals.</p>
               <p><strong>Docker</strong> popularized the developer experience (CLI, Dockerfile, Hub). Under the hood, modern engines use the <strong>OCI</strong> (Open Container Initiative) image and runtime specs so the same image can run with containerd, CRI-O, or other compliant runtimes—not only the Docker brand.</p>
 
               <h2 class="h4 mt-5">What happens when you run a container</h2>
@@ -180,7 +180,7 @@
                 <li>CNCF / Kubernetes docs — from single host to cluster operations</li>
               </ul>
 
-              <p class="small text-muted mt-4 mb-2"><a href="../index.html#blog">Blog index</a> · <a href="kubernetes-architecture-simple.html">Kubernetes architecture</a> · <a href="devops-historical-foundations.html">DevOps foundations</a></p>
+              <p class="small text-muted mt-4 mb-2"><a href="../index.html#blog">Blog index</a> · <a href="linux-in-depth.html">Linux in depth</a> · <a href="kubernetes-architecture-simple.html">Kubernetes architecture</a> · <a href="devops-historical-foundations.html">DevOps foundations</a></p>
               <p class="mb-0"><a href="../index.html#blog" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left" aria-hidden="true"></i> Back to blog list</a></p>
             </div>
           </div>

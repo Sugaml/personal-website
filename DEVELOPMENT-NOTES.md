@@ -2,6 +2,24 @@
 
 Short log of design decisions and content changes.
 
+## 2026-05-20 — What happens when you run ls (deep dive)
+
+- **Title:** “What Happens When You Type ls and Press Enter” (article); index card “What happens when you run ls”.
+- **Intent:** End-to-end path from terminal PTY → shell parse/fork/exec → ELF/glibc → GNU ls → syscalls (getdents64, write) → kernel VFS → screen; variants (pipes, redirects, aliases); strace lab. Cross-link from `linux-in-depth.html`.
+- **Files:** `content/blogs/what-happens-when-you-run-ls.html`, `data/blog-posts.json`, `blogs/what-happens-when-you-run-ls.html` (via build), `index.html` (Platform section after Terminal & DevOps card).
+
+## 2026-05-20 — Computing in depth (guide)
+
+- **Title:** “Computing in Depth: From Bits to Cloud-Native Systems” (article); index card “Computing in depth”.
+- **Intent:** Foundational companion to `linux-in-depth.html`: layer model, bits/encodings, von Neumann/CPU, memory hierarchy, storage, OS/kernel, compilation stack, networking, concurrency vs distribution, reliability/security, performance vocabulary, cloud virtualization, AI on the stack, symptom→layer decision table, learning path. Cross-links to Docker, K8s, SQL, Redis, Terraform, GitOps, cloud evolution, FinOps, AI depth posts.
+- **Files:** `content/blogs/computing-in-depth.html`, `data/blog-posts.json`, `blogs/computing-in-depth.html` (via build), `index.html` (Platform section, before Linux card), `scripts/update-blog-meta.py`.
+
+## 2026-05-20 — Linux in depth (handbook guide)
+
+- **Title:** “Linux in Depth: A Practical Handbook for Developers and Operators” (article); index card “Linux in depth”.
+- **Intent:** Platform handbook—FHS, navigation, files, permissions, users/sudo, processes, disk/memory, networking, packages, systemd, shell pipes, grep/find/sed/awk, archives, SSH/rsync, logs, cron, environment/PATH, mounts/fstab, vim basics, security, troubleshooting, cheat sheet; links to Docker/K8s/DevOps posts.
+- **Files:** `content/blogs/linux-in-depth.html`, `data/blog-posts.json`, `blogs/linux-in-depth.html` (via build), `index.html` (Platform section, first card), cross-links in `docker-containerization-hidden-side.html`.
+
 ## 2026-05-20 — Git & GitHub in depth (course notes)
 
 - **Title:** “Git & GitHub in Depth: Theory, Practice, and the Commands Power Users Reach For” (article); index card “Git & GitHub in depth”.
@@ -13,6 +31,12 @@ Short log of design decisions and content changes.
 - **Title:** “Generative AI in Depth: Models, Modalities, Training, and Shipping Real Products” (article); index card “Generative AI in depth”.
 - **Intent:** Broad technical guide complementing `llm-in-depth.html` and `ai-foundation-models-deep-dive.html`: generative vs discriminative ML, GANs/VAEs/diffusion/autoregressive/multimodal families, modalities table, training lifecycle, production stack, use cases, risks, decision guide, learning path. Cross-links to AWS GenAI/ML, ISO 42001, hyperscaler mapping.
 - **Files:** `content/blogs/generative-ai-in-depth.html`, `data/blog-posts.json`, `blogs/generative-ai-in-depth.html` (via build), `index.html` (AI & ML + AI/ML sections), `scripts/update-blog-meta.py`, cross-links in `aws-generative-ai-foundations.html` and `ai-foundation-models-deep-dive.html`.
+
+## 2026-05-20 — RAG deep dive (guide)
+
+- **Title:** “RAG in Depth: Retrieval-Augmented Generation from First Principles to Production” (article); index card “RAG in depth”.
+- **Intent:** Standalone technical guide—Lewis et al. framing, offline/online pipeline, RAG vs fine-tuning vs long context vs tools, chunking, embeddings, hybrid search + rerank, query strategies (HyDE, GraphRAG, agentic/corrective/self-RAG), prompting, eval metrics, production ops, failure modes, governance, learning path.
+- **Files:** `content/blogs/rag-retrieval-augmented-generation-deep-dive.html`, `data/blog-posts.json`, `blogs/rag-retrieval-augmented-generation-deep-dive.html` (via build), `index.html` (AI & ML sections), cross-links from `ai-foundation-models-deep-dive.html` and `how-to-become-ai-developer.html`.
 
 ## 2026-05-20 — Blog index opens only via expand icon (new tab)
 

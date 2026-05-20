@@ -1,0 +1,328 @@
+<article class="inner-page blog-article pb-5">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-9 col-xl-8">
+            <header class="mb-4 pb-3 border-bottom" data-aos="fade-up">
+              <div class="blog-article-meta mb-3">
+                <p class="text-muted small mb-2">Platform · <time datetime="2026-05-20">20 May 2026</time> · <span class="blog-meta-label">Guide</span> · By <a href="../index.html#about" class="blog-author text-reset fw-semibold" rel="author">Babulal Tamang</a></p>
+              <ul class="blog-tags list-unstyled d-flex flex-wrap gap-1 mb-0" aria-label="Tags">
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Computing</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">CPU</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Memory</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Operating Systems</span></li>
+              </ul>
+              </div>
+              <h1 class="h2 mb-3">Computing in Depth: From Bits to Cloud-Native Systems</h1>
+              <p class="lead mb-3"><strong>Computing</strong> is the disciplined transformation of information using machines—hardware that executes instructions, software that encodes logic, and networks that connect both across distance. Whether you write Go services, operate Kubernetes, or debug a slow query, the same foundations recur: how data is represented, how processors move it, how operating systems isolate work, and how distributed systems trade correctness for scale. This guide walks that stack in depth so platform and software engineers can reason about performance, failures, and design choices with confidence.</p>
+              <div class="border-start border-primary border-4 ps-3 py-3 bg-light rounded mb-0" role="note">
+                <p class="small text-uppercase text-muted mb-1 fw-semibold">In short</p>
+                <p class="mb-0">All useful computing reduces to <em>fetch → decode → execute → store</em> on bits, orchestrated by layers (hardware, OS, runtime, application, network). Master those layers and cloud, containers, and AI infrastructure stop looking like magic—they become predictable engineering.</p>
+              </div>
+            </header>
+
+            <div class="blog-prose" data-aos="fade-up" data-aos-delay="50">
+
+              <h2 class="h4 mt-4">What counts as “computing”?</h2>
+              <p>In practice, <strong>computing</strong> spans:</p>
+              <ul>
+                <li><strong>Data</strong> — symbols encoded as bits (numbers, text, images, events).</li>
+                <li><strong>Algorithms</strong> — step-by-step procedures that transform data.</li>
+                <li><strong>Machines</strong> — physical or virtual hardware that runs those steps at speed.</li>
+                <li><strong>Systems</strong> — software, policies, and people that make machines reliable at scale.</li>
+              </ul>
+              <p>A laptop, a smartphone, a database cluster, and a GPU farm training a model are all computing systems. They differ in scale and specialization, not in the underlying idea: <strong>represent information, process it under program control, persist or transmit results</strong>.</p>
+              <p>For how organizations moved from owned data centers to hyperscale platforms, see <a href="cloud-platform-evolution.html">The Cloud Platform — Evolution and What Comes Next</a>. For containers as an OS abstraction, see <a href="docker-containerization-hidden-side.html">Docker — the Hidden Side</a>.</p>
+
+              <h2 class="h4 mt-5">The layer model (mental map)</h2>
+              <p>Think in layers when debugging or designing:</p>
+              <ol>
+                <li><strong>Physics &amp; electronics</strong> — transistors, clocks, power (rarely your daily concern unless you do hardware).</li>
+                <li><strong>Architecture</strong> — CPU, memory hierarchy, buses, storage devices.</li>
+                <li><strong>Machine &amp; assembly</strong> — instruction sets (x86-64, ARM), registers, syscalls.</li>
+                <li><strong>Operating system</strong> — processes, virtual memory, filesystems, scheduling, security boundaries.</li>
+                <li><strong>Runtime &amp; libraries</strong> — JVM, Node, Go runtime, libc, TLS stacks.</li>
+                <li><strong>Application</strong> — your services, APIs, batch jobs.</li>
+                <li><strong>Distributed systems</strong> — replication, consensus, queues, load balancers, “the network is a computer.”</li>
+              </ol>
+              <p>Incidents often masquerade as application bugs but originate two layers down—a full disk is storage/OS; OOMKilled is memory/OS/cgroups; TLS handshake failures are runtime/network. Training yourself to ask <em>which layer?</em> shortens mean time to resolution.</p>
+
+              <h2 class="h4 mt-5">Information: bits, bytes, and encodings</h2>
+              <p>Digital machines store everything as <strong>binary digits (bits)</strong>: 0 or 1. Eight bits form a <strong>byte</strong>—the usual addressable unit. Larger units follow powers of two: KiB, MiB, GiB (1024-based), though vendors sometimes use decimal GB for disks.</p>
+              <p><strong>Integers</strong> use binary positional notation; <strong>signed</strong> values typically use two’s complement. <strong>Floating point</strong> (IEEE 754) approximates reals—essential for ML and graphics, hazardous for money without decimal types.</p>
+              <p><strong>Text</strong> is never “just characters”:</p>
+              <ul>
+                <li><strong>ASCII</strong> — 7-bit English-centric legacy.</li>
+                <li><strong>UTF-8</strong> — variable-width Unicode on the wire; default for JSON, HTTP, and modern logs.</li>
+                <li><strong>Endianness</strong> — byte order for multi-byte numbers; matters in network protocols and binary file formats.</li>
+              </ul>
+              <p>Encoding bugs (mojibake, truncated multibyte sequences) show up in internationalized apps and log pipelines—always know your charset end to end.</p>
+
+              <h2 class="h4 mt-5">The von Neumann machine</h2>
+              <p>Most general-purpose computers follow the <strong>von Neumann architecture</strong>: a <strong>CPU</strong> and <strong>memory</strong> share a bus; programs and data live in the same address space (“stored program” concept, ~1945, still dominant).</p>
+              <p>The CPU cycle, simplified:</p>
+              <ol>
+                <li><strong>Fetch</strong> instruction from memory (program counter points to address).</li>
+                <li><strong>Decode</strong> opcode and operands.</li>
+                <li><strong>Execute</strong> in the ALU, FPU, or specialized unit.</li>
+                <li><strong>Write back</strong> results to registers or memory; advance PC (or branch).</li>
+              </ol>
+              <p><strong>Registers</strong> are the fastest storage—tiny and few. <strong>RAM</strong> is larger but slower. That gap drives the entire performance story below.</p>
+
+              <h2 class="h4 mt-5">Processors: cores, clocks, and parallelism</h2>
+              <p>A <strong>CPU core</strong> executes one instruction stream at a time (ignoring SMT/hyper-threading, which shares execution units between logical threads). <strong>Multi-core</strong> chips run independent streams in parallel—your Go goroutines, Java threads, and OS processes eventually map here.</p>
+              <ul>
+                <li><strong>Clock speed (GHz)</strong> — cycles per second; not comparable across architectures without workload context.</li>
+                <li><strong>IPC (instructions per cycle)</strong> — how much work each cycle accomplishes; pipeline depth, branch prediction, and caches dominate.</li>
+                <li><strong>SIMD</strong> (AVX, NEON) — one instruction on many data lanes; used in codecs, crypto, and numeric libraries.</li>
+                <li><strong>GPUs &amp; TPUs</strong> — thousands of simpler cores optimized for throughput on parallel linear algebra (graphics, ML training/inference).</li>
+              </ul>
+              <p><strong>Amdahl’s Law</strong>: speeding up the parallel portion of a program has diminishing returns if a serial fraction remains. Profile before buying bigger machines.</p>
+
+              <h2 class="h4 mt-5">Memory hierarchy: why “slow” is relative</h2>
+              <p>Latency orders of magnitude (rule-of-thumb, single-threaded access):</p>
+              <div class="table-responsive">
+                <table class="table table-sm table-bordered align-middle">
+                  <thead class="table-light">
+                    <tr>
+                      <th scope="col">Level</th>
+                      <th scope="col">Typical size</th>
+                      <th scope="col">Latency (order)</th>
+                      <th scope="col">Who manages it</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>CPU registers</td>
+                      <td>Bytes–KB</td>
+                      <td>~1 cycle</td>
+                      <td>Compiler / CPU</td>
+                    </tr>
+                    <tr>
+                      <td>L1 / L2 / L3 cache</td>
+                      <td>KB–MB per core / shared</td>
+                      <td>~1–40 ns</td>
+                      <td>CPU hardware</td>
+                    </tr>
+                    <tr>
+                      <td>RAM (DRAM)</td>
+                      <td>GB–TB</td>
+                      <td>~50–100 ns</td>
+                      <td>OS + hardware MMU</td>
+                    </tr>
+                    <tr>
+                      <td>SSD (NVMe)</td>
+                      <td>GB–TB</td>
+                      <td>~10–100 µs</td>
+                      <td>OS block layer</td>
+                    </tr>
+                    <tr>
+                      <td>Network (same AZ)</td>
+                      <td>—</td>
+                      <td>~0.1–1 ms</td>
+                      <td>Kernel + NIC</td>
+                    </tr>
+                    <tr>
+                      <td>Network (cross-region)</td>
+                      <td>—</td>
+                      <td>~10–300 ms</td>
+                      <td>Physics + routing</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <p><strong>Cache locality</strong> matters: scanning a dense array beats chasing pointers through heap objects. Database indexes, columnar formats, and batch APIs exist largely to keep the CPU fed from cache, not from RAM or disk.</p>
+              <p><strong>Virtual memory</strong> gives each process an isolated address space. The OS maps virtual pages to physical frames via page tables; <strong>TLB</strong> caches translations. <strong>Swap</strong> spills cold pages to disk—functional but catastrophic for latency-sensitive services.</p>
+
+              <h2 class="h4 mt-5">Storage: persistence and the block/object split</h2>
+              <p><strong>Block storage</strong> (disks, EBS volumes) exposes fixed-size blocks; filesystems (ext4, xfs, NTFS) build files and directories on top. <strong>Object storage</strong> (S3, GCS) stores opaque blobs with metadata and HTTP APIs—see <a href="aws-s3-in-depth.html">Amazon S3 in Depth</a> and <a href="aws-ebs-s3-efs-storage-deep-dive.html">EBS vs S3 vs EFS</a>.</p>
+              <ul>
+                <li><strong>HDD</strong> — spinning rust; cheap capacity, high seek latency.</li>
+                <li><strong>SSD / NVMe</strong> — flash; low latency, wear leveling, finite write endurance.</li>
+                <li><strong>Replication &amp; erasure coding</strong> — how clouds survive drive and rack loss without you managing RAID by hand.</li>
+              </ul>
+              <p>Databases add <strong>write-ahead logs (WAL)</strong>, <strong>buffer pools</strong>, and <strong>B-trees or LSM-trees</strong> to turn random logical access into sequential I/O patterns disks tolerate. For relational fundamentals, see <a href="sql-course-relational-databases.html">SQL Course Notes</a>.</p>
+
+              <h2 class="h4 mt-5">Operating systems: the referee</h2>
+              <p>The <strong>kernel</strong> mediates hardware among processes. Core responsibilities:</p>
+              <ul>
+                <li><strong>Process &amp; thread management</strong> — isolation, scheduling (CFS on Linux), priorities, cgroups for limits.</li>
+                <li><strong>Memory management</strong> — virtual memory, mmap, copy-on-write (fork, container layers).</li>
+                <li><strong>Filesystem &amp; I/O</strong> — VFS layer, async I/O, epoll/kqueue for event loops.</li>
+                <li><strong>Networking stack</strong> — sockets, TCP state machines, firewalls (iptables/nftables, eBPF).</li>
+                <li><strong>Security</strong> — users, groups, capabilities, SELinux/AppArmor, seccomp.</li>
+              </ul>
+              <p>User programs invoke the kernel through <strong>system calls</strong> (<code>read</code>, <code>write</code>, <code>open</code>, <code>socket</code>, <code>clone</code>, <code>execve</code>…). Strace and eBPF tools observe this boundary when debugging “works in dev, stalls in prod.”</p>
+              <p><strong>Containers</strong> are processes plus namespaces and cgroups—not mini-VMs. <strong>Virtual machines</strong> add a hypervisor and hardware-assisted isolation (KVM, Nitro). Kubernetes schedules Pods on nodes that run one or both; see <a href="kubernetes-architecture-simple.html">Kubernetes Architecture (Simple)</a>.</p>
+
+              <h2 class="h4 mt-5">From source code to running binary</h2>
+              <p>Software stacks bridge human intent and silicon:</p>
+              <ol>
+                <li><strong>High-level language</strong> (Go, Python, Java, Rust) — memory safety, abstractions, ecosystems.</li>
+                <li><strong>Compiler or interpreter</strong> — LLVM/GC/JIT turns source into machine code or bytecode.</li>
+                <li><strong>Linker &amp; loader</strong> — resolves symbols, loads shared libraries, applies relocations.</li>
+                <li><strong>Runtime</strong> — garbage collection, goroutine scheduler, async event loop.</li>
+              </ol>
+              <p><strong>Compiled</strong> languages (Go, Rust, C) ship native binaries—predictable startup, smaller deploy artifacts on minimal images. <strong>Interpreted/JIT</strong> stacks (Python, JVM) trade startup and memory for flexibility. Choose based on team skill, library needs, and operational profile—not benchmark heroics alone.</p>
+
+              <h2 class="h4 mt-5">Networking: how computers talk</h2>
+              <p>Distributed computing is still local machines sending bytes. Essentials:</p>
+              <ul>
+                <li><strong>IP</strong> — addressing and routing; IPv4 vs IPv6; NAT and its discontents.</li>
+                <li><strong>TCP</strong> — reliable, ordered byte streams; congestion control; three-way handshake cost.</li>
+                <li><strong>UDP</strong> — datagrams; used for DNS, QUIC foundations, gaming, some telemetry.</li>
+                <li><strong>DNS</strong> — name → address; caching, TTLs, and failure modes that look like “app is down.”</li>
+                <li><strong>TLS</strong> — encryption and identity on top of TCP; certificate chains, SNI, mTLS in service meshes.</li>
+                <li><strong>HTTP/1.1 → HTTP/2 → HTTP/3</strong> — multiplexing, header compression, QUIC over UDP.</li>
+              </ul>
+              <p>Cloud networking adds VPCs, subnets, security groups, load balancers, and private endpoints—architectural depth in <a href="aws-network-architecture-design.html">AWS Network Architecture Design</a>.</p>
+
+              <h2 class="h4 mt-5">Concurrency, parallelism, and distributed consistency</h2>
+              <p>Terms engineers confuse:</p>
+              <div class="table-responsive">
+                <table class="table table-sm table-bordered align-middle">
+                  <thead class="table-light">
+                    <tr>
+                      <th scope="col">Term</th>
+                      <th scope="col">Meaning</th>
+                      <th scope="col">Example</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Concurrency</td>
+                      <td>Multiple tasks in progress; may interleave on one core</td>
+                      <td>Go scheduler, async I/O</td>
+                    </tr>
+                    <tr>
+                      <td>Parallelism</td>
+                      <td>Tasks literally run at the same instant on different cores</td>
+                      <td>Parallel map on 8 cores</td>
+                    </tr>
+                    <tr>
+                      <td>Distribution</td>
+                      <td>Tasks on different machines with partial failure</td>
+                      <td>Microservices, Kafka, Raft</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <p>On one machine, locks, mutexes, and channels prevent races. Across machines, you face <strong>CAP-style tradeoffs</strong>, <strong>eventual consistency</strong>, idempotent APIs, and sagas. Caches (<a href="redis-and-cli-deep-dive.html">Redis in Depth</a>) accelerate reads but introduce invalidation complexity.</p>
+
+              <h2 class="h4 mt-5">Reliability primitives every system inherits</h2>
+              <ul>
+                <li><strong>Redundancy</strong> — N+1 instances, multi-AZ, replicated disks.</li>
+                <li><strong>Timeouts &amp; retries</strong> — with jitter and budgets; unbounded retries amplify outages.</li>
+                <li><strong>Backpressure</strong> — queues and rate limits so overload degrades gracefully.</li>
+                <li><strong>Observability</strong> — metrics, logs, traces tied to request IDs across services.</li>
+                <li><strong>Idempotency keys</strong> — safe retries for payments and writes.</li>
+              </ul>
+              <p>Incident response patterns: <a href="incident-disaster-response-calm.html">Incident &amp; Disaster Response — Staying Calm</a>. Delivery culture context: <a href="devops-historical-foundations.html">Historical Foundations of DevOps</a>.</p>
+
+              <h2 class="h4 mt-5">Security at the foundation</h2>
+              <p>Computing security stacks upward:</p>
+              <ol>
+                <li><strong>Physical &amp; supply chain</strong> — datacenter access, firmware trust.</li>
+                <li><strong>OS hardening</strong> — patching, least privilege, seccomp, read-only root.</li>
+                <li><strong>Network segmentation</strong> — private subnets, egress control, WAF.</li>
+                <li><strong>Application</strong> — input validation, authN/authZ, secrets not in git.</li>
+                <li><strong>Data</strong> — encryption at rest and in transit, key rotation, classification.</li>
+              </ol>
+              <p>Cloud IAM ties identities to API actions—see <a href="aws-iam-policy-json-anatomy.html">AWS IAM Policy JSON Anatomy</a> and <a href="aws-cloud-security-foundations.html">Cloud Security Foundations</a>.</p>
+
+              <h2 class="h4 mt-5">Performance vocabulary</h2>
+              <ul>
+                <li><strong>Latency</strong> — time for one operation (p50, p95, p99).</li>
+                <li><strong>Throughput</strong> — operations or bytes per second.</li>
+                <li><strong>Utilization</strong> — how busy a resource is; 100% CPU can still mean wasted work if you are I/O bound.</li>
+                <li><strong>Little’s Law</strong> — <em>L = λW</em> (average items in system = arrival rate × average time in system); explains queue buildup under load.</li>
+                <li><strong>Cost</strong> — FinOps ties utilization to dollars; see the <a href="finops-greenops-3-finops-plain-english.html">FinOps in Plain English</a> series.</li>
+              </ul>
+              <p>Measure before optimizing: flame graphs, <code>perf</code>, eBPF, APM traces, and database <code>EXPLAIN</code> beat guessing.</p>
+
+              <h2 class="h4 mt-5">Cloud and virtualization: computing at datacenter scale</h2>
+              <p>Hyperscalers sell <strong>metered computing</strong>: VMs, containers, functions, managed databases, and AI accelerators. The abstraction leaks when you need to know:</p>
+              <ul>
+                <li>Instance families (CPU vs memory vs network optimized).</li>
+                <li>Ephemeral vs persistent disk and snapshot semantics.</li>
+                <li>Regional failure domains and cross-AZ latency.</li>
+                <li>API rate limits and control-plane vs data-plane outages.</li>
+              </ul>
+              <p>Service mapping across AWS, GCP, and Azure: <a href="aws-gcp-azure-services-mapping.html">Hyperscaler Service Mapping</a>. Philosophy and procurement: <a href="aws-gcp-azure-hyperscaler-comparison.html">Hyperscaler Depth Comparison</a>.</p>
+
+              <h2 class="h4 mt-5">Where AI fits in the stack</h2>
+              <p>Modern AI workloads are computing workloads with extreme arithmetic intensity:</p>
+              <ul>
+                <li><strong>Training</strong> — distributed gradient descent on GPU/TPU clusters; network and checkpoint I/O matter as much as FLOPs.</li>
+                <li><strong>Inference</strong> — memory-bandwidth-bound decode loops; batching and KV caches dominate serving economics.</li>
+              </ul>
+              <p>Conceptual depth: <a href="ai-foundation-models-deep-dive.html">AI Foundation Models in Depth</a>, <a href="llm-in-depth.html">Large Language Models in Depth</a>. They do not replace the need to understand CPUs, networks, and storage—they sit on top of them.</p>
+
+              <h2 class="h4 mt-5">Decision guide: which layer to fix first?</h2>
+              <div class="table-responsive">
+                <table class="table table-sm table-bordered align-middle">
+                  <thead class="table-light">
+                    <tr>
+                      <th scope="col">Symptom</th>
+                      <th scope="col">Likely layer</th>
+                      <th scope="col">First checks</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Sudden process death</td>
+                      <td>OS / cgroup</td>
+                      <td><code>dmesg</code>, OOM events, memory limits</td>
+                    </tr>
+                    <tr>
+                      <td>Disk full errors</td>
+                      <td>Storage / FS</td>
+                      <td>Volume usage, log rotation, WAL growth</td>
+                    </tr>
+                    <tr>
+                      <td>Spiky API latency</td>
+                      <td>App / DB / network</td>
+                      <td>Traces, slow queries, TCP retransmits</td>
+                    </tr>
+                    <tr>
+                      <td>Works locally, fails in cluster</td>
+                      <td>Platform / DNS / policy</td>
+                      <td>Service names, NetworkPolicy, IAM roles</td>
+                    </tr>
+                    <tr>
+                      <td>High cloud bill, flat traffic</td>
+                      <td>Architecture / FinOps</td>
+                      <td>Idle resources, instance sizing, data egress</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <h2 class="h4 mt-5">Learning path (foundations → platform)</h2>
+              <ol>
+                <li><strong>Binary &amp; CLI fluency</strong> — file permissions, pipes, ssh, basic scripting; then <a href="linux-in-depth.html">Linux in Depth</a>.</li>
+                <li><strong>Networking basics</strong> — curl, DNS, TCP dump or ss, TLS concepts.</li>
+                <li><strong>One compiled language + one scripting language</strong> — e.g. Go + Python.</li>
+                <li><strong>Data stores</strong> — SQL depth, then Redis/cache patterns.</li>
+                <li><strong>Containers &amp; orchestration</strong> — Docker internals, Kubernetes hands-on series on this site.</li>
+                <li><strong>IaC &amp; GitOps</strong> — <a href="terraform-iac-for-everyone.html">Terraform &amp; IaC</a>, <a href="gitops-principles.html">GitOps Principles</a>, <a href="git-github-course-in-depth.html">Git &amp; GitHub in Depth</a>.</li>
+                <li><strong>Cloud architecture</strong> — AWS Academy posts and network/storage deep dives.</li>
+              </ol>
+              <p>Computing is a stack, not a checklist. Depth in one layer (say, Kubernetes RBAC in <a href="kubernetes-cluster-rbac.html">Cluster RBAC</a>) pays off when the next incident is actually a DNS TTL or a saturated NVMe queue.</p>
+
+              <h2 class="h4 mt-5">Further reading</h2>
+              <ul>
+                <li>Charles Petzold — <em>Code: The Hidden Language of Computer Hardware and Software</em></li>
+                <li>Hennessy &amp; Patterson — <em>Computer Architecture: A Quantitative Approach</em></li>
+                <li>Silberschatz, Galvin, Gagne — <em>Operating System Concepts</em></li>
+                <li>Tanenbaum &amp; Wetherall — <em>Computer Networks</em></li>
+                <li>Martin Kleppmann — <em>Designing Data-Intensive Applications</em></li>
+                <li>Brendan Gregg — systems performance and eBPF resources</li>
+              </ul>
+
+              <p class="small text-muted mt-4 mb-2"><a href="../index.html#blog">Blog index</a> · <a href="docker-containerization-hidden-side.html">Docker hidden side</a> · <a href="cloud-platform-evolution.html">Cloud platform evolution</a> · <a href="kubernetes-architecture-simple.html">Kubernetes architecture</a> · <a href="sql-course-relational-databases.html">SQL course</a> · <a href="terraform-iac-for-everyone.html">Terraform &amp; IaC</a></p>
+              <p class="mb-0"><a href="../index.html#blog" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left" aria-hidden="true"></i> Back to blog list</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>

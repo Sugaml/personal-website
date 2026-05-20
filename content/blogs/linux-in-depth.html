@@ -9,14 +9,14 @@
                 <li><span class="badge rounded-pill text-bg-light border text-muted">Linux</span></li>
                 <li><span class="badge rounded-pill text-bg-light border text-muted">Shell</span></li>
                 <li><span class="badge rounded-pill text-bg-light border text-muted">DevOps</span></li>
-                <li><span class="badge rounded-pill text-bg-light border text-muted">Handbook</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Terminal</span></li>
               </ul>
               </div>
-              <h1 class="h2 mb-3">Linux in Depth: A Practical Handbook for Developers and Operators</h1>
-              <p class="lead mb-3">Linux powers most servers, containers, and cloud VMs—yet many tutorials stop at <code>ls</code> and <code>cd</code>. This guide is a single, readable handbook: how the system is organized, which commands you actually need, and how to debug permissions, disk, processes, networking, and services without memorizing a thousand flags.</p>
+              <h1 class="h2 mb-3">Terminal &amp; DevOps: Linux Command Line in Depth</h1>
+              <p class="lead mb-3">The terminal is where DevOps work actually happens—SSH into a node, tail logs during an incident, run <code>kubectl</code> and <code>terraform</code>, debug a pipeline. Linux powers most servers, containers, and cloud VMs; this handbook covers how the system is organized, which commands you need day to day, and how to debug permissions, disk, processes, networking, and services without memorizing a thousand flags.</p>
               <div class="border-start border-primary border-4 ps-3 py-3 bg-light rounded mb-0" role="note">
                 <p class="small text-uppercase text-muted mb-1 fw-semibold">In short</p>
-                <p class="mb-0">Treat Linux as <strong>files + processes + permissions</strong>. Learn the filesystem layout, master a focused set of CLI tools, use <strong>systemd</strong> and <strong>journalctl</strong> on servers, and follow a simple troubleshooting order: logs → resources → process → network → recent change.</p>
+                <p class="mb-0">Treat Linux as <strong>files + processes + permissions</strong>. Master the shell and core CLI tools, learn <strong>systemd</strong> and <strong>journalctl</strong> on servers, then wire the same terminal habits into <strong>Git, containers, Kubernetes, and IaC</strong>. When something breaks: logs → resources → process → network → recent change.</p>
               </div>
             </header>
 
@@ -24,7 +24,7 @@
 
               <h2 class="h4 mt-4">What Linux is (and why it matters to you)</h2>
               <p><strong>Linux</strong> is an open-source <strong>kernel</strong>—the core that talks to hardware, schedules processes, manages memory, and enforces permissions. What you install on a laptop or server is usually a <strong>distribution</strong> (Ubuntu, Debian, Fedora, RHEL, Alpine): the kernel plus userspace tools, package manager, and defaults.</p>
-              <p>Most cloud VMs, containers, and Kubernetes nodes run Linux. Even when you write application code on macOS or Windows, production debugging often means SSH into a Linux box, reading logs, and fixing permissions. Treat this guide as a <strong>handbook</strong>: concepts first, then commands you will use weekly as a developer, operator, or platform engineer.</p>
+              <p>Most cloud VMs, containers, and Kubernetes nodes run Linux. Even when you write application code on macOS or Windows, production debugging often means SSH into a Linux box, reading logs, and fixing permissions. For the wider stack—CPU, memory, OS theory, networking—see <a href="computing-in-depth.html">Computing in Depth</a>. Treat this guide as a <strong>handbook</strong>: concepts first, then commands you will use weekly as a developer, operator, or platform engineer.</p>
 
               <h2 class="h4 mt-5">The mental model: everything is a file</h2>
               <p>Linux exposes much of the system through the filesystem:</p>
@@ -82,7 +82,7 @@ ls -l                  # long format (permissions, owner, size, date)
 ls -la                 # include hidden dotfiles
 ls -lh                 # human-readable sizes
 tree -L 2 /etc         # tree view (install tree if missing)</code></pre>
-              <p><strong>Paths:</strong> <code>/</code> absolute from root; <code>./file</code> current dir; <code>../dir</code> parent; <code>~/docs</code> under home. Tab completes names; <code>ls app&lt;TAB&gt;</code> saves typing.</p>
+              <p><strong>Paths:</strong> <code>/</code> absolute from root; <code>./file</code> current dir; <code>../dir</code> parent; <code>~/docs</code> under home. Tab completes names; <code>ls app&lt;TAB&gt;</code> saves typing. For what happens under the hood when you run <code>ls</code>, see <a href="what-happens-when-you-run-ls.html">What happens when you type <code>ls</code> and press Enter</a>.</p>
 
               <h2 class="h4 mt-5">Creating, copying, moving, and deleting</h2>
               <pre class="bg-light p-3 rounded small"><code>touch notes.txt              # empty file or update timestamp
@@ -400,8 +400,90 @@ sudo umount /mnt/data</code></pre>
                 </table>
               </div>
 
+              <h2 class="h4 mt-5">The DevOps toolchain from your terminal</h2>
+              <p>Most DevOps tools are CLI-first: they compose with pipes, run in CI agents, and script the same way on your laptop and in production. You do not need every flag memorized—learn the verbs that match your mental model, then use <code>--help</code> and tab completion.</p>
+
+              <h3 class="h5 mt-4">Git and GitHub (<code>git</code>, <code>gh</code>)</h3>
+              <p>Version control is the spine of delivery. Daily flow: branch, commit, push, open a pull request, merge. For depth on the object model, recovery, and GitHub Actions, see <a href="git-github-course-in-depth.html">Git &amp; GitHub in depth</a>.</p>
+              <pre class="bg-light p-3 rounded small"><code>git status
+git switch -c feature/login
+git add -p                          # stage hunks interactively
+git commit -m "feat: add login form"
+git push -u origin HEAD
+
+gh pr create --fill
+gh pr checks
+gh run list --workflow deploy.yml</code></pre>
+
+              <h3 class="h5 mt-4">Containers (<code>docker</code> / <code>podman</code>)</h3>
+              <p>Build images, run locally, inspect layers. Production clusters use containerd/CRI; the CLI still teaches image and process semantics. See <a href="docker-containerization-hidden-side.html">Docker’s hidden side</a> for namespaces and cgroups.</p>
+              <pre class="bg-light p-3 rounded small"><code>docker build -t myapp:local .
+docker run --rm -p 8080:8080 myapp:local
+docker ps -a
+docker logs -f &lt;container_id&gt;
+docker exec -it &lt;container_id&gt; sh
+docker inspect myapp:local | jq '.[0].Config'</code></pre>
+
+              <h3 class="h5 mt-4">Kubernetes (<code>kubectl</code>)</h3>
+              <p><code>kubectl</code> talks to the API server—same resources as YAML in Git. Context and namespace matter; always know where you are pointing.</p>
+              <pre class="bg-light p-3 rounded small"><code>kubectl config current-context
+kubectl get pods -A
+kubectl -n prod get deploy,svc
+kubectl describe pod/myapp-7d9f8b-abcde -n prod
+kubectl logs -f deploy/myapp -n prod --tail=100
+kubectl exec -it deploy/myapp -n prod -- sh
+kubectl apply -f manifests/
+kubectl diff -f manifests/        # requires plugin or server dry-run
+kubectl port-forward svc/myapp 8080:80</code></pre>
+              <p>For a guided lab sequence, start with <a href="kubernetes-hands-on-1-local-lab.html">Kubernetes hands-on part 1</a>.</p>
+
+              <h3 class="h5 mt-4">Infrastructure as Code (<code>terraform</code>)</h3>
+              <p>Terraform plans changes before apply—treat <code>plan</code> output like a code review. State is sensitive; never commit secrets. Full beginner walkthrough: <a href="terraform-iac-for-everyone.html">Terraform &amp; IaC for everyone</a>.</p>
+              <pre class="bg-light p-3 rounded small"><code>terraform init
+terraform fmt -recursive
+terraform validate
+terraform plan -out=tfplan
+terraform apply tfplan
+terraform output -json | jq .
+terraform state list</code></pre>
+
+              <h3 class="h5 mt-4">Cloud CLIs (<code>aws</code>, <code>gcloud</code>, <code>az</code>)</h3>
+              <p>Hyperscaler CLIs mirror APIs: list resources, call services, pipe JSON to <code>jq</code>. Prefer named profiles and short-lived credentials over long-lived keys in shell history.</p>
+              <pre class="bg-light p-3 rounded small"><code>aws sts get-caller-identity
+aws s3 ls
+aws ec2 describe-instances --query 'Reservations[].Instances[].InstanceId'
+
+gcloud config list
+gcloud compute instances list
+
+az account show
+az group list -o table</code></pre>
+
+              <h3 class="h5 mt-4">JSON on the command line (<code>jq</code>)</h3>
+              <p>APIs and cloud tools return JSON. <code>jq</code> filters and shapes it without leaving the terminal.</p>
+              <pre class="bg-light p-3 rounded small"><code>curl -s https://api.github.com/repos/owner/repo | jq '.full_name, .stargazers_count'
+aws iam list-users --output json | jq '.Users[].UserName'
+kubectl get pods -o json | jq '.items[] | {name: .metadata.name, phase: .status.phase}'</code></pre>
+
+              <h3 class="h5 mt-4">Long sessions: <code>tmux</code> and SSH</h3>
+              <p>On-call and deploy windows run longer than one SSH connection. <strong>tmux</strong> keeps panes alive if your laptop sleeps; pair with SSH config for jump hosts and key-based auth (see SSH section above).</p>
+              <pre class="bg-light p-3 rounded small"><code>tmux new -s incident
+# Ctrl+b then c  — new window; % split pane; d detach
+tmux attach -t incident
+tmux list-sessions</code></pre>
+
+              <h3 class="h5 mt-4">Shell scripts in CI and GitOps</h3>
+              <p>Pipeline steps are shell commands in a clean environment. Keep scripts <code>set -euo pipefail</code>, quote variables, log with timestamps, and fail fast with clear messages. GitOps controllers reconcile declared YAML from Git—your terminal applies the same manifests locally for dry runs; principles in <a href="gitops-principles.html">GitOps principles</a>.</p>
+              <pre class="bg-light p-3 rounded small"><code>#!/usr/bin/env bash
+set -euo pipefail
+trap 'echo "Failed at line $LINENO"' ERR
+
+log() { echo "[$(date -Iseconds)] $*"; }
+log "Running smoke test"
+curl -fsS https://app.example.com/health | jq -e '.status == "ok"'</code></pre>
+
               <h2 class="h4 mt-5">From handbook to platform work</h2>
-              <p>Linux skills stack directly into the rest of a platform career:</p>
+              <p>Linux and terminal fluency stack directly into the rest of a platform career:</p>
               <ul>
                 <li><strong>Containers</strong> — namespaces and cgroups on a shared kernel (<a href="docker-containerization-hidden-side.html">Docker hidden side</a>).</li>
                 <li><strong>Kubernetes</strong> — nodes are Linux; debugging often means <code>crictl</code>, node logs, and cgroup limits (<a href="kubernetes-architecture-simple.html">Kubernetes architecture</a>).</li>

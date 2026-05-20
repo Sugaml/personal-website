@@ -78,6 +78,11 @@ POSTS = {
         "tags": ["Docker", "Containers", "DevOps", "Linux"],
         "keywords": "Docker, containers, cgroups, namespaces, container security, Babulal Tamang",
     },
+    "linux-in-depth.html": {
+        "label": "Guide",
+        "tags": ["Terminal", "Linux", "Shell", "DevOps"],
+        "keywords": "terminal, Linux, shell, DevOps, kubectl, systemd, Babulal Tamang",
+    },
     "kubernetes-when-how-why-where.html": {
         "label": "Essay",
         "tags": ["Kubernetes", "Business", "Platform"],
@@ -157,6 +162,11 @@ POSTS = {
         "label": "Essay",
         "tags": ["Cloud", "Platform Engineering", "Migration", "FinOps"],
         "keywords": "cloud platform, landing zone, migration, platform engineering, Babulal Tamang",
+    },
+    "computing-in-depth.html": {
+        "label": "Guide",
+        "tags": ["Computing", "CPU", "Operating Systems", "Networking"],
+        "keywords": "computing fundamentals, CPU, memory, operating systems, computer architecture, Babulal Tamang",
     },
     "finops-greenops-1-invisible-bill.html": {
         "label": "Series",

@@ -154,6 +154,15 @@
       "content_file": "cloud-platform-evolution.html"
     },
     {
+      "slug": "computing-in-depth",
+      "file": "computing-in-depth.html",
+      "title": "Computing in Depth \u2014 From Bits to Cloud-Native Systems \u2014 Babulal Tamang",
+      "description": "A technical deep dive into computing fundamentals: bits and encodings, von Neumann architecture, CPU and memory hierarchy, storage, operating systems, networking, concurrency, security, performance, cloud virtualization, and how the stack connects to platform engineering.",
+      "keywords": "computing fundamentals, CPU, memory, operating systems, networking, computer architecture, platform engineering, Babulal Tamang",
+      "breadcrumb": "Computing in depth",
+      "content_file": "computing-in-depth.html"
+    },
+    {
       "slug": "credly-digital-badges",
       "file": "credly-digital-badges.html",
       "title": "Credly credentials \u2014 overview &amp; topic posts \u2014 Babulal Tamang",
@@ -397,6 +406,15 @@
       "content_file": "linux-in-depth.html"
     },
     {
+      "slug": "what-happens-when-you-run-ls",
+      "file": "what-happens-when-you-run-ls.html",
+      "title": "What Happens When You Type ls and Press Enter \u2014 Babulal Tamang",
+      "description": "A deep dive from keystroke to screen: terminal PTY, shell parsing, fork/exec, ELF loading, GNU ls, system calls (getdents64, write), kernel VFS, and how output returns to your terminal.",
+      "keywords": "Linux, ls, shell, syscalls, fork, exec, terminal, PTY, Babulal Tamang",
+      "breadcrumb": "What happens when you run ls",
+      "content_file": "what-happens-when-you-run-ls.html"
+    },
+    {
       "slug": "kubernetes-when-how-why-where",
       "file": "kubernetes-when-how-why-where.html",
       "title": "Kubernetes for Business Leaders \u2014 When, How, Why, and Where \u2014 Babulal Tamang",
@@ -458,6 +476,15 @@
       "keywords": "Git, GitHub, version control, DevOps, pull request, GitHub Actions, Babulal Tamang",
       "breadcrumb": "Git &amp; GitHub course",
       "content_file": "git-github-course-in-depth.html"
+    },
+    {
+      "slug": "linux-in-depth",
+      "file": "linux-in-depth.html",
+      "title": "Terminal &amp; DevOps: Linux Command Line in Depth \u2014 Babulal Tamang",
+      "description": "Terminal and DevOps handbook: Linux filesystem and permissions, shell and systemd, troubleshooting playbook, plus Git, Docker, kubectl, Terraform, cloud CLIs, jq, and tmux from the command line.",
+      "keywords": "terminal, Linux, shell, DevOps, kubectl, systemd, Babulal Tamang",
+      "breadcrumb": "Terminal &amp; DevOps",
+      "content_file": "linux-in-depth.html"
     }
   ]
 }
