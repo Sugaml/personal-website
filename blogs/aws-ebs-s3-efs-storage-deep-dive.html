@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>AWS EBS in Depth: EBS vs S3 vs EFS — Babulal Tamang</title>
+  <meta content="Deep dive into Amazon EBS: volume types, performance, snapshots, encryption, and how block storage compares to S3 object storage and EFS shared file systems for architects and operators." name="description">
+  <meta name="author" content="Babulal Tamang">
+  <meta name="keywords" content="AWS EBS, S3, EFS, block storage, object storage, file storage, cloud architect, Babulal Tamang">
+  <link href="../assets/img/favicon.png" rel="icon">
+  <link href="../assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="../assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="../assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="../assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="../assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <link href="../assets/css/style.css" rel="stylesheet">
+  <link href="../assets/css/theme-v2.css" rel="stylesheet">
+</head>
+<body class="theme-v2">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <button class="mobile-nav-toggle d-xl-none" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navbar"><i class="bi bi-list" aria-hidden="true"></i></button>
+  <header id="header">
+    <div class="d-flex flex-column">
+      <div class="profile sidebar-profile">
+        <div class="profile-avatar-wrap">
+          <img src="../assets/img/profile-img.jpg" class="profile-avatar img-fluid" width="132" height="132" alt="Portrait of Babulal Tamang">
+        </div>
+        <h1 class="text-light profile-name"><a href="../index.html">Babulal Tamang</a></h1>
+        <p class="profile-tagline">Platform · DevOps · Software · Cloud Architect · AI/ML Enthusiast</p>
+        <p class="profile-location"><i class="bi bi-geo-alt-fill" aria-hidden="true"></i><span>Kathmandu, Nepal</span></p>
+        <div class="social-links profile-social mt-3 text-center">
+          <a href="https://twitter.com/SugamLa20062317" class="twitter" aria-label="Twitter"><i class="bx bxl-twitter" aria-hidden="true"></i></a>
+          <a href="https://github.com/sugaml/" class="github" aria-label="GitHub"><i class="bx bxl-github" aria-hidden="true"></i></a>
+          <a href="https://www.linkedin.com/in/babulal-tamang-b6507121b/" class="linkedin" aria-label="LinkedIn"><i class="bx bxl-linkedin" aria-hidden="true"></i></a>
+        </div>
+      </div>
+      <nav id="navbar" class="nav-menu navbar" aria-label="Main navigation">
+        <ul>
+          <li><a href="../index.html#hero" class="nav-link scrollto"><i class="bx bx-home" aria-hidden="true"></i> <span>Home</span></a></li>
+          <li><a href="../index.html#about" class="nav-link scrollto"><i class="bx bx-user" aria-hidden="true"></i> <span>About</span></a></li>
+          <li><a href="../index.html#skills" class="nav-link scrollto"><i class="bx bx-code-block" aria-hidden="true"></i> <span>Skills</span></a></li>
+          <li><a href="../index.html#resume" class="nav-link scrollto"><i class="bx bx-file-blank" aria-hidden="true"></i> <span>Resume</span></a></li>
+          <li><a href="../index.html#certifications" class="nav-link scrollto"><i class="bx bx-award" aria-hidden="true"></i> <span>Certifications</span></a></li>
+          <li><a href="../index.html#blog" class="nav-link scrollto active"><i class="bx bx-book-content" aria-hidden="true"></i> <span>Blog</span></a></li>
+          <li><a href="../index.html#survey" class="nav-link scrollto"><i class="bx bx-shield-quarter" aria-hidden="true"></i> <span>Cybersecurity Survey</span></a></li>
+          <li><a href="../index.html#what-i-use" class="nav-link scrollto"><i class="bx bx-wrench" aria-hidden="true"></i> <span>What I Use</span></a></li>
+          <li><a href="../index.html#contact" class="nav-link scrollto"><i class="bx bx-envelope" aria-hidden="true"></i> <span>Contact</span></a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <main id="main">
+    <section class="breadcrumbs">
+      <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+          <h2>Blog</h2>
+          <ol>
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../index.html#blog">Blog</a></li>
+            <li>AWS EBS, S3, and EFS</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+    <article class="inner-page blog-article pb-5">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-9 col-xl-8">
+            <header class="mb-4 pb-3 border-bottom" data-aos="fade-up">
+              <div class="blog-article-meta mb-3">
+                <p class="text-muted small mb-2">AWS · Storage · <time datetime="2026-05-20">20 May 2026</time> · <span class="blog-meta-label">Guide</span> · By <a href="../index.html#about" class="blog-author text-reset fw-semibold" rel="author">Babulal Tamang</a></p>
+              <ul class="blog-tags list-unstyled d-flex flex-wrap gap-1 mb-0" aria-label="Tags">
+                <li><span class="badge rounded-pill text-bg-light border text-muted">AWS</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">EBS</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">S3</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">EFS</span></li>
+              </ul>
+              </div>
+              <h1 class="h2 mb-3">Amazon EBS in Depth: Block Storage, and How It Compares to S3 and EFS</h1>
+              <p class="lead mb-3">Pick the wrong AWS storage service and you pay twice: in dollars and in rework. <strong>EBS</strong> is network-attached block storage for EC2 and Kubernetes nodes. <strong>S3</strong> is object storage for assets, lakes, and backups at internet scale. <strong>EFS</strong> is a managed NFS file system many instances can share. They are not interchangeable—this post explains what each one is under the hood, when to use it, and how to choose with confidence.</p>
+              <div class="border-start border-primary border-4 ps-3 py-3 bg-light rounded mb-0" role="note">
+                <p class="small text-uppercase text-muted mb-1 fw-semibold">In short</p>
+                <p class="mb-0"><strong>EBS</strong> = one disk-like volume per attachment zone, low latency, POSIX on a single instance (or multi-attach on specific types). <strong>S3</strong> = key/object store, virtually unlimited, accessed over HTTP/API, eventual consistency models vary by operation. <strong>EFS</strong> = shared files across AZs in a region, NFS semantics, scales capacity automatically. Databases and boot volumes → EBS; static assets and data lakes → S3; shared config/content across many servers → EFS.</p>
+              </div>
+            </header>
+
+            <div class="blog-prose" data-aos="fade-up" data-aos-delay="50">
+
+              <h2 class="h4 mt-4">The three storage models on AWS</h2>
+              <p>Every storage product answers two questions: <em>what abstraction does the application see?</em> and <em>how is data reached?</em></p>
+              <table class="table table-sm table-bordered">
+                <thead>
+                  <tr>
+                    <th scope="col">Service</th>
+                    <th scope="col">Model</th>
+                    <th scope="col">Protocol / API</th>
+                    <th scope="col">Typical consumer</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>EBS</strong></td>
+                    <td>Block (raw sectors)</td>
+                    <td>Attached to EC2 as <code>/dev/xvdf</code>; you format ext4, xfs, NTFS</td>
+                    <td>OS, databases, swap, container images on node disk</td>
+                  </tr>
+                  <tr>
+                    <td><strong>S3</strong></td>
+                    <td>Object (bucket + key + metadata)</td>
+                    <td>REST API, SDKs, s3:// URIs</td>
+                    <td>Web assets, backups, analytics, ML datasets</td>
+                  </tr>
+                  <tr>
+                    <td><strong>EFS</strong></td>
+                    <td>File (directories, files, permissions)</td>
+                    <td>NFSv4.1 (mount <code>efs-dns:/</code>)</td>
+                    <td>Shared uploads, CMS content, legacy apps expecting NFS</td>
+                  </tr>
+                </tbody>
+              </table>
+              <p>Block storage does not know about files—your OS creates a filesystem on top. Object storage does not have a traditional “folder” hierarchy (prefixes are a convenience). File storage gives you paths and locks multiple hosts can use—if the application and protocol support it.</p>
+
+              <h2 class="h4 mt-5">Amazon EBS: what it really is</h2>
+              <p><strong>Amazon Elastic Block Store (EBS)</strong> provides durable block-level volumes in a single Availability Zone (AZ). A volume is a replicated storage entity in that AZ; AWS manages the hardware and replication so you manage mount points and filesystems.</p>
+
+              <h3 class="h5 mt-4">Lifecycle: create, attach, use, snapshot, delete</h3>
+              <ol>
+                <li><strong>Create</strong> — Empty volume or restored from snapshot; size and type are fixed at creation (expansion is supported later for most types).</li>
+                <li><strong>Attach</strong> — Bound to an EC2 instance in the <em>same AZ</em> as the volume. Cross-AZ attach is not supported for standard use.</li>
+                <li><strong>Initialize</strong> — First-touch on restored or new large volumes can cause latency spikes; use <strong>Fast Snapshot Restore</strong> or pre-warm for latency-sensitive workloads.</li>
+                <li><strong>Snapshot</strong> — Point-in-time backup to S3 (incremental, stored in AWS-managed buckets you do not administer).</li>
+                <li><strong>Detach / delete</strong> — Detach cleanly when possible; delete volume when no longer needed. Orphaned volumes are a classic FinOps leak—see <a href="finops-greenops-5-smarter-lighter.html">FinOps + GreenOps (architect view)</a>.</li>
+              </ol>
+
+              <h3 class="h5 mt-4">Volume types (the decision that sticks)</h3>
+              <p>EBS splits into <strong>SSD-backed</strong> (general and IOPS-focused) and <strong>HDD-backed</strong> (throughput-focused). Choose by IOPS, throughput, and cost—not by habit.</p>
+              <table class="table table-sm table-bordered">
+                <thead>
+                  <tr>
+                    <th scope="col">Type</th>
+                    <th scope="col">Use case</th>
+                    <th scope="col">Performance shape</th>
+                    <th scope="col">Notes</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>gp3</strong></td>
+                    <td>Default for boot and most workloads</td>
+                    <td>3,000 IOPS and 125 MiB/s baseline; provision IOPS/throughput independently</td>
+                    <td>Usually cheaper and more flexible than gp2; prefer for new volumes</td>
+                  </tr>
+                  <tr>
+                    <td><strong>gp2</strong></td>
+                    <td>Legacy general purpose</td>
+                    <td>IOPS scales with size (3 IOPS/GiB, burst credits on small volumes)</td>
+                    <td>Migrate to gp3 when resizing or refactoring</td>
+                  </tr>
+                  <tr>
+                    <td><strong>io2 Block Express / io2</strong></td>
+                    <td>OLTP databases, latency-sensitive apps</td>
+                    <td>Up to 256,000 IOPS (io2 Block Express), 99.999% durability SLA on io2</td>
+                    <td>Highest cost; justify with measured IOPS needs</td>
+                  </tr>
+                  <tr>
+                    <td><strong>st1</strong></td>
+                    <td>Big data, log processing, streaming reads</td>
+                    <td>Throughput-optimized HDD; cannot be boot volume</td>
+                    <td>Cheaper $/GB; not for random small I/O</td>
+                  </tr>
+                  <tr>
+                    <td><strong>sc1</strong></td>
+                    <td>Cold, infrequently accessed throughput workloads</td>
+                    <td>Lowest HDD cost; lowest throughput tier</td>
+                    <td>Rarely right for production databases</td>
+                  </tr>
+                </tbody>
+              </table>
+              <p><strong>Provisioned IOPS vs throughput:</strong> On gp3 and io volumes you pay for configured IOPS and MB/s. Oversizing wastes money; undersizing causes queue depth and latency. Use CloudWatch metrics <code>VolumeReadOps</code>, <code>VolumeWriteOps</code>, <code>VolumeQueueLength</code>, and <code>VolumeThroughputPercentage</code> before upgrading to io2.</p>
+
+              <h3 class="h5 mt-4">Durability, AZ binding, and Multi-Attach</h3>
+              <ul>
+                <li><strong>AZ scope</strong> — An EBS volume lives in one AZ. If that AZ has an impairment, you fail over by snapshot/restore or replication into another AZ—not by “moving” the same volume.</li>
+                <li><strong>Replication</strong> — AWS replicates within the AZ infrastructure; your snapshot is the cross-region/cross-AZ portability mechanism.</li>
+                <li><strong>Multi-Attach</strong> — <code>io1</code>/<code>io2</code> only: one volume attached to multiple instances in the same AZ. Requires a cluster-aware filesystem (e.g. GFS2, OCFS2)—not a default ext4 on two Linux boxes (that corrupts data).</li>
+              </ul>
+
+              <h3 class="h5 mt-4">Snapshots and AMIs</h3>
+              <p>EBS snapshots are the bridge between block storage and the rest of AWS:</p>
+              <ul>
+                <li><strong>Incremental</strong> — Only changed blocks since the last snapshot are stored; cost grows with churn, not full size every time.</li>
+                <li><strong>Crash-consistent by default</strong> — For databases, quiesce or use VSS/agent for application-consistent snapshots.</li>
+                <li><strong>AMI baking</strong> — Launch templates and Auto Scaling often come from AMIs backed by snapshots of root volumes.</li>
+                <li><strong>Cross-region copy</strong> — Disaster recovery and DR drills; watch data transfer charges.</li>
+              </ul>
+              <p>Snapshot data physically resides in S3’s infrastructure, but you interact through the EC2 snapshot API—not as public S3 objects you list in a bucket.</p>
+
+              <h3 class="h5 mt-4">Encryption</h3>
+              <p>Enable <strong>encryption by default</strong> at the account/Region level. EBS uses KMS keys (AWS-managed or customer-managed CMK). Encryption applies to volumes, snapshots, and volumes created from encrypted snapshots. Performance impact is negligible on modern instance types. Combine with tight KMS key policies and CloudTrail for audit.</p>
+
+              <h3 class="h5 mt-4">Instance store vs EBS</h3>
+              <p>Some instance families include <strong>instance store</strong> (local NVMe). It is physically attached to the host: very fast, but ephemeral if the instance stops or is terminated (with exceptions for stop/start behavior on Nitro—still plan for loss). Use instance store for scratch, caches, and temporary shuffle; use EBS for anything that must survive instance replacement.</p>
+
+              <h2 class="h4 mt-5">Amazon S3: object storage in depth</h2>
+              <p><strong>Amazon S3</strong> stores objects (up to 5 TiB per object in standard storage) in buckets. There is no “attach” step—applications call the API. That decoupling is why S3 scales to virtually unlimited data and request rates (with prefix design for very hot keys).</p>
+
+              <h3 class="h5 mt-4">Core concepts</h3>
+              <ul>
+                <li><strong>Bucket</strong> — Global unique name; lives in a Region; you choose where data resides for compliance.</li>
+                <li><strong>Key</strong> — Full path-like identifier (<code>reports/2026/q1/summary.parquet</code>).</li>
+                <li><strong>Storage class</strong> — Standard, Intelligent-Tiering, Standard-IA, One Zone-IA, Glacier Instant/Flexible/Deep Archive. Lifecycle policies transition objects automatically.</li>
+                <li><strong>Versioning</strong> — Protects against overwrite and delete mistakes; increases storage when objects churn.</li>
+                <li><strong>MFA Delete</strong> — Extra guardrail for versioned bucket deletes.</li>
+              </ul>
+
+              <h3 class="h5 mt-4">Consistency and performance</h3>
+              <p>S3 provides strong read-after-write consistency for new objects and overwrites in all Regions today—a historical caveat exam questions loved is largely outdated for new designs. Performance tuning means:</p>
+              <ul>
+                <li><strong>Prefix spread</strong> — Randomize hot key prefixes for extreme parallel workloads (historical 3,500 PUT/s per prefix guidance has evolved—still avoid single-key hotspots).</li>
+                <li><strong>Transfer Acceleration / CloudFront</strong> — For global uploads and downloads.</li>
+                <li><strong>S3 Express One Zone</strong> — Millisecond latency for frequently accessed data in a single AZ when you need object semantics with lower latency than cross-AZ standard S3.</li>
+              </ul>
+
+              <h3 class="h5 mt-4">Security and access patterns</h3>
+              <ul>
+                <li><strong>Block public access</strong> — Account-level settings first.</li>
+                <li><strong>IAM and bucket policies</strong> — Identity-based plus resource-based; Condition keys for TLS, IP, VPC endpoints.</li>
+                <li><strong>SSE-S3, SSE-KMS, SSE-C</strong> — Encryption at rest; KMS for audit and key rotation control.</li>
+                <li><strong>VPC endpoints (Gateway)</strong> — Keep traffic off the public internet and reduce NAT costs for high-volume S3 access from private subnets—pairs well with <a href="aws-network-architecture-design.html">VPC endpoint strategy</a>.</li>
+              </ul>
+
+              <h3 class="h5 mt-4">What S3 is bad at</h3>
+              <p>S3 is not a POSIX filesystem for a database’s random 8 KiB writes. You do not “mount” standard S3 as <code>/var/lib/mysql</code> without an adapter (Mountpoint for Amazon S3, s3fs, or application-level SDK access)—and those patterns suit specific access shapes, not generic transactional DB storage. Latency is milliseconds over the network API, not microseconds on attached NVMe.</p>
+
+              <h2 class="h4 mt-5">Amazon EFS: managed NFS in depth</h2>
+              <p><strong>Amazon Elastic File System (EFS)</strong> is a regional, elastic, fully managed NFSv4 file system. Many EC2 instances, Lambda functions (with EFS mount targets), and ECS tasks can mount the same file system concurrently.</p>
+
+              <h3 class="h5 mt-4">Performance modes and classes</h3>
+              <ul>
+                <li><strong>Regional EFS</strong> — Replicates across AZs in the Region; mount targets in each AZ for low-latency local access.</li>
+                <li><strong>One Zone EFS</strong> — Lower cost; data in a single AZ—understand availability trade-offs.</li>
+                <li><strong>Throughput modes</strong> — Bursting (ties throughput to size), Provisioned (fixed MB/s), Elastic (scales with workload—common default for variable traffic).</li>
+                <li><strong>EFS Intelligent-Tiering</strong> — Moves files not accessed for a period to Infrequent Access storage class automatically.</li>
+              </ul>
+
+              <h3 class="h5 mt-4">Semantics that matter</h3>
+              <ul>
+                <li><strong>POSIX-ish</strong> — File locks, permissions, append—good for shared content, bad fit for latency-sensitive DB data compared to local EBS.</li>
+                <li><strong>ReadWriteMany in Kubernetes</strong> — EFS CSI driver enables <code>ReadWriteMany</code> PVCs; EBS is typically <code>ReadWriteOnce</code> per node. See <a href="kubernetes-storage-pv-pvc-storageclass.html">Kubernetes storage (PV, PVC, StorageClass)</a> and <a href="kubernetes-cri-csi-deep-dive.html">CRI vs CSI deep dive</a>.</li>
+                <li><strong>Security</strong> — Security groups on mount targets, IAM authorization for NFS clients, encryption in transit and at rest.</li>
+              </ul>
+
+              <h2 class="h4 mt-5">Head-to-head comparison</h2>
+
+              <h3 class="h5 mt-4">Abstraction and access</h3>
+              <table class="table table-sm table-bordered">
+                <thead>
+                  <tr>
+                    <th scope="col">Dimension</th>
+                    <th scope="col">EBS</th>
+                    <th scope="col">S3</th>
+                    <th scope="col">EFS</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Unit of storage</td>
+                    <td>Volume (sectors)</td>
+                    <td>Object (key + bytes + metadata)</td>
+                    <td>File + directory tree</td>
+                  </tr>
+                  <tr>
+                    <td>Attach / access</td>
+                    <td>One EC2 per volume (Multi-Attach exception)</td>
+                    <td>HTTP/API; no attach</td>
+                    <td>NFS mount; thousands of clients</td>
+                  </tr>
+                  <tr>
+                    <td>Max size mindset</td>
+                    <td>64 TiB per volume (types vary)</td>
+                    <td>Practically unlimited bucket</td>
+                    <td>Petabyte-scale elastic</td>
+                  </tr>
+                  <tr>
+                    <td>Latency</td>
+                    <td>Low (microseconds–low ms to volume)</td>
+                    <td>Higher (API round trip)</td>
+                    <td>Low ms; not DB-class random I/O</td>
+                  </tr>
+                  <tr>
+                    <td>AZ / Region</td>
+                    <td>Single AZ per volume</td>
+                    <td>Regional service; cross-Region replication optional</td>
+                    <td>Regional (or One Zone)</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <h3 class="h5 mt-4">Durability, availability, and backup</h3>
+              <table class="table table-sm table-bordered">
+                <thead>
+                  <tr>
+                    <th scope="col">Dimension</th>
+                    <th scope="col">EBS</th>
+                    <th scope="col">S3</th>
+                    <th scope="col">EFS</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Durability design</td>
+                    <td>Replicated within AZ; 99.8–99.999% by volume type</td>
+                    <td>99.999999999% (11 nines) for objects across facilities</td>
+                    <td>Regional: survives AZ loss; One Zone: AZ-scoped</td>
+                  </tr>
+                  <tr>
+                    <td>Backup pattern</td>
+                    <td>Snapshots → incremental in S3 backend</td>
+                    <td>Versioning, replication, Glacier tiers</td>
+                    <td>AWS Backup, replication to secondary Region</td>
+                  </tr>
+                  <tr>
+                    <td>Disaster recovery</td>
+                    <td>Copy snapshots AMIs cross-Region; rehearse restore time</td>
+                    <td>CRR, Batch Replication, S3 Object Lock for compliance</td>
+                    <td>EFS replication, failover runbooks</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <h3 class="h5 mt-4">Cost drivers (simplified)</h3>
+              <table class="table table-sm table-bordered">
+                <thead>
+                  <tr>
+                    <th scope="col">You pay for</th>
+                    <th scope="col">EBS</th>
+                    <th scope="col">S3</th>
+                    <th scope="col">EFS</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Capacity</td>
+                    <td>GiB-month provisioned (size of volume)</td>
+                    <td>GiB-month per storage class</td>
+                    <td>GiB-month (Standard vs IA tiers)</td>
+                  </tr>
+                  <tr>
+                    <td>Performance</td>
+                    <td>Provisioned IOPS &amp; throughput (gp3, io)</td>
+                    <td>Requests (PUT/GET/LIST); retrieval fees on IA/Glacier</td>
+                    <td>Provisioned throughput if not using Elastic/Bursting</td>
+                  </tr>
+                  <tr>
+                    <td>Data movement</td>
+                    <td>Snapshot storage; cross-Region copy; no charge for attach in same AZ</td>
+                    <td>Egress to internet; inter-Region replication</td>
+                    <td>No charge for access from same AZ mount target; cross-AZ charges apply</td>
+                  </tr>
+                  <tr>
+                    <td>Hidden waste</td>
+                    <td>Unattached volumes, oversized gp2, old snapshots</td>
+                    <td>Incomplete multipart uploads, non-current versions, wrong lifecycle</td>
+                    <td>Over-provisioned throughput; cold data on Standard tier</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <h2 class="h4 mt-5">Decision flow (architect view)</h2>
+              <pre class="bg-light p-3 rounded"><code>Need POSIX files shared by many instances in real time?
+  └─ Yes → EFS (or FSx if you need Windows/SMB, Lustre, NetApp, etc.)
+  └─ No ↓
+
+Need block device for OS or database on one (or clustered) instance?
+  └─ Yes → EBS (pick gp3 unless metrics prove io2)
+  └─ No ↓
+
+Need durable objects, static assets, lake, backup target, event-driven processing?
+  └─ Yes → S3 (+ CloudFront, Lambda, Athena, lifecycle rules)</code></pre>
+
+              <h3 class="h5 mt-4">Workload cheat sheet</h3>
+              <table class="table table-sm table-bordered">
+                <thead>
+                  <tr>
+                    <th scope="col">Workload</th>
+                    <th scope="col">Best fit</th>
+                    <th scope="col">Why</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>EC2 root / boot volume</td>
+                    <td>EBS (gp3)</td>
+                    <td>Block device the hypervisor boots from</td>
+                  </tr>
+                  <tr>
+                    <td>PostgreSQL / MySQL on EC2</td>
+                    <td>EBS io2/gp3 (or RDS, which uses EBS under the hood)</td>
+                    <td>Predictable block I/O, snapshot backup story</td>
+                  </tr>
+                  <tr>
+                    <td>Static website, images, videos</td>
+                    <td>S3 + CloudFront</td>
+                    <td>Massive scale, cheap $/GB, global edge</td>
+                  </tr>
+                  <tr>
+                    <td>Data lake, ETL landing zone</td>
+                    <td>S3</td>
+                    <td>Object semantics integrate with Glue, Athena, Spark</td>
+                  </tr>
+                  <tr>
+                    <td>WordPress / shared HTML across Auto Scaling group</td>
+                    <td>EFS</td>
+                    <td>RWX without custom sync</td>
+                  </tr>
+                  <tr>
+                    <td>Kubernetes stateful pod (single node writer)</td>
+                    <td>EBS via CSI</td>
+                    <td>RWO volumes; mind AZ topology</td>
+                  </tr>
+                  <tr>
+                    <td>Kubernetes many-replica shared config</td>
+                    <td>EFS via CSI</td>
+                    <td>ReadWriteMany support</td>
+                  </tr>
+                  <tr>
+                    <td>Long-term compliance archive</td>
+                    <td>S3 Glacier Deep Archive</td>
+                    <td>Lowest $/GB; retrieval hours acceptable</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <h2 class="h4 mt-5">Operations: commands and checks</h2>
+              <h3 class="h5 mt-4">EBS</h3>
+              <pre class="bg-light p-3 rounded"><code># List volumes; note State and Attachment
+aws ec2 describe-volumes --filters Name=attachment.instance-id,Values=i-0abc123
+
+# Create gp3 volume (same AZ as instance!)
+aws ec2 create-volume --availability-zone ap-south-1a --size 100 --volume-type gp3 \
+  --iops 3000 --throughput 125
+
+# Snapshot
+aws ec2 create-snapshot --volume-id vol-0abc --description "pre-upgrade-$(date +%F)"
+
+# Find unattached volumes (FinOps)
+aws ec2 describe-volumes --filters Name=status,Values=available</code></pre>
+
+              <h3 class="h5 mt-4">S3</h3>
+              <pre class="bg-light p-3 rounded"><code># Sync directory (common deploy/backup pattern)
+aws s3 sync ./build s3://my-app-assets-prod/ --delete
+
+# Encryption default
+aws s3api put-bucket-encryption --bucket my-bucket --server-side-encryption-configuration '{
+  "Rules": [{"ApplyServerSideEncryptionByDefault": {"SSEAlgorithm": "aws:kms"}}]}'
+
+# Lifecycle example: transition to IA after 90 days
+aws s3api put-bucket-lifecycle-configuration --bucket my-bucket --lifecycle-configuration file://lifecycle.json</code></pre>
+
+              <h3 class="h5 mt-4">EFS</h3>
+              <pre class="bg-light p-3 rounded"><code># Create and mount (Amazon Linux 2/2023)
+sudo mkdir /mnt/efs
+sudo mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2 \
+  fs-abc123.efs.ap-south-1.amazonaws.com:/ /mnt/efs
+
+# /etc/fstab for reboot persistence
+fs-abc123.efs.ap-south-1.amazonaws.com:/ /mnt/efs nfs4 nfsvers=4.1,_netdev 0 0</code></pre>
+
+              <h2 class="h4 mt-5">Common mistakes</h2>
+              <ul>
+                <li><strong>EBS in the wrong AZ</strong> — Volume in <code>us-east-1a</code>, instance in <code>us-east-1b</code> → attach fails. Automate AZ in IaC.</li>
+                <li><strong>Using S3 as a database disk</strong> — Wrong tool; use EBS, RDS, or DynamoDB depending on access pattern.</li>
+                <li><strong>EFS for high-IOPS random DB I/O</strong> — Latency and cost profile wrong; EBS or purpose-built DB service wins.</li>
+                <li><strong>Ignoring snapshot chain cost</strong> — Frequent snapshots of high-churn volumes add up; lifecycle old snapshots.</li>
+                <li><strong>Public S3 buckets</strong> — Still a headline breach vector; SCPs and Block Public Access at org level.</li>
+                <li><strong>Cross-AZ EFS traffic</strong> — Mount via mount target in the same AZ as the client when possible.</li>
+                <li><strong>Kubernetes zone skew</strong> — Pod rescheduled to another AZ while EBS volume is zonal → PVC Pending. Use topology-aware provisioning.</li>
+              </ul>
+
+              <h2 class="h4 mt-5">Beyond the triad (when none of the three is enough)</h2>
+              <p>AWS storage does not end at EBS, S3, and EFS:</p>
+              <ul>
+                <li><strong>Amazon FSx</strong> — Windows File Server (SMB), Lustre (HPC), NetApp ONTAP, OpenZFS—when protocol or performance requirements are specialized.</li>
+                <li><strong>AWS Backup</strong> — Centralized policies across EBS, EFS, RDS, DynamoDB, etc.</li>
+                <li><strong>Storage Gateway</strong> — Hybrid on-premises cache backed by S3.</li>
+                <li><strong>RDS / Aurora</strong> — Managed databases with their own storage subsystems (often EBS-based, but you operate at the DB layer).</li>
+              </ul>
+              <p>The triad still covers most “where do I put bits?” questions at the architecture whiteboard.</p>
+
+              <h2 class="h4 mt-5">Mental model checklist</h2>
+              <ol>
+                <li>Classify the workload: <strong>block</strong>, <strong>object</strong>, or <strong>file</strong>.</li>
+                <li>Map latency, IOPS, sharing, and durability requirements—not brand familiarity.</li>
+                <li>For EBS: AZ + volume type + snapshot strategy.</li>
+                <li>For S3: storage class + lifecycle + access policy + egress path.</li>
+                <li>For EFS: throughput mode + mount target AZ alignment + tiering.</li>
+                <li>Measure before upsizing; orphaned resources are a design smell and a carbon cost.</li>
+              </ol>
+
+              <h2 class="h4 mt-5">Further reading</h2>
+              <ul>
+                <li>AWS — <em>Amazon EBS User Guide</em> (volume types, monitoring, CloudWatch metrics)</li>
+                <li>AWS — <em>Amazon S3 User Guide</em> (storage classes, security, performance guidelines)</li>
+                <li>AWS — <em>Amazon EFS User Guide</em> (performance modes, throughput, replication)</li>
+                <li>AWS — <em>AWS Well-Architected Framework</em> — Reliability and Cost Optimization pillars</li>
+                <li>AWS — EBS CSI driver and EFS CSI driver documentation for Kubernetes</li>
+              </ul>
+
+              <p class="small text-muted mt-4 mb-2"><a href="../index.html#blog">Blog index</a> · <a href="aws-cloud-architecting.html">Cloud Architecting</a> · <a href="aws-network-architecture-design.html">AWS network architecture</a> · <a href="kubernetes-cri-csi-deep-dive.html">CRI vs CSI</a></p>
+              <p class="mb-0"><a href="../index.html#blog" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left" aria-hidden="true"></i> Back to blog list</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+  </main>
+  <footer id="footer">
+    <div class="container">
+      <div class="copyright">&copy; Copyright <strong><span>babulal.com.np</span></strong></div>
+      <div class="credits">Designed by <a href="https://babulal.com.np/">Babulal Tamang</a></div>
+    </div>
+  </footer>
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+  <script src="../assets/vendor/purecounter/purecounter_vanilla.js"></script>
+  <script src="../assets/vendor/aos/aos.js"></script>
+  <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="../assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="../assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="../assets/vendor/typed.js/typed.min.js"></script>
+  <script src="../assets/vendor/waypoints/noframework.waypoints.js"></script>
+  <script src="../assets/js/main.js"></script>
+</body>
+</html>

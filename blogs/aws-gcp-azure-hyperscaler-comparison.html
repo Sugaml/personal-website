@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>AWS vs GCP vs Azure — Hyperscaler Depth Comparison — Babulal Tamang</title>
+  <meta content="A practical depth comparison of AWS, Google Cloud, and Microsoft Azure: market position, philosophy, enterprise fit, pricing models, hybrid strategy, talent, and when each hyperscaler tends to win." name="description">
+  <meta name="author" content="Babulal Tamang">
+  <meta name="keywords" content="AWS, GCP, Azure, cloud comparison, hyperscaler, multi-cloud, Babulal Tamang">
+  <link href="../assets/img/favicon.png" rel="icon">
+  <link href="../assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="../assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="../assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="../assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="../assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <link href="../assets/css/style.css" rel="stylesheet">
+  <link href="../assets/css/theme-v2.css" rel="stylesheet">
+</head>
+<body class="theme-v2">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <button class="mobile-nav-toggle d-xl-none" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navbar"><i class="bi bi-list" aria-hidden="true"></i></button>
+  <header id="header">
+    <div class="d-flex flex-column">
+      <div class="profile sidebar-profile">
+        <div class="profile-avatar-wrap">
+          <img src="../assets/img/profile-img.jpg" class="profile-avatar img-fluid" width="132" height="132" alt="Portrait of Babulal Tamang">
+        </div>
+        <h1 class="text-light profile-name"><a href="../index.html">Babulal Tamang</a></h1>
+        <p class="profile-tagline">Platform · DevOps · Software · Cloud Architect · AI/ML Enthusiast</p>
+        <p class="profile-location"><i class="bi bi-geo-alt-fill" aria-hidden="true"></i><span>Kathmandu, Nepal</span></p>
+        <div class="social-links profile-social mt-3 text-center">
+          <a href="https://twitter.com/SugamLa20062317" class="twitter" aria-label="Twitter"><i class="bx bxl-twitter" aria-hidden="true"></i></a>
+          <a href="https://github.com/sugaml/" class="github" aria-label="GitHub"><i class="bx bxl-github" aria-hidden="true"></i></a>
+          <a href="https://www.linkedin.com/in/babulal-tamang-b6507121b/" class="linkedin" aria-label="LinkedIn"><i class="bx bxl-linkedin" aria-hidden="true"></i></a>
+        </div>
+      </div>
+      <nav id="navbar" class="nav-menu navbar" aria-label="Main navigation">
+        <ul>
+          <li><a href="../index.html#hero" class="nav-link scrollto"><i class="bx bx-home" aria-hidden="true"></i> <span>Home</span></a></li>
+          <li><a href="../index.html#about" class="nav-link scrollto"><i class="bx bx-user" aria-hidden="true"></i> <span>About</span></a></li>
+          <li><a href="../index.html#skills" class="nav-link scrollto"><i class="bx bx-code-block" aria-hidden="true"></i> <span>Skills</span></a></li>
+          <li><a href="../index.html#resume" class="nav-link scrollto"><i class="bx bx-file-blank" aria-hidden="true"></i> <span>Resume</span></a></li>
+          <li><a href="../index.html#certifications" class="nav-link scrollto"><i class="bx bx-award" aria-hidden="true"></i> <span>Certifications</span></a></li>
+          <li><a href="../index.html#blog" class="nav-link scrollto active"><i class="bx bx-book-content" aria-hidden="true"></i> <span>Blog</span></a></li>
+          <li><a href="../index.html#survey" class="nav-link scrollto"><i class="bx bx-shield-quarter" aria-hidden="true"></i> <span>Cybersecurity Survey</span></a></li>
+          <li><a href="../index.html#what-i-use" class="nav-link scrollto"><i class="bx bx-wrench" aria-hidden="true"></i> <span>What I Use</span></a></li>
+          <li><a href="../index.html#contact" class="nav-link scrollto"><i class="bx bx-envelope" aria-hidden="true"></i> <span>Contact</span></a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <main id="main">
+    <section class="breadcrumbs">
+      <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+          <h2>Blog</h2>
+          <ol>
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../index.html#blog">Blog</a></li>
+            <li>Hyperscaler comparison</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+    <article class="inner-page blog-article pb-5">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-9 col-xl-8">
+            <header class="mb-4 pb-3 border-bottom" data-aos="fade-up">
+              <div class="blog-article-meta mb-3">
+                <p class="text-muted small mb-2">Platform &amp; cloud · <time datetime="2026-05-20">20 May 2026</time> · <span class="blog-meta-label">Guide · Part 1/2</span> · By <a href="../index.html#about" class="blog-author text-reset fw-semibold" rel="author">Babulal Tamang</a></p>
+              <ul class="blog-tags list-unstyled d-flex flex-wrap gap-1 mb-0" aria-label="Tags">
+                <li><span class="badge rounded-pill text-bg-light border text-muted">AWS</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">GCP</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Azure</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Multi-cloud</span></li>
+              </ul>
+              </div>
+              <h1 class="h2 mb-3">AWS, GCP, and Azure: A Depth Comparison Beyond the Feature Checklist</h1>
+              <p class="lead mb-3">Choosing a hyperscaler is rarely about which console looks prettiest. It is about market gravity, how each vendor thinks about the enterprise, where their engineering DNA shows up, and what your organization already runs. This post compares AWS, Google Cloud, and Microsoft Azure at that depth—before we map individual services in Part 2.</p>
+              <div class="border-start border-primary border-4 ps-3 py-3 bg-light rounded mb-0" role="note">
+                <p class="small text-uppercase text-muted mb-1 fw-semibold">In short</p>
+                <p class="mb-0">AWS leads breadth and maturity; Azure wins Microsoft-centric enterprises; GCP excels at data, Kubernetes, and AI-native stacks. All three are production-grade. Pick based on workload fit, existing licenses, talent, compliance regions, and exit strategy—not slogans.</p>
+              </div>
+            </header>
+
+            <div class="blog-prose" data-aos="fade-up" data-aos-delay="50">
+
+              <h2 class="h4 mt-4">The three hyperscalers in context</h2>
+              <p><strong>Amazon Web Services (AWS)</strong> launched public cloud infrastructure at scale in 2006 and still carries the largest service catalog and market share. <strong>Microsoft Azure</strong> grew from enterprise agreements and hybrid datacenter roots—Active Directory, Windows Server, SQL Server, and Office are gravitational fields. <strong>Google Cloud Platform (GCP)</strong> arrived later as a commercial offering but inherits decades of Google-scale distributed systems: Borg, Bigtable, Spanner, Kubernetes, and TensorFlow.</p>
+              <p>All three meet NIST’s cloud characteristics—on-demand self-service, broad network access, resource pooling, rapid elasticity, measured service. Differences show up in <em>how</em> they package those capabilities and who they optimize for first.</p>
+
+              <h2 class="h4 mt-5">Philosophy and product DNA</h2>
+
+              <h3 class="h5 mt-4">AWS: builder-first, service-rich, customer-obsessed operations</h3>
+              <p>AWS’s culture is “everything is an API.” The catalog grew organically: hundreds of services, many overlapping, each solving a niche a customer asked for. That yields unmatched choice—and cognitive load. Teams that want granular control, early access to new primitives, and a hire-from-anywhere talent pool often default here.</p>
+              <p>Strengths that follow from DNA: operational maturity, partner ecosystem, IAM depth, edge (CloudFront), and sheer reference architecture volume. Friction: console complexity, naming inconsistency across services, and pricing that rewards FinOps discipline.</p>
+
+              <h3 class="h5 mt-4">Azure: enterprise integration and hybrid continuity</h3>
+              <p>Azure is built for organizations that already live in Microsoft. Entra ID (formerly Azure AD), hybrid identity, Windows workloads, .NET, SQL, and Microsoft 365 licensing create natural on-ramps. Azure Arc extends management to on-premises and other clouds—a deliberate hybrid story.</p>
+              <p>Strengths: identity and governance for regulated enterprises, SAP and Oracle partnerships, strong PaaS for .NET, and procurement familiarity for existing EA customers. Friction: documentation sprawl, occasional service parity lag behind AWS in niche areas, and the need to navigate product renaming (Resource Manager vs classic resources are mostly history, but mental models linger).</p>
+
+              <h3 class="h5 mt-4">GCP: engineering rigor, open source, data and AI</h3>
+              <p>GCP sells itself to teams that care about clean APIs, Kubernetes-native design, and data analytics. Google invented or popularized much of the cloud-native stack; GKE was Kubernetes before Kubernetes was everywhere. BigQuery, Pub/Sub, and Spanner reflect Google’s internal patterns exported as products.</p>
+              <p>Strengths: networking (Andromeda), live migration on Compute Engine, GKE operations, data warehouse and ML (Vertex AI), and sustained-use or committed-use discounts that are straightforward relative to AWS’s discount maze. Friction: smaller absolute market share in many regions, fewer third-party integrations than AWS in some verticals, and enterprise sales motion that matured later than the other two.</p>
+
+              <h2 class="h4 mt-5">At-a-glance comparison</h2>
+              <div class="table-responsive">
+                <table class="table table-sm table-bordered align-middle">
+                  <caption class="small text-muted">General dimensions—approximate industry positioning, not financial advice.</caption>
+                  <thead class="table-light">
+                    <tr>
+                      <th scope="col">Dimension</th>
+                      <th scope="col">AWS</th>
+                      <th scope="col">Azure</th>
+                      <th scope="col">GCP</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th scope="row">Typical sweet spot</th>
+                      <td>Startups to enterprises; broad workloads</td>
+                      <td>Microsoft shops; hybrid; regulated enterprise</td>
+                      <td>Data/ML; K8s-native; analytics-heavy</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Service catalog</th>
+                      <td>Largest (200+ categories)</td>
+                      <td>Very large; strong PaaS</td>
+                      <td>Focused; fewer but deep in data/K8s</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Regions (approx.)</th>
+                      <td>30+ geographic regions</td>
+                      <td>60+ announced regions</td>
+                      <td>40+ regions</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Identity centerpiece</th>
+                      <td>IAM + Organizations + SSO</td>
+                      <td>Entra ID + RBAC + Policy</td>
+                      <td>Cloud IAM + Workforce/Workload ID</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Kubernetes</th>
+                      <td>EKS (managed control plane)</td>
+                      <td>AKS (strong Windows node story)</td>
+                      <td>GKE (reference implementation)</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Hybrid / multi-cloud</th>
+                      <td>Outposts, EKS Anywhere, partnerships</td>
+                      <td>Arc, Stack HCI, strong hybrid</td>
+                      <td>Anthos (GKE everywhere)</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Billing culture</th>
+                      <td>Granular; Savings Plans / RIs</td>
+                      <td>EA alignment; reservations</td>
+                      <td>Sustained use + CUDs; simpler SKUs</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <h2 class="h4 mt-5">Global footprint and compliance</h2>
+              <p>All three operate worldwide region/zone models with sovereign and government clouds where required (e.g. AWS GovCloud, Azure Government, GCP Assured Workloads). Choice often comes down to <strong>specific country presence</strong>—a bank in Seoul may care which region opened first—and <strong>certification attestations</strong> for their sector (PCI, HIPAA, ISO 27001, FedRAMP).</p>
+              <p>Do not assume parity: a service “generally available” in us-east-1 may still be preview in europe-west3. Architecture reviews should list required regions and check service availability matrices per provider.</p>
+
+              <h2 class="h4 mt-5">Pricing and commercial models (depth, not line items)</h2>
+              <p>Public list prices differ by workload; <strong>effective cost</strong> depends on commitments, architecture, and discipline.</p>
+              <ul>
+                <li><strong>AWS</strong> popularized Reserved Instances and Savings Plans; spot instances for fault-tolerant batch; complex but optimizable at scale.</li>
+                <li><strong>Azure</strong> often bundles cloud spend into existing Enterprise Agreements; Hybrid Benefit discounts Windows/SQL licenses you already own.</li>
+                <li><strong>GCP</strong> applies automatic sustained-use discounts on Compute Engine and Committed Use Discounts (CUDs) for predictable spend; BigQuery separates storage and query pricing clearly.</li>
+              </ul>
+              <p>None of the three punishes you for being small; all three can surprise you at scale without <a href="finops-greenops-3-finops-plain-english.html">FinOps</a> visibility. Compare <em>workload-shaped</em> estimates, not headline vCPU prices. See also the <a href="finops-greenops-1-invisible-bill.html">invisible bill</a> series for why cost culture matters as much as unit rates.</p>
+
+              <h2 class="h4 mt-5">Enterprise adoption patterns</h2>
+              <p><strong>Greenfield startups</strong> often pick AWS or GCP for hiring pools and tutorials; Azure wins when the founder’s corporate card is tied to Microsoft. <strong>Enterprises</strong> frequently land on Azure when identity and desktop standards are Microsoft; AWS when they want maximum service choice; GCP when analytics or ML is the strategic bet.</p>
+              <p><strong>Regulated industries</strong> care about landing zones, guardrails, and audit evidence— achievable on all three with different reference architectures (AWS Control Tower, Azure Landing Zone, GCP Foundation Toolkit).</p>
+
+              <h2 class="h4 mt-5">Developer and platform experience</h2>
+              <p>AWS CLI and CloudFormation/Terraform modules are everywhere; the learning curve is steep but documentation and community answers are abundant. Azure’s portal and Bicep/ARM templates resonate with teams already using Visual Studio and GitHub Actions (now Microsoft-owned). GCP’s gcloud CLI, Cloud Shell, and opinionated defaults appeal to engineers who prefer fewer knobs—until they need a niche service AWS shipped years ago.</p>
+              <p>For <strong>platform engineering</strong>, all three support internal developer portals, policy-as-code, and GitOps patterns described in <a href="gitops-principles.html">GitOps principles</a>. The difference is which managed services your paved road wraps first.</p>
+
+              <h2 class="h4 mt-5">When each hyperscaler tends to win</h2>
+              <p>Use this as a decision lens, not a law:</p>
+              <ul>
+                <li><strong>Lean AWS</strong> when you need the broadest catalog, largest partner network, mature edge and serverless (Lambda), or your team already holds AWS certifications.</li>
+                <li><strong>Lean Azure</strong> when Entra ID is the identity system of record, you run Windows/SQL/.NET heavily, or hybrid Arc is non-negotiable.</li>
+                <li><strong>Lean GCP</strong> when Kubernetes is central, you are building on BigQuery/Vertex, or you want Google-grade networking and data tooling without assembling every piece yourself.</li>
+              </ul>
+              <p>Many organizations run <strong>two clouds</strong> for acquisition integration, geographic redundancy, or vendor negotiation—not because they love operational duplication.</p>
+
+              <h2 class="h4 mt-5">Multi-cloud, lock-in, and exit strategy</h2>
+              <p>Portable layers—Kubernetes, Postgres, Terraform, OpenTelemetry—reduce switching cost. Proprietary layers—DynamoDB-specific access patterns, Azure AD B2C custom policies, BigQuery-specific SQL—buy capability at the price of migration effort.</p>
+              <p>Honest multi-cloud uses each provider where it is best (e.g. GCP for analytics, AWS for retail edge) with shared governance, not identical stacks copy-pasted three times. Plan <strong>exit options</strong> for tier-0 data stores and identity; treat proprietary AI APIs as replaceable adapters where regulation requires.</p>
+
+              <h2 class="h4 mt-5">Talent, certifications, and hiring</h2>
+              <p>AWS certifications (Cloud Practitioner → Solutions Architect → specialty) remain the most recognized globally. Azure role-based paths align with enterprise job titles. GCP Professional Cloud Architect and data/ML certs signal strong engineering hires for analytics teams.</p>
+              <p>Hiring markets vary by city: Kathmandu, Singapore, and London will show different skill pools. Standardize internal learning paths but avoid certification theater without hands-on labs.</p>
+
+              <h2 class="h4 mt-5">Sustainability and responsibility</h2>
+              <p>All three publish carbon transparency tools and renewable energy goals. Instance choice, region selection, and rightsizing still dominate your footprint more than logo color. Align technical decisions with <a href="finops-greenops-4-greenops-plain-english.html">GreenOps</a> practice, not marketing PDFs alone.</p>
+
+              <h2 class="h4 mt-5">What this series does next</h2>
+              <p>Part 2 maps concrete services—compute, storage, databases, networking, identity, observability, AI, and more—in <a href="aws-gcp-azure-services-mapping.html">AWS, GCP, and Azure: service-by-service mapping</a>. If you are new to cloud vocabulary, read <a href="cloud-platform-evolution.html">cloud platform evolution</a> first; for AWS-specific depth, see the <a href="aws-cloud-practitioner.html">Cloud Practitioner</a> and <a href="aws-cloud-architecting.html">Cloud Architecting</a> notes.</p>
+
+              <h2 class="h4 mt-5">Further reading</h2>
+              <ul>
+                <li>Gartner / Flexera / Synergy — market share and enterprise adoption surveys (yearly)</li>
+                <li>Each provider’s Well-Architected or Cloud Adoption Framework</li>
+                <li>Cloudflare — multi-cloud networking and egress cost analyses</li>
+                <li>FinOps Foundation — unit economics across providers</li>
+              </ul>
+
+              <p class="small text-muted mt-4 mb-2"><a href="../index.html#blog">Blog index</a> · <a href="aws-gcp-azure-services-mapping.html">Part 2: Service mapping</a> · <a href="cloud-platform-evolution.html">Cloud platform evolution</a></p>
+              <p class="mb-0"><a href="../index.html#blog" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left" aria-hidden="true"></i> Back to blog list</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+  </main>
+  <footer id="footer">
+    <div class="container">
+      <div class="copyright">&copy; Copyright <strong><span>babulal.com.np</span></strong></div>
+      <div class="credits">Designed by <a href="https://babulal.com.np/">Babulal Tamang</a></div>
+    </div>
+  </footer>
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+  <script src="../assets/vendor/purecounter/purecounter_vanilla.js"></script>
+  <script src="../assets/vendor/aos/aos.js"></script>
+  <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="../assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="../assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="../assets/vendor/typed.js/typed.min.js"></script>
+  <script src="../assets/vendor/waypoints/noframework.waypoints.js"></script>
+  <script src="../assets/js/main.js"></script>
+</body>
+</html>

@@ -2,6 +2,12 @@
 
 Short log of design decisions and content changes.
 
+## 2026-05-20 — Kubernetes CRI and CSI (guide)
+
+- **Title:** “CRI and CSI: How Kubernetes Plugs In Runtimes and Storage” (article); index card “Kubernetes CRI and CSI”.
+- **Intent:** Disambiguate CRI vs CSI (and CNI); deep-dive on kubelet↔runtime (sandbox, images, crictl), CSI lifecycle (provisioner, attacher, node plugin, StorageClass), in-tree migration, debugging playbook, production pitfalls. Cross-links to architecture, Docker hidden side, RBAC, hands-on lab.
+- **Files:** `blogs/kubernetes-cri-csi-deep-dive.html`, `index.html` (Platform section after architecture), cross-link from `kubernetes-architecture-simple.html` (CRI mention).
+
 ## 2026-05-20 — Kubernetes cluster RBAC (guide)
 
 - **Title:** “Kubernetes Cluster RBAC: The Mental Model That Actually Sticks” (article); index card uses shorter “Kubernetes cluster RBAC”.

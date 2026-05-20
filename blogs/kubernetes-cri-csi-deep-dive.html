@@ -124,7 +124,7 @@
               </ul>
               <p>You still operate “one cluster,” but under the hood the kubelet is a client of pluggable backends. That is why a managed EKS cluster can run <strong>containerd</strong> on nodes while your laptop lab uses <strong>CRI-O</strong>, and why the same Kubernetes version can drive NetApp, Ceph, or AWS EBS through different CSI drivers without recompiling the apiserver.</p>
 
-              <h2 class="h4 mt-5">CRI — Container Runtime Interface</h2>
+              <h2 class="h4 mt-5" id="cri">CRI — Container Runtime Interface</h2>
 
               <h3 class="h5 mt-4">Role in the architecture</h3>
               <p>On every worker node, the <strong>kubelet</strong> is the agent that reconciles Pod specs assigned to that node. It does not fork containers itself. It calls a <strong>container runtime</strong> through CRI—a gRPC API defined in the Kubernetes project (protobuf services such as <code>RuntimeService</code> and <code>ImageService</code>).</p>
@@ -173,6 +173,89 @@ sudo crictl inspect &lt;container-id&gt;</code></pre>
                 <li><strong>RuntimeClass</strong> — Selects a different CRI handler (e.g. gVisor, Kata) per Pod via <code>spec.runtimeClassName</code>.</li>
               </ul>
               <p>Service account tokens and RBAC govern API access; they do not replace runtime isolation. For in-cluster API permissions, see <a href="kubernetes-cluster-rbac.html">Kubernetes cluster RBAC</a>.</p>
+
+              <h3 class="h5 mt-4">dockershim removal (Kubernetes 1.24+)</h3>
+              <p>Docker Engine never implemented CRI. For years, Kubernetes shipped a <strong>dockershim</strong> inside the kubelet that translated CRI calls into Docker API calls. That adapter was removed in <strong>Kubernetes 1.24</strong> (2022). Supported production paths today are direct CRI endpoints—almost always <strong>containerd</strong> or <strong>CRI-O</strong>.</p>
+              <p>What still uses Docker: developer laptops, many CI pipelines, and image builds (Dockerfile, BuildKit). Those produce <strong>OCI images</strong> that any CRI runtime pulls the same way. “We build with Docker” and “our nodes run containerd” is normal, not contradictory.</p>
+
+              <h3 class="h5 mt-4">Three layers: orchestrator, CRI runtime, OCI runtime</h3>
+              <p>When someone says “container runtime” in a Kubernetes context, clarify which layer they mean:</p>
+              <ul>
+                <li><strong>Kubernetes / kubelet</strong> — Decides what should run on the node; never forks processes directly.</li>
+                <li><strong>CRI implementation (containerd, CRI-O)</strong> — Pulls images, manages pod sandboxes, translates CRI into OCI specs.</li>
+                <li><strong>OCI runtime (<code>runc</code>, <code>crun</code>, <code>runsc</code>)</strong> — Creates namespaces, cgroups, and the container process on Linux.</li>
+              </ul>
+
+              <h3 class="h5 mt-4">containerd: daemon, shim, and runc</h3>
+              <p><strong>containerd</strong> is the default on EKS, GKE, AKS, kind, and most kubeadm clusters. Internally it is not a single process doing everything:</p>
+              <ul>
+                <li><strong>containerd</strong> — Long-lived daemon; exposes CRI (when configured), stores image layers and metadata, manages snapshots (often overlayfs).</li>
+                <li><strong>containerd-shim</strong> (v2) — One supervising process per container; keeps stdio and exit status if containerd restarts.</li>
+                <li><strong>runc</strong> — Invoked by the shim to execute the OCI bundle; exits after start while the workload keeps running.</li>
+              </ul>
+              <p>That is why <code>ps</code> on a node shows <code>containerd-shim-runc-v2</code> beside your application. For native introspection (bypassing CRI), operators use <code>ctr -n k8s.io</code> in the Kubernetes namespace containerd reserves.</p>
+
+              <h3 class="h5 mt-4">CRI-O: Kubernetes-first runtime</h3>
+              <p><strong>CRI-O</strong> implements only CRI plus OCI—no Docker-compatible API. It is common on OpenShift and RHEL-family distributions. Choosing CRI-O versus containerd is usually a platform packaging decision; both pass Kubernetes conformance tests for CRI. Differences show up in admin tooling, snapshot drivers, and organizational standards—not in whether Pods schedule.</p>
+
+              <h3 class="h5 mt-4">From Pod spec to Linux process</h3>
+              <p>The API server stores the Pod; the kubelet converts it before each CRI call. Mappings you debug in production:</p>
+              <ul>
+                <li><strong>resources.limits / requests</strong> → cgroup constraints in the OCI spec.</li>
+                <li><strong>securityContext</strong> → UID/GID, capabilities, <code>readOnlyRootFilesystem</code>, seccomp, SELinux/AppArmor profiles.</li>
+                <li><strong>volumeMounts</strong> → bind mounts for Secrets, ConfigMaps, emptyDir, hostPath, CSI paths (after CSI publish succeeds).</li>
+                <li><strong>imagePullSecrets</strong> → registry credentials passed into <code>PullImage</code>.</li>
+                <li><strong>probes</strong> — Evaluated by kubelet inside the pod network namespace; not implemented inside the storage or runtime vendor’s control plane.</li>
+              </ul>
+              <p><code>CreateContainerConfigError</code> often means kubelet could not build that mapping (missing Secret, bad subPath)—before the app process starts.</p>
+
+              <h3 class="h5 mt-4">Runtime roles (quick reference)</h3>
+              <div class="table-responsive">
+                <table class="table table-sm table-bordered">
+                  <thead>
+                    <tr>
+                      <th scope="col">Component</th>
+                      <th scope="col">Speaks to kubelet via</th>
+                      <th scope="col">Typical role</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>containerd</strong></td>
+                      <td>CRI gRPC</td>
+                      <td>Default cloud/node runtime; embeds image store and shims</td>
+                    </tr>
+                    <tr>
+                      <td><strong>CRI-O</strong></td>
+                      <td>CRI gRPC</td>
+                      <td>Lean K8s-native runtime on OpenShift/RHEL stacks</td>
+                    </tr>
+                    <tr>
+                      <td><strong>runc</strong></td>
+                      <td>OCI spec (invoked by shim)</td>
+                      <td>Creates actual container process</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Docker Engine</strong></td>
+                      <td>Docker API (not CRI)</td>
+                      <td>Build/local dev; not kubelet’s node endpoint post-1.24</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <h3 class="h5 mt-4">Node operations: sockets and privilege</h3>
+              <p>CRI is a Unix domain socket (path varies by distro):</p>
+              <pre class="bg-light p-3 rounded small"><code># containerd (common)
+export CONTAINER_RUNTIME_ENDPOINT=unix:///run/containerd/containerd.sock
+
+# CRI-O
+export CONTAINER_RUNTIME_ENDPOINT=unix:///var/run/crio/crio.sock
+
+sudo crictl pods
+sudo crictl ps -a
+sudo crictl logs &lt;container-id&gt;</code></pre>
+              <p>Access to the CRI socket is effectively <strong>root on the node</strong>—treat node SSH and break-glass like cluster-admin. Image garbage collection runs on kubelet thresholds and runtime policies; disk pressure often traces to unbounded image layers or container logs, visible with <code>crictl images</code>.</p>
 
               <h2 class="h4 mt-5">CSI — Container Storage Interface</h2>
 
