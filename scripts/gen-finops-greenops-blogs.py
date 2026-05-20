@@ -1,18 +1,12 @@
 #!/usr/bin/env python3
-"""Generate FinOps/GreenOps series blog posts 3–5 from gitops shell."""
-import re
+"""Generate FinOps/GreenOps series blog posts 3–5."""
+import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
-BLOGS = ROOT / "blogs"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-shell = (BLOGS / "gitops-principles.html").read_text()
-head_tpl = re.search(
-    r"(<!DOCTYPE.*?<main id=\"main\">\s*<section class=\"breadcrumbs\">.*?</section>)",
-    shell,
-    re.S,
-).group(1)
-foot_tpl = re.search(r"(<footer id=\"footer\">.*?</html>)", shell, re.S).group(1)
+from lib.blog_registry import upsert_post  # noqa: E402
+from build_site import build_blogs  # noqa: E402
 
 NAV = [
     ("Technology’s real-world footprint", "finops-greenops-1-invisible-bill.html"),
@@ -40,19 +34,10 @@ def series_nav(part: int) -> str:
     )
 
 
-def build(p: dict) -> str:
-    head = head_tpl.replace(
-        "Git as the Control Plane — GitOps Principles — Babulal Tamang", p["title_page"]
-    )
-    head = re.sub(
-        r'<meta content="[^"]*" name="description">',
-        f'<meta content="{p["meta"]}" name="description">',
-        head,
-    )
-    head = head.replace("<li>GitOps principles</li>", f"<li>{p['crumb']}</li>")
-    article = f"""    <article class="inner-page blog-article pb-5">
+def build_article(p: dict) -> str:
+    return f"""<article class="inner-page blog-article pb-5">
       <div class="container">
-        <motion.div class="row justify-content-center">
+        <div class="row justify-content-center">
           <div class="col-lg-9 col-xl-8">
             <header class="mb-4 pb-3 border-bottom" data-aos="fade-up">
               <p class="text-muted small mb-2">{p['category']} · Part {p['part']} of 5 · <time datetime="2026-05-19">19 May 2026</time></p>
@@ -61,17 +46,16 @@ def build(p: dict) -> str:
               <div class="border-start border-primary border-4 ps-3 py-3 bg-light rounded mb-0" role="note">
                 <p class="small text-uppercase text-muted mb-1 fw-semibold">In short</p>
                 <p class="mb-0">{p['short']}</p>
-              </motion.div>
+              </div>
             </header>
             <div class="blog-prose" data-aos="fade-up" data-aos-delay="50">
               {series_nav(p['part'])}
 {p['body']}
-            </motion.div>
-          </motion.div>
-        </motion.div>
-      </motion.div>
+            </div>
+          </div>
+        </div>
+      </div>
     </article>"""
-    return (head + "\n" + article + "\n  </main>\n  " + foot_tpl).replace("motion.div", "div")
 
 
 POSTS = [
@@ -303,7 +287,9 @@ POSTS = [
     },
 ]
 
-for p in POSTS:
-    out = BLOGS / p["file"]
-    out.write_text(build(p))
-    print("wrote", out.name)
+if __name__ == "__main__":
+    for p in POSTS:
+        upsert_post(p, build_article(p))
+        print("content", p["file"])
+    build_blogs()
+    print("built", len(POSTS), "posts")

@@ -1,10 +1,19 @@
 #!/usr/bin/env python3
 """Add author, keywords meta, and visible tags/labels to blog articles."""
 
+import json
 import re
+import subprocess
+import sys
 from pathlib import Path
 
-BLOGS_DIR = Path(__file__).resolve().parent.parent / "blogs"
+SCRIPTS = Path(__file__).resolve().parent
+ROOT = SCRIPTS.parent
+sys.path.insert(0, str(SCRIPTS))
+
+from lib.paths import BLOG_POSTS_JSON, CONTENT_BLOGS  # noqa: E402
+
+BLOGS_DIR = CONTENT_BLOGS
 AUTHOR = "Babulal Tamang"
 
 # label: index-style type badge; tags: visible topic tags; keywords: meta keywords
@@ -184,6 +193,11 @@ POSTS = {
         "tags": ["Credly", "Certifications", "AWS", "ISO"],
         "keywords": "Credly, digital badges, AWS, ISO, certifications, Babulal Tamang",
     },
+    "incident-disaster-response-calm.html": {
+        "label": "Guide",
+        "tags": ["Incident response", "Disaster recovery", "SRE", "On-call"],
+        "keywords": "incident response, disaster recovery, SRE, on-call, calm under pressure, Babulal Tamang",
+    },
 }
 
 
@@ -271,6 +285,17 @@ def update_article_header(content: str, label: str, tags: list[str]) -> str:
     return content[: m.start()] + replacement + content[m.end() :]
 
 
+def sync_keywords_in_registry(filename: str, keywords: str) -> None:
+    if not BLOG_POSTS_JSON.exists():
+        return
+    data = json.loads(BLOG_POSTS_JSON.read_text(encoding="utf-8"))
+    for post in data.get("posts", []):
+        if post.get("file") == filename:
+            post["keywords"] = keywords
+            break
+    BLOG_POSTS_JSON.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+
+
 def main():
     updated = 0
     for name, meta in POSTS.items():
@@ -280,7 +305,6 @@ def main():
             continue
         text = path.read_text(encoding="utf-8")
         orig = text
-        text = add_head_metas(text, meta["keywords"])
         text = update_article_header(text, meta["label"], meta["tags"])
         if text != orig:
             path.write_text(text, encoding="utf-8")
@@ -288,7 +312,10 @@ def main():
             print(f"OK {name}")
         else:
             print(f"UNCHANGED {name}")
-    print(f"\nUpdated {updated} files.")
+        sync_keywords_in_registry(name, meta["keywords"])
+    if updated:
+        subprocess.run([sys.executable, str(SCRIPTS / "build_site.py")], check=True, cwd=ROOT)
+    print(f"\nUpdated {updated} content files.")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,240 @@
+<article class="inner-page blog-article pb-5">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-9 col-xl-8">
+            <header class="mb-4 pb-3 border-bottom" data-aos="fade-up">
+              <div class="blog-article-meta mb-3">
+                <p class="text-muted small mb-2">Platform &amp; culture · <time datetime="2026-05-20">20 May 2026</time> · <span class="blog-meta-label">Guide</span> · By <a href="../index.html#about" class="blog-author text-reset fw-semibold" rel="author">Babulal Tamang</a></p>
+              <ul class="blog-tags list-unstyled d-flex flex-wrap gap-1 mb-0" aria-label="Tags">
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Redis</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">redis-cli</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Caching</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">DevOps</span></li>
+              </ul>
+              </div>
+              <h1 class="h2 mb-3">Redis and redis-cli: The In-Memory Store Behind Fast APIs</h1>
+              <p class="lead mb-3">Redis is not “just a cache.” It is an in-memory data structure server that applications talk to over the network—often for speed, sometimes as the system of record for short-lived or high-churn data. This guide explains what Redis is, when it fits, how it behaves under load, and how to learn it hands-on with <strong>redis-cli</strong>.</p>
+              <div class="border-start border-primary border-4 ps-3 py-3 bg-light rounded mb-0" role="note">
+                <p class="small text-uppercase text-muted mb-1 fw-semibold">In short</p>
+                <p class="mb-0">Redis keeps data in RAM and exposes simple commands over TCP. Pick the right <strong>data structure</strong> for the job, set <strong>TTLs</strong> and <strong>memory limits</strong> on purpose, and use <code>redis-cli</code> to inspect reality before you trust application logs.</p>
+              </div>
+            </header>
+
+            <div class="blog-prose" data-aos="fade-up" data-aos-delay="50">
+
+              <h2 class="h4 mt-4">What Redis is (and what it is not)</h2>
+              <p><strong>Redis</strong> (Remote Dictionary Server) is an open-source, in-memory data store. Clients send commands like <code>SET user:42 "Babu"</code> or <code>ZADD leaderboard 100 "player1"</code>; the server executes them and replies. Most operations are microseconds to low milliseconds—orders of magnitude faster than round-tripping a relational database for hot paths.</p>
+              <p>Redis is <strong>not</strong> a drop-in replacement for PostgreSQL or S3. It excels when latency matters, data fits in memory (or you accept eviction), and your access patterns map to its structures. It is also <strong>not</strong> magic durability: persistence exists (RDB snapshots, AOF logs), but design for the case where Redis restarts or fails—and plan how you rebuild state.</p>
+              <p>Managed offerings (ElastiCache, Memorystore, Azure Cache) and self-hosted Helm charts wrap the same core: a Redis-compatible server your apps reach on port <code>6379</code> by default.</p>
+
+              <h2 class="h4 mt-5">The mental model: key → typed value</h2>
+              <p>Everything lives under a <strong>key</strong> (a string name). The value has a <strong>type</strong>—string, hash, list, set, sorted set, stream, and more. Commands are type-specific: <code>LPUSH</code> works on lists; <code>HSET</code> on hashes. Calling the wrong command returns an error, which is Redis protecting you from silent corruption.</p>
+              <p>Keys often use namespaces with colons: <code>session:abc123</code>, <code>cache:product:991</code>. That convention helps humans and operators scan related data—though production systems should avoid <code>KEYS *</code> on large databases (see below).</p>
+
+              <h2 class="h4 mt-5">Core data structures and when to use them</h2>
+              <div class="table-responsive">
+                <table class="table table-sm table-bordered align-middle">
+                  <thead><tr><th>Type</th><th>Think of it as</th><th>Typical uses</th></tr></thead>
+                  <tbody>
+                    <tr><td><strong>String</strong></td><td>Blob, counter, or serialized JSON</td><td>Cache page fragments, feature flags, rate-limit counters (<code>INCR</code>)</td></tr>
+                    <tr><td><strong>Hash</strong></td><td>Field → value map under one key</td><td>User profile fields, object cache without one key per attribute</td></tr>
+                    <tr><td><strong>List</strong></td><td>Ordered sequence (linked-list semantics)</td><td>Recent events, lightweight queues (with care—see streams)</td></tr>
+                    <tr><td><strong>Set</strong></td><td>Unordered unique members</td><td>Tags, “users online”, deduplication</td></tr>
+                    <tr><td><strong>Sorted set (ZSET)</strong></td><td>Members with scores (ranked)</td><td>Leaderboards, priority queues, time-series indexes by score</td></tr>
+                    <tr><td><strong>Stream</strong></td><td>Append-only log with consumer groups</td><td>Event sourcing light, job pipelines with acknowledgements</td></tr>
+                    <tr><td><strong>Bitmap / HyperLogLog / GEO</strong></td><td>Specialized primitives</td><td>Daily active users (bitmap), cardinality estimates (HLL), location queries (GEO)</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p>Choosing the structure up front saves pain. A leaderboard implemented as a JSON string in a string key works until you need top-N queries—then a <strong>sorted set</strong> is the natural fit.</p>
+
+              <h2 class="h4 mt-5">Common architecture patterns</h2>
+              <ul>
+                <li><strong>Cache-aside.</strong> App reads DB; on miss, loads DB and writes Redis with a TTL. Invalidation happens on writes (delete or update keys)—stale cache is the classic bug if you forget this.</li>
+                <li><strong>Session store.</strong> Web sessions in Redis with TTL; enables horizontal scaling of stateless app servers.</li>
+                <li><strong>Pub/Sub.</strong> Fire-and-forget messaging between services—not durable; subscribers offline miss messages. Use <strong>Streams</strong> or a message broker when you need persistence.</li>
+                <li><strong>Distributed lock (carefully).</strong> <code>SET lock:resource NX EX 30</code> with a unique token; release with a Lua script that checks the token. Redlock is debated—understand your consistency needs before betting production on locks in Redis alone.</li>
+                <li><strong>Rate limiting.</strong> Counters with expiry, or sliding windows with sorted sets / Redis Cell module patterns.</li>
+              </ul>
+              <p>On Kubernetes, Redis often runs as a StatefulSet or is consumed as a managed service; pair with network policies and secrets—not a ClusterIP wide open to every namespace. See <a href="kubernetes-architecture-simple.html">Kubernetes architecture</a> for where such dependencies sit in the platform picture.</p>
+
+              <h2 class="h4 mt-5">Single-threaded execution (and why it matters)</h2>
+              <p>The main Redis process handles commands from clients <strong>one at a time</strong> per shard (Redis 7+ has threads for I/O and some background work, but the command execution model still shapes design). Implications:</p>
+              <ul>
+                <li><strong>Fast commands stay fast.</strong> Simple <code>GET</code>/<code>SET</code> scale to very high QPS on modest hardware.</li>
+                <li><strong>Slow commands block everyone.</strong> <code>KEYS *</code>, huge <code>SUNION</code>, or multi-megabyte values hurt all clients on that instance. Prefer <code>SCAN</code> for iteration.</li>
+                <li><strong>CPU-heavy Lua scripts</strong> run atomically but monopolize the thread—keep scripts short.</li>
+              </ul>
+              <p>When one instance is not enough, you scale with <strong>Redis Cluster</strong> (hash slots across nodes) or split read load with replicas—knowing replicas can lag and read-your-writes may require routing to the primary.</p>
+
+              <h2 class="h4 mt-5">Memory, TTL, and eviction</h2>
+              <p>Redis is bounded by RAM. Set <code>maxmemory</code> and an <strong>eviction policy</strong> (<code>allkeys-lru</code>, <code>volatile-lru</code>, <code>noeviction</code>, etc.). <code>noeviction</code> returns errors when full—sometimes safer than silently dropping cache keys you did not mark with TTL.</p>
+              <p>Use <strong>TTL</strong> (<code>EXPIRE</code>, <code>SET ... EX 300</code>) for cache entries and sessions. Monitor memory with <code>INFO memory</code> and hosted dashboards. Large values fragment memory and slow replication—keep values reasonably small.</p>
+
+              <h2 class="h4 mt-5">Persistence: RDB vs AOF</h2>
+              <ul>
+                <li><strong>RDB</strong> — point-in-time snapshots on a schedule. Compact, fast restarts; you can lose data since the last snapshot.</li>
+                <li><strong>AOF</strong> — append-only log of writes. More durable (especially with <code>appendfsync everysec</code>); files grow until rewrite.</li>
+              </ul>
+              <p>Many teams use both or rely on managed backups. Treat Redis as the fast layer; authoritative business data still belongs in a database you trust for recovery.</p>
+
+              <h2 class="h4 mt-5">High availability: replicas, Sentinel, Cluster</h2>
+              <ul>
+                <li><strong>Primary + replica</strong> — async replication; manual or automated failover.</li>
+                <li><strong>Sentinel</strong> — monitors primaries, promotes a replica on failure, updates clients that support Sentinel discovery.</li>
+                <li><strong>Cluster</strong> — sharding across masters with hash slots; clients must be cluster-aware.</li>
+              </ul>
+              <p>Pick based on scale and ops maturity—not every side project needs Cluster on day one.</p>
+
+              <h2 class="h4 mt-5">Security basics</h2>
+              <ul>
+                <li>Bind to private networks; use TLS and ACL users in production (<code>ACL SETUSER</code>).</li>
+                <li>Disable or rename dangerous commands (<code>FLUSHALL</code>, <code>CONFIG</code>) where policy allows.</li>
+                <li>Never expose port 6379 to the public internet without authentication—automated scanners abound.</li>
+                <li>Secrets in environment variables or secret stores, not in Git—same discipline as <a href="gitops-principles.html">GitOps secrets hygiene</a>.</li>
+              </ul>
+
+              <h2 class="h4 mt-5">Installing Redis and redis-cli</h2>
+              <p><code>redis-cli</code> ships with Redis. You can install the server locally for learning or only the CLI against a remote instance.</p>
+              <pre class="bg-light p-3 rounded small"><code># macOS
+brew install redis
+brew services start redis   # optional: run as a service
+
+# Ubuntu / Debian
+sudo apt update && sudo apt install -y redis-server redis-tools
+
+# Docker (quick lab)
+docker run -d --name redis -p 6379:6379 redis:7-alpine
+
+# Verify
+redis-cli ping
+# Expected: PONG</code></pre>
+
+              <h2 class="h4 mt-5">Connecting with redis-cli</h2>
+              <pre class="bg-light p-3 rounded small"><code># Default: localhost:6379
+redis-cli
+
+# Remote host + port
+redis-cli -h redis.internal -p 6379
+
+# With ACL user and password (Redis 6+)
+redis-cli -h redis.internal -u redis://appuser:SECRET@redis.internal:6379/0
+
+# TLS (flags vary by build; check your distro docs)
+redis-cli -h redis.example.com --tls --cert ./client.crt --key ./client.key --cacert ./ca.pem</code></pre>
+              <p>Inside the CLI, commands are typed at the prompt. Many tutorials show <code>127.0.0.1:6379&gt;</code>—that is redis-cli’s interactive mode. End interactive mode with <code>quit</code> or Ctrl+D.</p>
+
+              <h2 class="h4 mt-5">redis-cli essentials: strings and keys</h2>
+              <pre class="bg-light p-3 rounded small"><code>SET greeting "Namaste"
+GET greeting
+
+SET counter 0
+INCR counter
+INCRBY counter 10
+
+# Set with TTL (seconds)
+SET session:token "abc" EX 3600
+TTL session:token
+
+EXISTS greeting
+DEL greeting
+
+# Inspect type before using list/set commands
+TYPE counter</code></pre>
+
+              <h2 class="h4 mt-5">Hashes, lists, sets, sorted sets</h2>
+              <pre class="bg-light p-3 rounded small"><code># Hash — one key, many fields
+HSET user:42 name "Babu" role "platform"
+HGET user:42 name
+HGETALL user:42
+
+# List — queue / timeline
+LPUSH tasks "send-email" "reindex-search"
+LRANGE tasks 0 -1
+RPOP tasks
+
+# Set — unique members
+SADD tags:post:7 "redis" "devops" "cache"
+SMEMBERS tags:post:7
+SISMEMBER tags:post:7 "redis"
+
+# Sorted set — score + member
+ZADD leaderboard 1500 "player1" 1200 "player2"
+ZREVRANGE leaderboard 0 9 WITHSCORES
+ZINCRBY leaderboard 50 "player2"</code></pre>
+
+              <h2 class="h4 mt-5">Streams (durable-ish queues)</h2>
+              <pre class="bg-light p-3 rounded small"><code>XADD events * action "login" user_id "42"
+XREAD COUNT 10 STREAMS events 0
+
+# Consumer group (workers share load)
+XGROUP CREATE events processors $ MKSTREAM
+XREADGROUP GROUP processors worker1 COUNT 1 STREAMS events >
+# After processing:
+XACK events processors &lt;message-id&gt;</code></pre>
+              <p>Streams fit event pipelines better than naive <code>LPUSH</code>/<code>BRPOP</code> when you need consumer groups and pending-entry lists.</p>
+
+              <h2 class="h4 mt-5">Pub/Sub (ephemeral fan-out)</h2>
+              <pre class="bg-light p-3 rounded small"><code># Terminal 1
+SUBSCRIBE notifications
+
+# Terminal 2
+PUBLISH notifications "deploy finished"</code></pre>
+              <p>Subscribers only receive messages while connected—no backlog.</p>
+
+              <h2 class="h4 mt-5">Inspection, debugging, and safe iteration</h2>
+              <pre class="bg-light p-3 rounded small"><code>INFO server
+INFO memory
+INFO stats
+
+DBSIZE
+
+# Prefer SCAN over KEYS in production
+SCAN 0 MATCH session:* COUNT 100
+
+MONITOR          # streams all commands — dev only; crushes prod
+SLOWLOG GET 10   # recent slow commands
+
+CLIENT LIST
+MEMORY USAGE mykey</code></pre>
+              <p><code>MONITOR</code> and <code>KEYS *</code> are invaluable in development and hazardous at scale. Default to <code>SCAN</code>, metrics, and application-level tracing.</p>
+
+              <h2 class="h4 mt-5">One-shot mode and scripting</h2>
+              <p>You do not have to enter interactive mode:</p>
+              <pre class="bg-light p-3 rounded small"><code>redis-cli SET deploy:version "2026.05.20"
+redis-cli GET deploy:version
+
+# Pipe commands
+cat commands.txt | redis-cli --pipe
+
+# Lua (atomic on the server)
+redis-cli EVAL "return redis.call('GET', KEYS[1])" 1 mykey</code></pre>
+
+              <h2 class="h4 mt-5">From laptop to production checklist</h2>
+              <ul>
+                <li>Define what happens on cache miss and on Redis outage (degrade vs fail).</li>
+                <li>Set TTLs and key naming conventions; document invalidation on writes.</li>
+                <li>Configure <code>maxmemory</code>, eviction, persistence, and backups for your RPO/RTO.</li>
+                <li>Use connection pooling in apps; avoid opening a new TCP connection per HTTP request.</li>
+                <li>Alert on memory, replication lag, rejected connections, and evicted keys.</li>
+                <li>Load-test with realistic value sizes—micro-benchmarks lie.</li>
+              </ul>
+
+              <h2 class="h4 mt-5">How Redis fits next to your stack</h2>
+              <p>If you run apps in containers, Redis is often a sidecar or a shared platform service—same network thinking as in <a href="docker-containerization-hidden-side.html">Docker’s hidden side</a>. If you operate Kubernetes, treat Redis like any stateful dependency: backups, upgrades, and capacity planning are platform work, not “the app team’s Redis problem.”</p>
+              <p>For cost and footprint awareness when Redis runs in the cloud, the FinOps series (<a href="finops-greenops-1-invisible-bill.html">Part 1</a>) is a useful lens—memory-heavy instances are easy to leave running oversized.</p>
+
+              <h2 class="h4 mt-5">Further reading</h2>
+              <ul>
+                <li><a href="https://redis.io/docs/" rel="noopener noreferrer">redis.io documentation</a> — commands, data types, ACL, cluster</li>
+                <li>Redis University / OSS tutorials — structured labs</li>
+                <li>Martin Kleppmann — <em>Designing Data-Intensive Applications</em> (caching, replication, consistency trade-offs)</li>
+              </ul>
+
+              <p class="small text-muted mt-4 mb-2"><a href="../index.html#blog">Blog index</a> · <a href="docker-containerization-hidden-side.html">Docker hidden side</a> · <a href="kubernetes-architecture-simple.html">Kubernetes architecture</a> · <a href="gitops-principles.html">GitOps principles</a></p>
+              <p class="mb-0"><a href="../index.html#blog" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left" aria-hidden="true"></i> Back to blog list</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>

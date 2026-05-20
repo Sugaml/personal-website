@@ -1,0 +1,334 @@
+<article class="inner-page blog-article pb-5">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-9 col-xl-8">
+            <header class="mb-4 pb-3 border-bottom" data-aos="fade-up">
+              <div class="blog-article-meta mb-3">
+                <p class="text-muted small mb-2">Data &amp; databases · <time datetime="2026-05-20">20 May 2026</time> · <span class="blog-meta-label">Course notes</span> · By <a href="../index.html#about" class="blog-author text-reset fw-semibold" rel="author">Babulal Tamang</a></p>
+              <ul class="blog-tags list-unstyled d-flex flex-wrap gap-1 mb-0" aria-label="Tags">
+                <li><span class="badge rounded-pill text-bg-light border text-muted">SQL</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">PostgreSQL</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Relational databases</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Data modeling</span></li>
+              </ul>
+              </div>
+              <h1 class="h2 mb-3">SQL Course Notes: From First SELECT to Production-Ready Queries</h1>
+              <p class="lead mb-3"><strong>Structured Query Language (SQL)</strong> is how applications, analysts, and data engineers talk to relational databases. This post is a detailed course-style reference: the relational model, DDL and DML, joins and aggregations, subqueries and window functions, indexes and transactions, normalization, and how SQL fits cloud data work—written so you can study once and return when debugging slow queries or designing schemas.</p>
+              <div class="border-start border-primary border-4 ps-3 py-3 bg-light rounded mb-0" role="note">
+                <p class="small text-uppercase text-muted mb-1 fw-semibold">In short</p>
+                <p class="mb-0">Tables hold rows; keys link tables; SQL reads and writes through declarative statements. Master SELECT + JOIN + GROUP BY first, then indexes and transactions, then dialect-specific features (PostgreSQL, MySQL) and how SQL connects to pipelines and ML feature stores.</p>
+              </div>
+            </header>
+
+            <div class="blog-prose" data-aos="fade-up" data-aos-delay="50">
+<h2 class="h4 mt-4">Why SQL still matters in 2026</h2>
+              <p>Applications store state somewhere. For decades, the default has been the <strong>relational database</strong>: rows in tables, relationships enforced by keys, and a shared language—<strong>SQL</strong>—to define structure and ask questions. NoSQL, data lakes, and vector stores expanded the toolbox, but SQL remains the lingua franca for transactional systems, reporting, feature engineering, and increasingly for analytics warehouses (Snowflake, BigQuery, Redshift all speak SQL dialects).</p>
+              <p>A solid SQL course teaches three layers at once:</p>
+              <ol>
+                <li><strong>Conceptual</strong> — entities, relationships, integrity, and when normalization helps or hurts.</li>
+                <li><strong>Language</strong> — statements you type in a client or ORM-generated query.</li>
+                <li><strong>Operational</strong> — indexes, plans, locks, backups, and how cloud managed databases change defaults.</li>
+              </ol>
+              <p>This post walks all three. Examples use ANSI-style SQL with notes where <strong>PostgreSQL</strong> and <strong>MySQL</strong> diverge—matching the stacks I use in platform and application work.</p>
+
+              <h2 class="h4 mt-5">The relational model in one picture</h2>
+              <p>Think in <strong>tables</strong> (relations), not spreadsheets with formulas. Each table has a fixed set of <strong>columns</strong> (attributes) and zero or more <strong>rows</strong> (tuples). Relationships between tables are expressed by storing keys, not by drawing arrows in application memory.</p>
+              <div class="table-responsive">
+                <table class="table table-sm table-bordered align-middle">
+                  <thead class="table-light">
+                    <tr><th>Concept</th><th>Meaning</th><th>Example</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td><strong>Primary key (PK)</strong></td><td>Uniquely identifies a row in its table</td><td><code>customer_id</code></td></tr>
+                    <tr><td><strong>Foreign key (FK)</strong></td><td>References a PK in another table; enforces referential integrity</td><td><code>orders.customer_id → customers.customer_id</code></td></tr>
+                    <tr><td><strong>Candidate key</strong></td><td>Any column set that could be PK (email, national ID)</td><td><code>UNIQUE (email)</code></td></tr>
+                    <tr><td><strong>NULL</strong></td><td>“Unknown / not applicable,” not zero or empty string</td><td>Optional middle name</td></tr>
+                  </tbody>
+                </table>
+              
+              <p>Sample schema for a small e-commerce domain:</p>
+              <pre class="bg-light p-3 rounded small"><code>CREATE TABLE customers (
+  customer_id   SERIAL PRIMARY KEY,
+  email         VARCHAR(255) NOT NULL UNIQUE,
+  full_name     VARCHAR(200) NOT NULL,
+  created_at    TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE orders (
+  order_id      SERIAL PRIMARY KEY,
+  customer_id   INT NOT NULL REFERENCES customers(customer_id),
+  order_date    DATE NOT NULL DEFAULT CURRENT_DATE,
+  status        VARCHAR(20) NOT NULL DEFAULT 'pending'
+);
+
+CREATE TABLE order_items (
+  order_id      INT NOT NULL REFERENCES orders(order_id) ON DELETE CASCADE,
+  product_id    INT NOT NULL,
+  quantity      INT NOT NULL CHECK (quantity &gt; 0),
+  unit_price    NUMERIC(10,2) NOT NULL,
+  PRIMARY KEY (order_id, product_id)
+);</code></pre>
+
+              <h2 class="h4 mt-5">SQL statement families (DDL, DML, DCL, TCL)</h2>
+              <div class="table-responsive">
+                <table class="table table-sm table-bordered align-middle">
+                  <thead class="table-light">
+                    <tr><th>Family</th><th>Purpose</th><th>Common statements</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td><strong>DDL</strong> (Data Definition)</td><td>Shape of the database</td><td><code>CREATE</code>, <code>ALTER</code>, <code>DROP</code>, <code>TRUNCATE</code></td></tr>
+                    <tr><td><strong>DML</strong> (Data Manipulation)</td><td>Rows in tables</td><td><code>SELECT</code>, <code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code>, <code>MERGE</code></td></tr>
+                    <tr><td><strong>DCL</strong> (Data Control)</td><td>Permissions</td><td><code>GRANT</code>, <code>REVOKE</code></td></tr>
+                    <tr><td><strong>TCL</strong> (Transaction Control)</td><td>Unit of work boundaries</td><td><code>BEGIN</code>, <code>COMMIT</code>, <code>ROLLBACK</code>, <code>SAVEPOINT</code></td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p>Course labs usually spend most time on <strong>SELECT</strong> and <strong>JOIN</strong>; production work adds DDL migrations (Flyway, Liquibase, Alembic) and transaction discipline.</p>
+
+              <h2 class="h4 mt-5">Reading data: SELECT and filtering</h2>
+              <p><code>SELECT</code> is declarative: you describe the result shape; the optimizer chooses how to fetch it.</p>
+              <pre class="bg-light p-3 rounded small"><code>SELECT c.full_name, o.order_id, o.order_date, o.status
+FROM   customers AS c
+JOIN   orders AS o ON o.customer_id = c.customer_id
+WHERE  o.order_date &gt;= DATE '2026-01-01'
+  AND  o.status IN ('shipped', 'delivered')
+ORDER  BY o.order_date DESC, o.order_id
+LIMIT  50;</code></pre>
+              <p>Clause order of evaluation (logical, not always physical): <code>FROM</code> → <code>WHERE</code> → <code>GROUP BY</code> → <code>HAVING</code> → <code>SELECT</code> → <code>ORDER BY</code> → <code>LIMIT</code>.</p>
+              <p>Filtering tools to know cold:</p>
+              <ul>
+                <li><strong>Comparisons</strong> — <code>=</code>, <code>&lt;&gt;</code>, <code>&lt;</code>, <code>BETWEEN</code>, <code>IN</code>, <code>LIKE</code> (patterns; prefer <code>ILIKE</code> in Postgres for case-insensitive).</li>
+                <li><strong>NULL logic</strong> — <code>IS NULL</code> / <code>IS NOT NULL</code>; remember <code>NULL = NULL</code> is unknown, not true.</li>
+                <li><strong>Boolean logic</strong> — <code>AND</code>, <code>OR</code>, <code>NOT</code>; use parentheses when mixing conditions.</li>
+                <li><strong>Sets</strong> — <code>UNION</code> (dedupe) vs <code>UNION ALL</code> (keep duplicates, often faster).</li>
+              </ul>
+
+              <h2 class="h4 mt-5">Joins: how tables combine</h2>
+              <p>Joins are the heart of relational SQL. You match rows on a predicate—usually equality of keys.</p>
+              
+                <table class="table table-sm table-bordered align-middle">
+                  <thead class="table-light">
+                    <tr><th>Join</th><th>Result rows</th><th>When to use</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td><strong>INNER JOIN</strong></td><td>Only matches on both sides</td><td>Default: “customers who have orders”</td></tr>
+                    <tr><td><strong>LEFT JOIN</strong></td><td>All left rows; NULLs where no right match</td><td>“All customers, including those with zero orders”</td></tr>
+                    <tr><td><strong>RIGHT JOIN</strong></td><td>Mirror of LEFT</td><td>Rare; swap tables and use LEFT instead</td></tr>
+                    <tr><td><strong>FULL OUTER</strong></td><td>All rows from both; NULLs where missing</td><td>Reconciliation, data quality diffs</td></tr>
+                    <tr><td><strong>CROSS JOIN</strong></td><td>Cartesian product</td><td>Calendar generation, combinatorics—use carefully</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p>Count orders per customer (aggregation + join):</p>
+              <pre class="bg-light p-3 rounded small"><code>SELECT c.customer_id,
+       c.full_name,
+       COUNT(o.order_id) AS order_count
+FROM   customers c
+LEFT JOIN orders o ON o.customer_id = c.customer_id
+GROUP BY c.customer_id, c.full_name
+ORDER BY order_count DESC;</code></pre>
+              <p><strong>Anti-join pattern</strong> (customers with no orders):</p>
+              <pre class="bg-light p-3 rounded small"><code>SELECT c.*
+FROM   customers c
+LEFT JOIN orders o ON o.customer_id = c.customer_id
+WHERE  o.order_id IS NULL;</code></pre>
+              <p>Or with <code>NOT EXISTS</code>, which often optimizes well:</p>
+              <pre class="bg-light p-3 rounded small"><code>SELECT c.*
+FROM   customers c
+WHERE  NOT EXISTS (
+  SELECT 1 FROM orders o WHERE o.customer_id = c.customer_id
+);</code></pre>
+
+              <h2 class="h4 mt-5">Aggregations and GROUP BY</h2>
+              <p>Aggregate functions collapse many rows into one value per group: <code>COUNT</code>, <code>SUM</code>, <code>AVG</code>, <code>MIN</code>, <code>MAX</code>, and in PostgreSQL <code>STRING_AGG</code>, <code>ARRAY_AGG</code>, <code>JSON_AGG</code>.</p>
+              <p>Rule: every non-aggregated column in <code>SELECT</code> must appear in <code>GROUP BY</code> (or be functionally dependent on the group key in engines that allow it).</p>
+              <pre class="bg-light p-3 rounded small"><code>SELECT DATE_TRUNC('month', o.order_date) AS month,
+       SUM(oi.quantity * oi.unit_price) AS revenue
+FROM   orders o
+JOIN   order_items oi ON oi.order_id = o.order_id
+WHERE  o.status = 'delivered'
+GROUP BY 1
+HAVING SUM(oi.quantity * oi.unit_price) &gt; 10000
+ORDER BY month;</code></pre>
+              <p><code>WHERE</code> filters rows <em>before</em> grouping; <code>HAVING</code> filters <em>after</em> grouping. Putting row filters in <code>HAVING</code> is a common course mistake—it works but confuses readers and can block index use.</p>
+
+              <h2 class="h4 mt-5">Subqueries, CTEs, and readable SQL</h2>
+              <p>A <strong>subquery</strong> nests inside another statement. A <strong>Common Table Expression (CTE)</strong> names a subquery with <code>WITH</code> for clarity and reuse:</p>
+              <pre class="bg-light p-3 rounded small"><code>WITH monthly_revenue AS (
+  SELECT DATE_TRUNC('month', o.order_date) AS month,
+         SUM(oi.quantity * oi.unit_price) AS revenue
+  FROM   orders o
+  JOIN   order_items oi ON oi.order_id = o.order_id
+  WHERE  o.status = 'delivered'
+  GROUP BY 1
+)
+SELECT month, revenue,
+       revenue - LAG(revenue) OVER (ORDER BY month) AS month_over_month
+FROM   monthly_revenue
+ORDER BY month;</code></pre>
+              <p>When to prefer each:</p>
+              <ul>
+                <li><strong>CTE</strong> — Multi-step reports, readable pipelines, same subquery referenced twice.</li>
+                <li><strong>Scalar subquery</strong> — Single value in SELECT or WHERE (<code>WHERE total &gt; (SELECT AVG(total) FROM orders)</code>).</li>
+                <li><strong>EXISTS</strong> — Semi-joins (“has at least one related row”) without duplicating parent rows.</li>
+                <li><strong>IN</strong> — Small static lists; for large sets, <code>JOIN</code> or <code>EXISTS</code> often plans better.</li>
+              </ul>
+              <p>PostgreSQL also supports <strong>recursive CTEs</strong> for hierarchies (org charts, bill of materials)—worth a second course module.</p>
+
+              <h2 class="h4 mt-5">Window functions (analytics without collapsing rows)</h2>
+              <p>Aggregates return one row per group. <strong>Window functions</strong> add a column while keeping row granularity, using <code>OVER (PARTITION BY … ORDER BY …)</code>.</p>
+              <pre class="bg-light p-3 rounded small"><code>SELECT order_id,
+       customer_id,
+       order_date,
+       SUM(quantity * unit_price) OVER (PARTITION BY order_id) AS order_total,
+       ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY order_date) AS nth_order
+FROM   orders o
+JOIN   order_items oi USING (order_id);</code></pre>
+              <p>Functions to learn in order:</p>
+              <ul>
+                <li><strong>Ranking</strong> — <code>ROW_NUMBER</code>, <code>RANK</code>, <code>DENSE_RANK</code></li>
+                <li><strong>Offsets</strong> — <code>LAG</code>, <code>LEAD</code> for period-over-period metrics</li>
+                <li><strong>Frames</strong> — <code>ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW</code> for running totals</li>
+              </ul>
+
+              <h2 class="h4 mt-5">Writing and changing data</h2>
+              <pre class="bg-light p-3 rounded small"><code>INSERT INTO customers (email, full_name)
+VALUES ('ada@example.com', 'Ada Lovelace')
+RETURNING customer_id;
+
+UPDATE orders
+SET    status = 'cancelled'
+WHERE  order_id = 42 AND status = 'pending';
+
+DELETE FROM order_items
+WHERE  order_id = 42;</code></pre>
+              <p><strong>Upsert</strong> (insert or update on conflict) is dialect-specific but essential in APIs:</p>
+              <pre class="bg-light p-3 rounded small"><code>-- PostgreSQL
+INSERT INTO customers (email, full_name)
+VALUES ('ada@example.com', 'Ada Lovelace')
+ON CONFLICT (email) DO UPDATE
+SET full_name = EXCLUDED.full_name;</code></pre>
+              <p>Always scope <code>UPDATE</code> and <code>DELETE</code> with <code>WHERE</code>. An unscoped <code>UPDATE</code> in production is a résumé-generating event.</p>
+
+              <h2 class="h4 mt-5">Constraints and data integrity</h2>
+              <p>Integrity belongs in the database when multiple apps or batch jobs touch the same tables:</p>
+              <ul>
+                <li><strong>NOT NULL</strong> — Column must have a value.</li>
+                <li><strong>UNIQUE</strong> — No duplicate values (NULLs usually allowed once per SQL standard).</li>
+                <li><strong>PRIMARY KEY</strong> — NOT NULL + unique row identity.</li>
+                <li><strong>FOREIGN KEY</strong> — Parent row must exist; choose <code>ON DELETE CASCADE</code>, <code>SET NULL</code>, or <code>RESTRICT</code> deliberately.</li>
+                <li><strong>CHECK</strong> — Row-level rules (<code>quantity &gt; 0</code>, allowed status enum).</li>
+                <li><strong>DEFAULT</strong> — Sensible values at insert time (<code>created_at</code>, status).</li>
+              </ul>
+              <p>Application validation is still required for UX; constraints are the last line of defense against bugs and ad-hoc SQL.</p>
+
+              <h2 class="h4 mt-5">Normalization (design course module)</h2>
+              <p>Normalization reduces redundancy and update anomalies. A typical course covers:</p>
+              <ul>
+                <li><strong>1NF</strong> — Atomic columns; no repeating groups (no “phone1, phone2” columns—use a child table).</li>
+                <li><strong>2NF</strong> — No partial dependency on a composite key.</li>
+                <li><strong>3NF</strong> — No non-key attribute depends on another non-key attribute.</li>
+              </ul>
+              <p>In practice you also <strong>denormalize on purpose</strong> for read performance (materialized summaries, JSON blobs for display-only fields)—but you should know what you are trading away.</p>
+
+              <h2 class="h4 mt-5">Indexes and why queries get slow</h2>
+              <p>An <strong>index</strong> is a sorted structure (commonly B-tree) that lets the engine find rows without scanning the whole table. Create indexes for columns that appear in <code>WHERE</code>, <code>JOIN</code>, and <code>ORDER BY</code> on large tables—but every index slows writes and uses disk.</p>
+              <pre class="bg-light p-3 rounded small"><code>CREATE INDEX idx_orders_customer_date
+ON orders (customer_id, order_date DESC);
+
+-- PostgreSQL: partial index for hot paths
+CREATE INDEX idx_orders_pending
+ON orders (order_date)
+WHERE status = 'pending';</code></pre>
+              <p>Learn to read a plan:</p>
+              <pre class="bg-light p-3 rounded small"><code>EXPLAIN (ANALYZE, BUFFERS)
+SELECT * FROM orders WHERE customer_id = 7 AND status = 'pending';</code></pre>
+              <p>Red flags in plans: <strong>Seq Scan</strong> on huge tables, nested loops with massive row counts, sort steps that spill to disk. Fixes: better indexes, updated statistics (<code>ANALYZE</code>), rewrite joins, or—last resort—schema change.</p>
+              <p>Composite index column order matters: leading columns must match how you filter (<code>(customer_id, order_date)</code> helps <code>WHERE customer_id = ?</code>; it may not help <code>WHERE order_date = ?</code> alone).</p>
+
+              <h2 class="h4 mt-5">Transactions and ACID</h2>
+              <p>A <strong>transaction</strong> groups statements into one unit: all succeed (<code>COMMIT</code>) or none apply (<code>ROLLBACK</code>).</p>
+              <ul>
+                <li><strong>Atomicity</strong> — All or nothing.</li>
+                <li><strong>Consistency</strong> — Constraints hold before and after.</li>
+                <li><strong>Isolation</strong> — Concurrent sessions do not see each other’s half-finished work (levels: Read Committed, Repeatable Read, Serializable).</li>
+                <li><strong>Durability</strong> — Committed data survives crash after WAL/fsync rules are met.</li>
+              </ul>
+              <pre class="bg-light p-3 rounded small"><code>BEGIN;
+  UPDATE accounts SET balance = balance - 100 WHERE id = 1;
+  UPDATE accounts SET balance = balance + 100 WHERE id = 2;
+COMMIT;</code></pre>
+              <p>Deadlocks happen when two transactions lock rows in opposite order—retry with backoff in application code. Long transactions block vacuum/maintenance and hold connections—keep units of work short.</p>
+
+              <h2 class="h4 mt-5">Views, procedures, and who owns business logic</h2>
+              <p>A <strong>view</strong> is a stored SELECT; use it to simplify reporting and enforce column subsets. <strong>Materialized views</strong> store results (refresh on schedule) for heavy dashboards.</p>
+              <p><strong>Stored procedures</strong> push logic into the database—good for batch ETL close to data; risky when product logic becomes hard to test in CI. Most web teams keep business rules in application code and use SQL for data access plus migrations.</p>
+
+              <h2 class="h4 mt-5">Dialects: PostgreSQL vs MySQL (and cloud warehouses)</h2>
+              <div class="table-responsive">
+                <table class="table table-sm table-bordered align-middle">
+                  <thead class="table-light">
+                    <tr><th>Topic</th><th>PostgreSQL</th><th>MySQL (InnoDB)</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>Auto-increment</td><td><code>SERIAL</code> / <code>GENERATED … IDENTITY</code></td><td><code>AUTO_INCREMENT</code></td></tr>
+                    <tr><td>Boolean</td><td>Native <code>BOOLEAN</code></td><td><code>TINYINT(1)</code> convention</td></tr>
+                    <tr><td>Upsert</td><td><code>ON CONFLICT</code></td><td><code>ON DUPLICATE KEY UPDATE</code></td></tr>
+                    <tr><td>JSON</td><td><code>JSONB</code> + rich operators</td><td><code>JSON</code> type + functions</td></tr>
+                    <tr><td>Full-text</td><td><code>tsvector</code> / GIN indexes</td><td><code>FULLTEXT</code> indexes</td></tr>
+                    <tr><td>Vectors (AI)</td><td><code>pgvector</code> extension</td><td>Varies; often external store</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p>On AWS, managed SQL maps to <a href="aws-gcp-azure-services-mapping.html">RDS / Aurora, Cloud SQL, Azure Database</a>—see that mapping post when you place workloads on a hyperscaler.</p>
+
+              <h2 class="h4 mt-5">SQL in data engineering and ML</h2>
+              <p>Downstream of transactional databases, SQL reappears in:</p>
+              <ul>
+                <li><strong>Warehouses</strong> — Transform raw events into dimensions and facts (star schema).</li>
+                <li><strong>dbt-style pipelines</strong> — Versioned SQL models with tests.</li>
+                <li><strong>Feature stores</strong> — Point-in-time correct joins so training data does not leak future information.</li>
+                <li><strong>RAG</strong> — Metadata filters plus vector search; PostgreSQL with pgvector is a common pattern (see <a href="how-to-become-ai-developer.html">How to become an AI developer</a>).</li>
+              </ul>
+              <p>For pipeline mindset and quality, pair this course with <a href="aws-data-engineering.html">Data Engineering on AWS</a>.</p>
+
+              <h2 class="h4 mt-5">Course lab progression (suggested)</h2>
+              <ol>
+                <li>Install PostgreSQL locally (or use Docker). Run <code>psql</code> and create the sample schema above.</li>
+                <li>Write 20 SELECTs: filters, sorting, limits, simple aggregates.</li>
+                <li>Add JOIN exercises: inner, left, anti-join with <code>NOT EXISTS</code>.</li>
+                <li>Introduce CTEs; rewrite nested subqueries as <code>WITH</code> chains.</li>
+                <li>One window-function worksheet (running totals, top-N per group with <code>ROW_NUMBER</code>).</li>
+                <li>Transaction lab: transfer balance; force rollback; observe isolation with two sessions.</li>
+                <li>Index lab: <code>EXPLAIN ANALYZE</code> before and after index on a 100k-row synthetic table.</li>
+                <li>Capstone: design schema for a domain you know (inventory, tickets, courses); document PK/FK and three reporting queries.</li>
+              </ol>
+
+              <h2 class="h4 mt-5">Common pitfalls (exam and production)</h2>
+              <ul>
+                <li><strong>SELECT * in application code</strong> — Breaks when columns are added; hides I/O cost.</li>
+                <li><strong>Implicit joins</strong> — Comma-FROM without WHERE; use explicit <code>JOIN</code> syntax.</li>
+                <li><strong>NULL in aggregates</strong> — <code>COUNT(*)</code> vs <code>COUNT(column)</code>; <code>AVG</code> ignores NULLs.</li>
+                <li><strong>N+1 queries</strong> — ORM loads parent then one query per child; fix with join or batch load.</li>
+                <li><strong>Over-indexing</strong> — Every index taxes writes; measure before adding five indexes “just in case.”</li>
+                <li><strong>Logic only in the app</strong> — Missing FK/CHECK lets orphan rows into analytics forever.</li>
+              </ul>
+
+              <h2 class="h4 mt-5">What I took from the course</h2>
+              <p>SQL is not a legacy checkbox—it is the contract between services and truth. The course worth finishing leaves you able to <strong>model</strong> data without obvious redundancy, <strong>query</strong> it clearly with joins and windows, and <strong>operate</strong> it with transactions and plans. Everything else—ORMs, warehouses, vector search—is built on that foundation.</p>
+
+              <h2 class="h4 mt-5">Further reading</h2>
+              <ul>
+                <li>PostgreSQL documentation — tutorials, EXPLAIN, and JSONB</li>
+                <li>Use The Index, Luke — index and tuning mental models</li>
+                <li>SQL style guides (e.g. dbt, Mozilla) for team consistency</li>
+                <li>Mode Analytics SQL tutorial — window functions with exercises</li>
+              </ul>
+
+              <p class="small text-muted mt-4 mb-2"><a href="../index.html#blog">Blog index</a> · <a href="aws-data-engineering.html">Data Engineering on AWS</a> · <a href="how-to-become-ai-developer.html">How to become an AI developer</a></p>
+              <p class="mb-0"><a href="../index.html#blog" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left" aria-hidden="true"></i> Back to blog list</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>

@@ -2,6 +2,32 @@
 
 Short log of design decisions and content changes.
 
+## 2026-05-20 — Site structure refactor (templates + build)
+
+- **Goal:** DRY blog chrome (header, nav, footer, assets) while keeping GitHub Pages URLs unchanged (`blogs/*.html`).
+- **Layout:** `templates/blog/layout.html`; article bodies in `content/blogs/`; metadata in `data/blog-posts.json`.
+- **Build:** `make build` (`scripts/build_site.py`) regenerates `blogs/`. `make extract` re-splits built pages into content + data.
+- **Generators / maintenance:** `gen-*.py` and `update-blog-meta.py` target `content/` + registry, then run the build.
+- **Docs:** `README.md`. Unused `inner-page.html` → `templates/legacy/`.
+
+## 2026-05-20 — Terraform & IaC for everyone (guide)
+
+- **Title:** “Anyone Can Terraform: Why IaC Exists, How It Works, and the Anatomy of `.tf` and State” (article); index card “Terraform & IaC for everyone”.
+- **Intent:** Beginner-friendly IaC guide—why teams adopt it, Terraform init/plan/apply loop, vocabulary, project layout, HCL blocks (terraform, provider, resource, variable, output, data, locals, modules), state file top-level and resource entry anatomy, remote state/locking, plan symbols, ten-minute first apply, pitfalls, learning path. Cross-links to GitOps, network architecture, IAM anatomy, DevOps history.
+- **Files:** `blogs/terraform-iac-for-everyone.html`, `index.html` (Platform section before GitOps card), cross-link from `gitops-principles.html`.
+
+## 2026-05-20 — SQL course (relational databases)
+
+- **Title:** “SQL Course Notes: From First SELECT to Production-Ready Queries” (article); index card “SQL course (relational databases)”.
+- **Intent:** Detailed course-style guide—relational model, DDL/DML/DCL/TCL, SELECT/joins/aggregations, CTEs and window functions, constraints and normalization, indexes and EXPLAIN, transactions (ACID), dialect comparison (PostgreSQL vs MySQL), SQL in data engineering/ML, lab progression, pitfalls. New **Data & databases** blog subsection on index.
+- **Files:** `blogs/sql-course-relational-databases.html`, `index.html`, cross-links from `aws-data-engineering.html` and `how-to-become-ai-developer.html`.
+
+## 2026-05-20 — Redis and redis-cli (guide)
+
+- **Title:** “Redis and redis-cli: The In-Memory Store Behind Fast APIs” (article); index card “Redis and redis-cli”.
+- **Intent:** Platform guide on what Redis is, data structures, architecture patterns (cache-aside, sessions, pub/sub, locks, rate limits), single-threaded model, memory/TTL/eviction, RDB/AOF, HA (replicas, Sentinel, Cluster), security, install/connect, and hands-on redis-cli sections (strings, hashes, lists, sets, ZSETs, streams, pub/sub, SCAN/INFO). Cross-links to Docker, Kubernetes architecture, GitOps, FinOps Part 1.
+- **Files:** `blogs/redis-and-cli-deep-dive.html`, `index.html` (Platform section after Docker card).
+
 ## 2026-05-20 — Incidents & disaster response (guide)
 
 - **Title:** “When Production Breaks: Incidents, Disasters, and How to Respond Calmly” (article); index card “Incidents & disaster response”.

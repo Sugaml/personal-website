@@ -1,18 +1,12 @@
 #!/usr/bin/env python3
-"""Generate Kubernetes hands-on beginner course (5 parts) from gitops shell."""
-import re
+"""Generate Kubernetes hands-on beginner course (5 parts)."""
+import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
-BLOGS = ROOT / "blogs"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-shell = (BLOGS / "gitops-principles.html").read_text()
-head_tpl = re.search(
-    r"(<!DOCTYPE.*?<main id=\"main\">\s*<section class=\"breadcrumbs\">.*?</section>)",
-    shell,
-    re.S,
-).group(1)
-foot_tpl = re.search(r"(<footer id=\"footer\">.*?</html>)", shell, re.S).group(1)
+from lib.blog_registry import upsert_post  # noqa: E402
+from build_site import build_blogs  # noqa: E402
 
 NAV = [
     ("Your local lab (kind, k3s, minikube)", "kubernetes-hands-on-1-local-lab.html"),
@@ -40,17 +34,8 @@ def series_nav(part: int) -> str:
     )
 
 
-def build(p: dict) -> str:
-    head = head_tpl.replace(
-        "Git as the Control Plane — GitOps Principles — Babulal Tamang", p["title_page"]
-    )
-    head = re.sub(
-        r'<meta content="[^"]*" name="description">',
-        f'<meta content="{p["meta"]}" name="description">',
-        head,
-    )
-    head = head.replace("<li>GitOps principles</li>", f"<li>{p['crumb']}</li>")
-    article = f"""    <article class="inner-page blog-article pb-5">
+def build_article(p: dict) -> str:
+    return f"""<article class="inner-page blog-article pb-5">
       <div class="container">
         <div class="row justify-content-center">
           <div class="col-lg-9 col-xl-8">
@@ -71,7 +56,6 @@ def build(p: dict) -> str:
         </div>
       </div>
     </article>"""
-    return head + "\n  <main id=\"main\">\n" + article + "\n  </main>\n  " + foot_tpl
 
 
 def nav_footer(prev_href: str, prev_label: str, next_href: str, next_label: str) -> str:
@@ -560,6 +544,7 @@ kubectl run tmp-curl --rm -it --image=curlimages/curl --restart=Never -- \\
 
 if __name__ == "__main__":
     for p in POSTS:
-        out = BLOGS / p["file"]
-        out.write_text(build(p))
-        print("wrote", out.name)
+        upsert_post(p, build_article(p))
+        print("content", p["file"])
+    build_blogs()
+    print("built", len(POSTS), "posts")

@@ -10,6 +10,15 @@
       "content_file": "ai-historical-paradigms.html"
     },
     {
+      "slug": "ai-foundation-models-deep-dive",
+      "file": "ai-foundation-models-deep-dive.html",
+      "title": "AI Foundation Models in Depth \u2014 Babulal Tamang",
+      "description": "A technical deep dive into AI foundation models: definition, transformer architecture, pre-training and alignment, RAG and fine-tuning, inference economics, limits, production architecture, and responsible deployment.",
+      "keywords": "foundation models, LLM, transformers, RAG, fine-tuning, generative AI, Babulal Tamang",
+      "breadcrumb": "AI foundation models",
+      "content_file": "ai-foundation-models-deep-dive.html"
+    },
+    {
       "slug": "aws-cloud-architecting",
       "file": "aws-cloud-architecting.html",
       "title": "Cloud Architecting (AWS Academy) \u2014 Babulal Tamang",
@@ -377,6 +386,33 @@
       "keywords": "OPSWAT, ICIP, critical infrastructure, CIP, Credly, Babulal Tamang",
       "breadcrumb": "OPSWAT ICIP",
       "content_file": "opswat-icip-critical-infrastructure.html"
+    },
+    {
+      "slug": "redis-and-cli-deep-dive",
+      "file": "redis-and-cli-deep-dive.html",
+      "title": "Redis and redis-cli \u2014 In-Memory Data Store Deep Dive \u2014 Babulal Tamang",
+      "description": "What Redis is, when to use it, core data structures, persistence and eviction, and a practical redis-cli command reference for developers and platform engineers.",
+      "keywords": "Redis, redis-cli, cache, in-memory database, Babulal Tamang",
+      "breadcrumb": "Redis and redis-cli",
+      "content_file": "redis-and-cli-deep-dive.html"
+    },
+    {
+      "slug": "sql-course-relational-databases",
+      "file": "sql-course-relational-databases.html",
+      "title": "SQL Course Notes \u2014 Relational Databases \u2014 Babulal Tamang",
+      "description": "Detailed SQL course notes: relational model, DDL and DML, joins, aggregations, window functions, indexes, transactions, normalization, PostgreSQL vs MySQL, and SQL in data engineering.",
+      "keywords": "SQL, PostgreSQL, MySQL, relational database, data modeling, Babulal Tamang",
+      "breadcrumb": "SQL course",
+      "content_file": "sql-course-relational-databases.html"
+    },
+    {
+      "slug": "terraform-iac-for-everyone",
+      "file": "terraform-iac-for-everyone.html",
+      "title": "Anyone Can Terraform \u2014 IaC, State &amp; .tf Anatomy \u2014 Babulal Tamang",
+      "description": "Plain-language guide to Infrastructure as Code: why teams use it, how Terraform plan/apply works, terraform.tfstate anatomy, and .tf file syntax so beginners can write their first config.",
+      "keywords": "Terraform, Infrastructure as Code, IaC, terraform.tfstate, HCL, DevOps, Babulal Tamang",
+      "breadcrumb": "Terraform &amp; IaC",
+      "content_file": "terraform-iac-for-everyone.html"
     }
   ]
 }
