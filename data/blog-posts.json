@@ -431,6 +431,15 @@
       "keywords": "Terraform, Infrastructure as Code, IaC, terraform.tfstate, HCL, DevOps, Babulal Tamang",
       "breadcrumb": "Terraform &amp; IaC",
       "content_file": "terraform-iac-for-everyone.html"
+    },
+    {
+      "slug": "git-github-course-in-depth",
+      "file": "git-github-course-in-depth.html",
+      "title": "Git &amp; GitHub in Depth \u2014 Theory, Practice &amp; Power Commands \u2014 Babulal Tamang",
+      "description": "Course-style Git and GitHub guide: object model and DAG, branching and merging, hidden commands (reflog, bisect, worktree), recovery, GitHub PRs, Actions, gh CLI, and platform workflows.",
+      "keywords": "Git, GitHub, version control, DevOps, pull request, GitHub Actions, Babulal Tamang",
+      "breadcrumb": "Git &amp; GitHub course",
+      "content_file": "git-github-course-in-depth.html"
     }
   ]
 }

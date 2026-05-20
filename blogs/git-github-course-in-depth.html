@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Git &amp; GitHub in Depth — Theory, Practice &amp; Power Commands — Babulal Tamang</title>
+  <meta content="Course-style Git and GitHub guide: object model and DAG, branching and merging, hidden commands (reflog, bisect, worktree), recovery, GitHub PRs, Actions, gh CLI, and platform workflows." name="description">
+  <meta name="author" content="Babulal Tamang">
+  <meta name="keywords" content="Git, GitHub, version control, DevOps, pull request, GitHub Actions, Babulal Tamang">
+  <link href="../assets/img/favicon.png" rel="icon">
+  <link href="../assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="../assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="../assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="../assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="../assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <link href="../assets/css/style.css" rel="stylesheet">
+  <link href="../assets/css/theme-v2.css" rel="stylesheet">
+</head>
+<body class="theme-v2">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <button class="mobile-nav-toggle d-xl-none" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navbar"><i class="bi bi-list" aria-hidden="true"></i></button>
+  <header id="header">
+    <div class="d-flex flex-column">
+      <div class="profile sidebar-profile">
+        <div class="profile-avatar-wrap">
+          <img src="../assets/img/profile-img.jpg" class="profile-avatar img-fluid" width="132" height="132" alt="Portrait of Babulal Tamang">
+        </div>
+        <h1 class="text-light profile-name"><a href="../index.html">Babulal Tamang</a></h1>
+        <p class="profile-tagline">Platform · DevOps · Software · Cloud Architect · AI/ML Enthusiast</p>
+        <p class="profile-location"><i class="bi bi-geo-alt-fill" aria-hidden="true"></i><span>Kathmandu, Nepal</span></p>
+        <div class="social-links profile-social mt-3 text-center">
+          <a href="https://twitter.com/SugamLa20062317" class="twitter" aria-label="Twitter"><i class="bx bxl-twitter" aria-hidden="true"></i></a>
+          <a href="https://github.com/sugaml/" class="github" aria-label="GitHub"><i class="bx bxl-github" aria-hidden="true"></i></a>
+          <a href="https://www.linkedin.com/in/babulal-tamang-b6507121b/" class="linkedin" aria-label="LinkedIn"><i class="bx bxl-linkedin" aria-hidden="true"></i></a>
+        </div>
+      </div>
+      <nav id="navbar" class="nav-menu navbar" aria-label="Main navigation">
+        <ul>
+          <li><a href="../index.html#hero" class="nav-link scrollto"><i class="bx bx-home" aria-hidden="true"></i> <span>Home</span></a></li>
+          <li><a href="../index.html#about" class="nav-link scrollto"><i class="bx bx-user" aria-hidden="true"></i> <span>About</span></a></li>
+          <li><a href="../index.html#skills" class="nav-link scrollto"><i class="bx bx-code-block" aria-hidden="true"></i> <span>Skills</span></a></li>
+          <li><a href="../index.html#resume" class="nav-link scrollto"><i class="bx bx-file-blank" aria-hidden="true"></i> <span>Resume</span></a></li>
+          <li><a href="../index.html#certifications" class="nav-link scrollto"><i class="bx bx-award" aria-hidden="true"></i> <span>Certifications</span></a></li>
+          <li><a href="../index.html#blog" class="nav-link scrollto active"><i class="bx bx-book-content" aria-hidden="true"></i> <span>Blog</span></a></li>
+          <li><a href="../index.html#survey" class="nav-link scrollto"><i class="bx bx-shield-quarter" aria-hidden="true"></i> <span>Cybersecurity Survey</span></a></li>
+          <li><a href="../index.html#what-i-use" class="nav-link scrollto"><i class="bx bx-wrench" aria-hidden="true"></i> <span>What I Use</span></a></li>
+          <li><a href="../index.html#contact" class="nav-link scrollto"><i class="bx bx-envelope" aria-hidden="true"></i> <span>Contact</span></a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <main id="main">
+    <section class="breadcrumbs">
+      <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+          <h2>Blog</h2>
+          <ol>
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../index.html#blog">Blog</a></li>
+            <li>Git &amp; GitHub course</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+    <article class="inner-page blog-article pb-5">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-9 col-xl-8">
+            <header class="mb-4 pb-3 border-bottom" data-aos="fade-up">
+              <div class="blog-article-meta mb-3">
+                <p class="text-muted small mb-2">Platform &amp; culture · <time datetime="2026-05-20">20 May 2026</time> · <span class="blog-meta-label">Course notes</span> · By <a href="../index.html#about" class="blog-author text-reset fw-semibold" rel="author">Babulal Tamang</a></p>
+              <ul class="blog-tags list-unstyled d-flex flex-wrap gap-1 mb-0" aria-label="Tags">
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Git</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">GitHub</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Version control</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">DevOps</span></li>
+              </ul>
+              </div>
+              <h1 class="h2 mb-3">Git &amp; GitHub in Depth: Theory, Practice, and the Commands Power Users Reach For</h1>
+              <p class="lead mb-3"><strong>Git</strong> is a distributed version-control system: every clone is a full history, and branches are cheap pointers you move as you work. <strong>GitHub</strong> is a collaboration platform on top—pull requests, reviews, automation, and governance. This post is a course-style reference: how Git stores data under the hood, the workflows teams actually use, and the lesser-known commands that save you when history gets messy.</p>
+              <div class="border-start border-primary border-4 ps-3 py-3 bg-light rounded mb-0" role="note">
+                <p class="small text-uppercase text-muted mb-1 fw-semibold">In short</p>
+                <p class="mb-0">Commits form a DAG of snapshots; branches and tags are names pointing at commits; remotes sync copies between machines. Master everyday <code>add</code>/<code>commit</code>/<code>branch</code>/<code>merge</code>/<code>push</code>, then learn recovery (<code>reflog</code>, <code>reset</code>, <code>revert</code>), inspection (<code>log</code>, <code>show</code>, <code>bisect</code>), and GitHub’s PR + Actions model for team delivery.</p>
+              </div>
+            </header>
+
+            <div class="blog-prose" data-aos="fade-up" data-aos-delay="50">
+
+              <h2 class="h4 mt-4">Git is not GitHub (but they ship together)</h2>
+              <p><strong>Git</strong> runs on your laptop, in CI, and on servers. It does not require GitHub, GitLab, or Bitbucket. <strong>GitHub</strong> hosts Git repositories and adds social and operational layers: issues, pull requests, branch protection, Actions, security scanning, and org-wide policies.</p>
+              <p>In platform work you will touch both: Git for <em>what changed and why</em>, GitHub (or similar) for <em>who may merge it and how it reaches production</em>. <a href="gitops-principles.html">GitOps</a> later treats Git as the control plane for infrastructure—this course is the foundation that makes that model legible.</p>
+
+              <h2 class="h4 mt-5">Theory: what Git actually stores</h2>
+              <p>Git’s database is a content-addressed store keyed by <strong>SHA-1 hashes</strong> (Git is migrating toward SHA-256 on newer versions; the mental model is unchanged). Four object types matter:</p>
+              <div class="table-responsive">
+                <table class="table table-sm table-bordered align-middle">
+                  <thead class="table-light">
+                    <tr><th>Object</th><th>Contains</th><th>Analogy</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td><strong>Blob</strong></td><td>File contents (no filename)</td><td>One version of a file’s bytes</td></tr>
+                    <tr><td><strong>Tree</strong></td><td>Directory listing: names, modes, pointers to blobs/trees</td><td>A folder snapshot</td></tr>
+                    <tr><td><strong>Commit</strong></td><td>Tree + parent commit(s) + author/committer + message</td><td>A labeled snapshot with lineage</td></tr>
+                    <tr><td><strong>Tag</strong></td><td>Pointer to a commit (annotated tags add message/signature)</td><td>Release marker</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p>History is a <strong>directed acyclic graph (DAG)</strong>: commits point to parent(s); merges have two parents. <strong>Branches</strong> are movable refs like <code>refs/heads/main</code>; <code>HEAD</code> usually points at a branch, which points at a commit. <strong>Detached HEAD</strong> means <code>HEAD</code> points directly at a commit—fine for inspection, risky for new work unless you create a branch.</p>
+              <p>Peek inside with plumbing commands (hidden gems #1):</p>
+              <pre class="bg-light p-3 rounded small"><code>git cat-file -t HEAD          # commit
+git rev-parse HEAD            # full hash
+git ls-tree -r HEAD --name-only | head
+git show --stat HEAD</code></pre>
+
+              <h2 class="h4 mt-5">The three trees: working directory, index, repository</h2>
+              <p>Git stages changes in layers:</p>
+              <ol>
+                <li><strong>Working tree</strong> — files on disk you edit.</li>
+                <li><strong>Index (staging area)</strong> — what the next commit will record.</li>
+                <li><strong>Repository (HEAD)</strong> — committed snapshots.</li>
+              </ol>
+              <pre class="bg-light p-3 rounded small"><code># Edit files → stage → commit
+git status
+git add src/app.py docs/readme.md
+git commit -m "feat: add health check endpoint"
+
+# Modern restore (replaces much of checkout for paths)
+git restore --staged src/app.py    # unstage
+git restore src/app.py             # discard working-tree changes</code></pre>
+              <p><code>.gitignore</code> excludes untracked noise; <code>.gitattributes</code> controls line endings, diff drivers, and LFS filters. For secrets, ignore is not enough—use pre-commit hooks, <code>git-secrets</code>, or platform scanning; never rewrite public history to “remove” a leaked key without rotating the credential.</p>
+
+              <h2 class="h4 mt-5">First repository: practical bootstrap</h2>
+              <pre class="bg-light p-3 rounded small"><code>git init my-app
+cd my-app
+git branch -M main
+echo "# My App" &gt; README.md
+git add README.md
+git commit -m "chore: initial commit"
+
+# Or clone existing work
+git clone https://github.com/org/my-app.git
+cd my-app
+git remote -v</code></pre>
+              <p><strong>Clone</strong> copies the entire object database and checks out a branch. <strong>Fork</strong> (on GitHub) is a server-side clone under your account; you add <code>upstream</code> to track the original:</p>
+              <pre class="bg-light p-3 rounded small"><code>git remote add upstream https://github.com/org/my-app.git
+git fetch upstream
+git switch -c feature/sync main
+git merge upstream/main</code></pre>
+
+              <h2 class="h4 mt-5">Branching and integration strategies</h2>
+              <p>Branches are cheap. Teams pick a integration pattern:</p>
+              <div class="table-responsive">
+                <table class="table table-sm table-bordered align-middle">
+                  <thead class="table-light">
+                    <tr><th>Model</th><th>Flow</th><th>Best when</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td><strong>Trunk-based</strong></td><td>Short-lived branches; frequent merges to <code>main</code></td><td>Strong CI, feature flags, platform teams</td></tr>
+                    <tr><td><strong>GitHub Flow</strong></td><td>Branch → PR → merge to <code>main</code> → deploy</td><td>Web apps, continuous delivery</td></tr>
+                    <tr><td><strong>Git Flow</strong></td><td><code>develop</code>, release, hotfix branches</td><td>Scheduled releases, multiple versions in field</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <pre class="bg-light p-3 rounded small"><code>git switch -c feature/rate-limit
+# ... commits ...
+git switch main
+git pull --ff-only origin main
+git merge --no-ff feature/rate-limit -m "Merge feature/rate-limit"
+git push origin main</code></pre>
+              <p><strong>Merge</strong> records a merge commit (or fast-forward if possible). <strong>Rebase</strong> replays your commits on top of another tip—linear history, but rewrites SHAs; never rebase commits already pushed to a shared branch unless the team agrees.</p>
+              <pre class="bg-light p-3 rounded small"><code>git switch feature/rate-limit
+git fetch origin
+git rebase origin/main
+# resolve conflicts → git add ... → git rebase --continue
+git push --force-with-lease origin feature/rate-limit</code></pre>
+              <p><code>--force-with-lease</code> is the safe force-push: it fails if someone else updated the remote branch since your last fetch.</p>
+
+              <h2 class="h4 mt-5">Remotes, fetch, pull, push</h2>
+              <pre class="bg-light p-3 rounded small"><code>git fetch origin                    # download objects; don't merge
+git log --oneline main..origin/main # what's on remote
+git pull origin main                # fetch + merge (or rebase with config)
+git push -u origin feature/x        # publish branch, set upstream
+
+# Push a tag (releases)
+git tag -a v1.2.0 -m "Release 1.2.0"
+git push origin v1.2.0</code></pre>
+              <p>Set defaults once:</p>
+              <pre class="bg-light p-3 rounded small"><code>git config --global init.defaultBranch main
+git config --global pull.rebase false   # or true for rebase pulls
+git config --global push.autoSetupRemote true</code></pre>
+
+              <h2 class="h4 mt-5">Hidden and power-user Git commands</h2>
+              <p>These are the commands tutorials skip until something breaks. Grouped by job.</p>
+
+              <h3 class="h5 mt-4">Inspection and archaeology</h3>
+              <pre class="bg-light p-3 rounded small"><code>git log --oneline --graph --decorate --all -20
+git log -p -S "deleteUser" -- src/api/     # pickaxe: when string appeared/vanished
+git log --follow -- path/old-name.py        # history across renames
+git blame -L 40,60 src/app.py
+git show HEAD~3:src/app.py                  # file at ancestor commit
+git shortlog -sn --since="3 months ago"</code></pre>
+
+              <h3 class="h5 mt-4">Stash, worktrees, sparse checkout</h3>
+              <pre class="bg-light p-3 rounded small"><code>git stash push -u -m "wip before hotfix"
+git stash list
+git stash pop
+
+git worktree add ../my-app-hotfix hotfix/1.0
+git worktree list
+
+git sparse-checkout init --cone
+git sparse-checkout set src docs</code></pre>
+              <p><strong>Worktrees</strong> let you check out two branches in separate directories simultaneously—ideal for urgent hotfixes without disturbing your feature branch.</p>
+
+              <h3 class="h5 mt-4">Recovery: reflog, reset, revert, cherry-pick</h3>
+              <pre class="bg-light p-3 rounded small"><code>git reflog                          # where HEAD has been (local safety net)
+git reset --soft HEAD~1             # undo commit; keep staged
+git reset --mixed HEAD~1            # undo commit; unstage (default)
+git reset --hard origin/main        # match remote (destructive locally)
+
+git revert abc1234                  # new commit that undoes abc1234 (safe on main)
+git cherry-pick def5678             # apply one commit elsewhere</code></pre>
+              <p>On shared branches, prefer <strong>revert</strong> over <strong>reset + force push</strong>. Reflog expires (~90 days default); it is not a backup service.</p>
+
+              <h3 class="h5 mt-4">Interactive rebase and commit hygiene</h3>
+              <pre class="bg-light p-3 rounded small"><code>git rebase -i origin/main
+# pick / squash / fixup / drop commits in editor
+git commit --amend --no-edit
+git commit --fixup=abc1234 &amp;&amp; git rebase -i --autosquash origin/main</code></pre>
+
+              <h3 class="h5 mt-4">Finding bugs: bisect</h3>
+              <pre class="bg-light p-3 rounded small"><code>git bisect start
+git bisect bad                    # current commit is broken
+git bisect good v1.0.0            # known good tag
+# test each step → git bisect good|bad until culprit found
+git bisect reset</code></pre>
+              <p>Automate with <code>git bisect run ./scripts/test.sh</code>.</p>
+
+              <h3 class="h5 mt-4">Cleaning, repairing, and deep maintenance</h3>
+              <pre class="bg-light p-3 rounded small"><code>git clean -fdn                    # dry-run: remove untracked
+git fsck --full
+git gc --prune=now
+git count-objects -vH
+
+# Submodule (legacy but everywhere)
+git submodule update --init --recursive
+
+# Rerere: reuse recorded conflict resolutions
+git config --global rerere.enabled true</code></pre>
+              <p>For history rewriting at scale (remove large file from all history), use <strong>git filter-repo</strong> (preferred over deprecated <code>filter-branch</code>).</p>
+
+              <h3 class="h5 mt-4">Plumbing worth knowing</h3>
+              <pre class="bg-light p-3 rounded small"><code>git update-ref refs/heads/main HEAD~1   # move branch (careful)
+git symbolic-ref HEAD
+git merge-base main feature/x
+git diff main...feature/x               # changes on feature since diverged
+git diff main..feature/x                # all differences between tips
+
+# Debug transport
+GIT_TRACE=1 GIT_CURL_VERBOSE=1 git fetch origin
+GIT_SSH_COMMAND="ssh -v" git fetch origin</code></pre>
+
+              <h3 class="h5 mt-4">Useful aliases (team templates)</h3>
+              <pre class="bg-light p-3 rounded small"><code>git config --global alias.lg "log --oneline --graph --decorate -20"
+git config --global alias.last "log -1 HEAD --stat"
+git config --global alias.unstage "restore --staged"
+git config --global alias.please "push --force-with-lease"</code></pre>
+
+              <h2 class="h4 mt-5">Merge conflicts: read the markers</h2>
+              <pre class="bg-light p-3 rounded small"><code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+our change
+=======
+their change
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; feature/rate-limit</code></pre>
+              <p>Edit to the intended result, <code>git add</code> resolved files, then continue merge or rebase. Tools: <code>git mergetool</code>, VS Code, IntelliJ. For complex repeats, enable <code>rerere</code>.</p>
+
+              <h2 class="h4 mt-5">Signing, hooks, and policy</h2>
+              <ul>
+                <li><strong>SSH commit signing</strong> — <code>git config gpg.format ssh</code> and set <code>user.signingkey</code>; GitHub shows “Verified.”</li>
+                <li><strong>Hooks</strong> — <code>pre-commit</code> (format/lint), <code>commit-msg</code> (conventional commits), <code>pre-push</code> (tests). Husky and pre-commit frameworks wrap these.</li>
+                <li><strong>Conventional Commits</strong> — <code>feat:</code>, <code>fix:</code>, <code>chore:</code> enable changelog automation and clearer history.</li>
+              </ul>
+
+              <h2 class="h4 mt-5">GitHub in depth: collaboration and delivery</h2>
+              <p>GitHub’s core unit of review is the <strong>pull request (PR)</strong>: propose merging a branch, discuss diffs, run checks, then merge with a strategy.</p>
+              <div class="table-responsive">
+                <table class="table table-sm table-bordered align-middle">
+                  <thead class="table-light">
+                    <tr><th>Merge option</th><th>Result</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td><strong>Create a merge commit</strong></td><td>Preserves branch topology; merge commit on base</td></tr>
+                    <tr><td><strong>Squash and merge</strong></td><td>One commit on base; good for noisy feature branches</td></tr>
+                    <tr><td><strong>Rebase and merge</strong></td><td>Linear history; replays commits (no merge commit)</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p><strong>Branch protection</strong> enforces reviews, status checks, signed commits, and linear history. <strong>CODEOWNERS</strong> auto-requests reviewers by path. <strong>Environments</strong> gate deployments with required approvers and secrets scoped per environment.</p>
+
+              <h3 class="h5 mt-4">Issues, projects, and labels</h3>
+              <p>Issues track work; link PRs with <code>Fixes #42</code> to auto-close. GitHub Projects (v2) are kanban/roadmap views across repos. Labels and milestones keep release trains visible.</p>
+
+              <h3 class="h5 mt-4">GitHub Actions (CI/CD on events)</h3>
+              <pre class="bg-light p-3 rounded small"><code># .github/workflows/ci.yml (minimal pattern)
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: npm ci &amp;&amp; npm test</code></pre>
+              <p>Secrets live in repo or org settings—never commit them. Use <strong>OIDC</strong> to assume cloud roles without long-lived keys. Reusable workflows and composite actions DRY pipelines across repos.</p>
+
+              <h3 class="h5 mt-4">Security and supply chain</h3>
+              <ul>
+                <li><strong>Dependabot</strong> — dependency update PRs.</li>
+                <li><strong>Code scanning</strong> — CodeQL static analysis on PRs.</li>
+                <li><strong>Secret scanning</strong> — blocks or alerts on committed tokens.</li>
+                <li><strong>Rulesets</strong> — org-wide branch and tag policies (successor patterns to legacy branch protections).</li>
+              </ul>
+
+              <h3 class="h5 mt-4">GitHub CLI (<code>gh</code>)</h3>
+              <pre class="bg-light p-3 rounded small"><code>gh auth login
+gh repo clone org/my-app
+gh pr create --fill
+gh pr checkout 123
+gh pr merge 123 --squash --delete-branch
+gh run list --workflow=ci.yml
+gh api repos/{owner}/{repo}/pulls/123 --jq .title</code></pre>
+              <p>The CLI mirrors the UI for scripting reviews and releases from your terminal—especially useful in <code>tmux</code> or remote dev boxes.</p>
+
+              <h2 class="h4 mt-5">SSH keys, tokens, and authentication</h2>
+              <p>Prefer <strong>SSH keys</strong> for Git transport (<code>git@github.com:org/repo.git</code>). For HTTPS and API access, use <strong>fine-grained personal access tokens</strong> with least privilege. In CI, use GitHub Apps or OIDC—not a personal PAT tied to a human who might leave the company.</p>
+              <pre class="bg-light p-3 rounded small"><code># ~/.ssh/config
+Host github.com
+  HostName github.com
+  User git
+  IdentityFile ~/.ssh/id_ed25519_github
+  IdentitiesOnly yes</code></pre>
+
+              <h2 class="h4 mt-5">Monorepos, submodules, and LFS</h2>
+              <ul>
+                <li><strong>Monorepo</strong> — one repo, many services; path filters in CI run only affected jobs.</li>
+                <li><strong>Submodules</strong> — pin another repo at a commit; powerful but easy to footgun (<code>git submodule update --init</code>).</li>
+                <li><strong>Git LFS</strong> — stores large binaries outside the main object graph; costs and clone behavior differ—know your host’s LFS billing.</li>
+              </ul>
+
+              <h2 class="h4 mt-5">Course lab progression (suggested)</h2>
+              <ol>
+                <li>Create a repo, make ten commits on <code>main</code>, practice <code>git log --oneline --graph</code>.</li>
+                <li>Branch feature, open a PR on GitHub, squash merge, delete branch.</li>
+                <li>Cause a merge conflict intentionally; resolve with <code>git merge</code> and again with <code>git rebase</code>.</li>
+                <li>Use <code>git stash</code> and <code>git worktree</code> during a simulated hotfix.</li>
+                <li>“Lose” a commit, recover with <code>git reflog</code>.</li>
+                <li>Run <code>git bisect</code> on a small script with a known bad commit.</li>
+                <li>Add a GitHub Actions workflow that runs tests on every PR.</li>
+                <li>Enable branch protection requiring one review and green CI.</li>
+                <li>Configure <code>gh</code> and merge a PR from the terminal.</li>
+                <li>Capstone: fork an open-source repo, fix a doc typo, open PR upstream.</li>
+              </ol>
+
+              <h2 class="h4 mt-5">Common pitfalls (exam and production)</h2>
+              <ul>
+                <li><strong>Committing secrets</strong> — rotate the credential; history rewrite is painful and public forks may retain copies.</li>
+                <li><strong>Force push on shared branches</strong> — breaks teammates; use revert or coordinated maintenance windows.</li>
+                <li><strong>Huge binaries in Git</strong> — bloats forever; use LFS or artifact storage.</li>
+                <li><strong>Merge vs rebase religion</strong> — pick a team rule; document it in CONTRIBUTING.md.</li>
+                <li><strong><code>git pull</code> without understanding</strong> — surprise merge commits; prefer <code>fetch</code> + explicit merge/rebase.</li>
+                <li><strong>Ignoring CI on green button day</strong> — branch protection exists because humans skip tests under pressure.</li>
+                <li><strong>Submodule drift</strong> — CI checks out but forgets <code>submodule update --init</code>.</li>
+              </ul>
+
+              <h2 class="h4 mt-5">How this connects to platform work</h2>
+              <p>Git history is audit evidence. GitHub (or GitLab) is where change management meets automation: PR reviews map to change advisory boards; Actions map to build pipelines; protected <code>main</code> maps to production gates. When you adopt <a href="gitops-principles.html">GitOps</a>, the same skills apply—only the artifacts in the repo are manifests instead of application source.</p>
+              <p>For infrastructure-as-code mechanics, continue with <a href="terraform-iac-for-everyone.html">Terraform &amp; IaC for everyone</a>. For calm incident response when a bad deploy lands, see <a href="incident-disaster-response-calm.html">Incidents &amp; disaster response</a>.</p>
+
+              <h2 class="h4 mt-5">Further reading</h2>
+              <ul>
+                <li>Pro Git (Scott Chacon) — free online book; deep and clear</li>
+                <li>Git documentation — <code>git help &lt;command&gt;</code> and official reference</li>
+                <li>GitHub Docs — Actions, security, branch protection, rulesets</li>
+                <li>Atlassian Git tutorials — visual branching lessons</li>
+                <li>Conventional Commits — message format for automation</li>
+              </ul>
+
+              <p class="small text-muted mt-4 mb-2"><a href="../index.html#blog">Blog index</a> · <a href="gitops-principles.html">GitOps principles</a> · <a href="terraform-iac-for-everyone.html">Terraform &amp; IaC</a></p>
+              <p class="mb-0"><a href="../index.html#blog" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left" aria-hidden="true"></i> Back to blog list</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+  </main>
+  <footer id="footer">
+    <div class="container">
+      <div class="copyright">&copy; Copyright <strong><span>babulal.com.np</span></strong></div>
+      <div class="credits">Designed by <a href="https://babulal.com.np/">Babulal Tamang</a></div>
+    </div>
+  </footer>
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+  <script src="../assets/vendor/purecounter/purecounter_vanilla.js"></script>
+  <script src="../assets/vendor/aos/aos.js"></script>
+  <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="../assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="../assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="../assets/vendor/typed.js/typed.min.js"></script>
+  <script src="../assets/vendor/waypoints/noframework.waypoints.js"></script>
+  <script src="../assets/js/main.js"></script>
+</body>
+</html>
