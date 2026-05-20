@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Incidents and Disasters: Respond Calmly When Production Breaks — Babulal Tamang</title>
+  <meta content="A deep guide to incidents vs disasters, severity and lifecycle, incident command, disaster recovery, and how to stay calm under pressure—structured habits that turn panic into procedure." name="description">
+  <meta name="author" content="Babulal Tamang">
+  <meta name="keywords" content="incident response, disaster recovery, SRE, on-call, calm under pressure, Babulal Tamang">
+  <link href="../assets/img/favicon.png" rel="icon">
+  <link href="../assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="../assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="../assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="../assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="../assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <link href="../assets/css/style.css" rel="stylesheet">
+  <link href="../assets/css/theme-v2.css" rel="stylesheet">
+</head>
+<body class="theme-v2">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <button class="mobile-nav-toggle d-xl-none" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navbar"><i class="bi bi-list" aria-hidden="true"></i></button>
+  <header id="header">
+    <div class="d-flex flex-column">
+      <div class="profile sidebar-profile">
+        <div class="profile-avatar-wrap">
+          <img src="../assets/img/profile-img.jpg" class="profile-avatar img-fluid" width="132" height="132" alt="Portrait of Babulal Tamang">
+        </div>
+        <h1 class="text-light profile-name"><a href="../index.html">Babulal Tamang</a></h1>
+        <p class="profile-tagline">Platform · DevOps · Software · Cloud Architect · AI/ML Enthusiast</p>
+        <p class="profile-location"><i class="bi bi-geo-alt-fill" aria-hidden="true"></i><span>Kathmandu, Nepal</span></p>
+        <div class="social-links profile-social mt-3 text-center">
+          <a href="https://twitter.com/SugamLa20062317" class="twitter" aria-label="Twitter"><i class="bx bxl-twitter" aria-hidden="true"></i></a>
+          <a href="https://github.com/sugaml/" class="github" aria-label="GitHub"><i class="bx bxl-github" aria-hidden="true"></i></a>
+          <a href="https://www.linkedin.com/in/babulal-tamang-b6507121b/" class="linkedin" aria-label="LinkedIn"><i class="bx bxl-linkedin" aria-hidden="true"></i></a>
+        </div>
+      </div>
+      <nav id="navbar" class="nav-menu navbar" aria-label="Main navigation">
+        <ul>
+          <li><a href="../index.html#hero" class="nav-link scrollto"><i class="bx bx-home" aria-hidden="true"></i> <span>Home</span></a></li>
+          <li><a href="../index.html#about" class="nav-link scrollto"><i class="bx bx-user" aria-hidden="true"></i> <span>About</span></a></li>
+          <li><a href="../index.html#skills" class="nav-link scrollto"><i class="bx bx-code-block" aria-hidden="true"></i> <span>Skills</span></a></li>
+          <li><a href="../index.html#resume" class="nav-link scrollto"><i class="bx bx-file-blank" aria-hidden="true"></i> <span>Resume</span></a></li>
+          <li><a href="../index.html#certifications" class="nav-link scrollto"><i class="bx bx-award" aria-hidden="true"></i> <span>Certifications</span></a></li>
+          <li><a href="../index.html#blog" class="nav-link scrollto active"><i class="bx bx-book-content" aria-hidden="true"></i> <span>Blog</span></a></li>
+          <li><a href="../index.html#survey" class="nav-link scrollto"><i class="bx bx-shield-quarter" aria-hidden="true"></i> <span>Cybersecurity Survey</span></a></li>
+          <li><a href="../index.html#what-i-use" class="nav-link scrollto"><i class="bx bx-wrench" aria-hidden="true"></i> <span>What I Use</span></a></li>
+          <li><a href="../index.html#contact" class="nav-link scrollto"><i class="bx bx-envelope" aria-hidden="true"></i> <span>Contact</span></a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <main id="main">
+    <section class="breadcrumbs">
+      <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+          <h2>Blog</h2>
+          <ol>
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../index.html#blog">Blog</a></li>
+            <li>Incident &amp; disaster response</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+    <article class="inner-page blog-article pb-5">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-9 col-xl-8">
+            <header class="mb-4 pb-3 border-bottom" data-aos="fade-up">
+              <div class="blog-article-meta mb-3">
+                <p class="text-muted small mb-2">Platform &amp; culture · <time datetime="2026-05-20">20 May 2026</time> · <span class="blog-meta-label">Guide</span> · By <a href="../index.html#about" class="blog-author text-reset fw-semibold" rel="author">Babulal Tamang</a></p>
+              <ul class="blog-tags list-unstyled d-flex flex-wrap gap-1 mb-0" aria-label="Tags">
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Incident response</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Disaster recovery</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">SRE</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">On-call</span></li>
+              </ul>
+              </div>
+              <h1 class="h2 mb-3">When Production Breaks: Incidents, Disasters, and How to Respond Calmly</h1>
+              <p class="lead mb-3">An outage is not a test of how fast you can type. It is a test of how well your team turns uncertainty into a shared picture—who leads, what is broken, what customers feel, and what change is safe next. Calm is not personality. It is procedure practiced before the pager fires.</p>
+              <div class="border-start border-primary border-4 ps-3 py-3 bg-light rounded mb-0" role="note">
+                <p class="small text-uppercase text-muted mb-1 fw-semibold">In short</p>
+                <p class="mb-0">Treat incidents as time-boxed engineering work with clear roles and one change at a time. Reserve “disaster” for scenarios that exceed normal runbooks—region loss, ransomware, credential compromise at scale—and rehearse those paths before you need them. Stay calm by slowing the room down: state impact, assign roles, document timestamps, and separate mitigation from root-cause work.</p>
+              </div>
+            </header>
+
+            <div class="blog-prose" data-aos="fade-up" data-aos-delay="50">
+
+              <h2 class="h4 mt-4">Incident vs disaster: words that change the playbook</h2>
+              <p>Teams blur these terms. Precision helps.</p>
+              <ul>
+                <li><strong>Incident</strong> — an unplanned event that degrades or threatens a service: elevated errors, partial outage, security concern, bad deploy. You respond with on-call, runbooks, and your normal toolchain. Most pages are incidents.</li>
+                <li><strong>Disaster</strong> — loss or unavailability at a scale that normal mitigation cannot fix quickly: entire region unavailable, datacenter fire, widespread ransomware, loss of primary identity provider, catastrophic data corruption. You invoke <strong>disaster recovery (DR)</strong> and <strong>business continuity (BCP)</strong> plans—failover regions, restore from backups, alternate work sites, executive comms.</li>
+              </ul>
+              <p>The boundary is organizational: if your runbook says “fail over to secondary region” and you have tested it, failover is still a <em>procedure</em>—but the event that triggers it is a disaster in impact. What matters is that everyone knows which playbook applies before adrenaline peaks.</p>
+
+              <h2 class="h4 mt-5">Severity: agree on pain before you argue about fixes</h2>
+              <p>Without a shared severity model, engineers optimize for “make the graph green” while product hears “catastrophe” and leadership hears “minor blip.” Define severities in advance—usually SEV-1 through SEV-4 or P0–P3—with <strong>customer impact</strong>, not internal inconvenience, as the primary axis.</p>
+              <div class="table-responsive my-3">
+                <table class="table table-sm table-bordered align-middle">
+                  <thead class="table-light">
+                    <tr>
+                      <th scope="col">Level</th>
+                      <th scope="col">Typical signal</th>
+                      <th scope="col">Response shape</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>SEV-1 / P0</strong></td>
+                      <td>Major revenue or safety impact; large user population down; data loss risk</td>
+                      <td>Incident commander, war room, executive updates, all-hands pause on unrelated deploys</td>
+                    </tr>
+                    <tr>
+                      <td><strong>SEV-2 / P1</strong></td>
+                      <td>Significant degradation; workaround exists; key customers affected</td>
+                      <td>Dedicated IC, frequent status updates, focused engineering</td>
+                    </tr>
+                    <tr>
+                      <td><strong>SEV-3 / P2</strong></td>
+                      <td>Limited blast radius; workaround acceptable short-term</td>
+                      <td>On-call owns; next-business-day fix may be OK</td>
+                    </tr>
+                    <tr>
+                      <td><strong>SEV-4 / P3</strong></td>
+                      <td>Cosmetic, internal-only, or low-risk drift</td>
+                      <td>Ticket queue; no wake-up unless policy says otherwise</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <p>Re-evaluate severity as facts change. Downgrading too early erodes trust; upgrading late wastes calm you could have spent on structure.</p>
+
+              <h2 class="h4 mt-5">The incident lifecycle (what “handling it” actually means)</h2>
+              <p>Think in phases, not heroics. Google’s SRE book popularized a similar flow; adapt names to your org.</p>
+              <ol>
+                <li><strong>Detect</strong> — monitoring, synthetics, customer reports, or security tools raise a signal. Good detection is specific (“checkout success rate &lt; 95% in eu-west-1”) not noisy (“CPU high”).</li>
+                <li><strong>Triage</strong> — confirm real impact, assign severity, open a single incident channel or ticket, page the right people.</li>
+                <li><strong>Mitigate</strong> — restore service or stop bleeding: rollback, scale, disable feature flag, block malicious IP, failover read path. <em>Mitigation can precede root cause.</em></li>
+                <li><strong>Resolve</strong> — stable state sustained; monitors green for an agreed window; customers informed.</li>
+                <li><strong>Learn</strong> — blameless postmortem, action items, runbook updates, error-budget conversation if SLOs were breached.</li>
+              </ol>
+              <p>During mitigation, resist the urge to “fully understand” before acting when users are waiting. During learning, resist closing the ticket without understanding—otherwise the same incident returns with a new timestamp.</p>
+
+              <h2 class="h4 mt-5">Roles: one brain for coordination, many brains for fixes</h2>
+              <p>Chaos often comes from ten smart people doing ten different things. Assign roles early—even on a small team.</p>
+              <ul>
+                <li><strong>Incident Commander (IC)</strong> — owns the timeline, priorities, and “one change at a time.” Does not have to be the deepest technical expert; must be decisive and calm.</li>
+                <li><strong>Technical lead(s)</strong> — dig into logs, infra, code, data; propose mitigations to the IC.</li>
+                <li><strong>Scribe</strong> — timestamps, actions, hypotheses, command outputs. Future you and auditors will thank them.</li>
+                <li><strong>Communications</strong> — status page, support macros, executive summary, legal/comms if breach suspected.</li>
+                <li><strong>Subject-matter experts</strong> — database, network, security, vendor TAM—pulled in briefly, then released.</li>
+              </ul>
+              <p>Say out loud: “I am IC,” “You are scribe,” “Everyone else routes changes through IC.” That single sentence removes overlapping SSH sessions and mystery deploys.</p>
+
+              <h2 class="h4 mt-5">How to stay calm (the part that looks like magic but is trainable)</h2>
+              <p>Calm under pressure is not suppressing fear. It is <strong>narrowing the problem</strong> faster than your nervous system widens it. The companion essay on <a href="devops-psychology-after-hours.html">DevOps psychology</a> explains why brains race during outages; here is the operational counterweight.</p>
+
+              <h3 class="h5 mt-4">1. Slow the room with language</h3>
+              <p>Phrases that sound simple but change group behavior:</p>
+              <ul>
+                <li>“We don’t know the root cause yet.”</li>
+                <li>“What is customer impact right now?”</li>
+                <li>“What is the smallest safe change we can make in the next ten minutes?”</li>
+                <li>“Let’s capture that hypothesis; scribe, note it.”</li>
+              </ul>
+              <p>These sentences buy seconds. Seconds buy structured thinking.</p>
+
+              <h3 class="h5 mt-4">2. Breathe and body-check (thirty seconds, not thirty minutes)</h3>
+              <p>Before you type the destructive command: one slow exhale, shoulders down, read the command twice. Fatigue and adrenaline narrow attention; physical reset widens it slightly—enough to catch “wrong region” or “prod instead of staging.”</p>
+
+              <h3 class="h5 mt-4">3. Use a personal checklist</h3>
+              <p>Many responders keep the same mental list every time:</p>
+              <ol>
+                <li>Am I on the right account / cluster / environment?</li>
+                <li>What changed recently (deploy, config, traffic, certificate)?</li>
+                <li>What does the dashboard say vs what customers report?</li>
+                <li>What is the rollback or kill switch?</li>
+                <li>Who else needs to know—now vs after mitigation?</li>
+              </ol>
+
+              <h3 class="h5 mt-4">4. One change at a time</h3>
+              <p>Parallel fixes make graphs ambiguous. IC approves one mitigation, waits for signal, then next. If you must experiment, label experiments in the scribe log so you can unwind them.</p>
+
+              <h3 class="h5 mt-4">5. Separate war mode from diagnosis mode</h3>
+              <p>In war mode you rollback, scale, or failover. In diagnosis mode you read stack traces and trace IDs. Mixing them produces “we restarted everything and still don’t know why.” Schedule diagnosis after impact is bounded unless the fix requires understanding (data corruption).</p>
+
+              <h3 class="h5 mt-4">6. Escalate early, not angrily</h3>
+              <p>Escalation is a resource request, not admission of failure. “I need a DBA for connection pool behavior” at minute fifteen beats heroic solo debugging at hour three.</p>
+
+              <div class="table-responsive my-3">
+                <table class="table table-sm table-bordered align-middle">
+                  <thead class="table-light">
+                    <tr>
+                      <th scope="col">Stress-led reaction</th>
+                      <th scope="col">Calm, trained response</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Restart everything at once</td>
+                      <td>Rollback last deploy; measure; then next hypothesis</td>
+                    </tr>
+                    <tr>
+                      <td>Blame whoever shipped last</td>
+                      <td>Timeline of changes; neutral facts in scribe doc</td>
+                    </tr>
+                    <tr>
+                      <td>Hide bad news from leadership</td>
+                      <td>Short factual update: impact, ETA unknown, next step</td>
+                    </tr>
+                    <tr>
+                      <td>Skip documentation “until later”</td>
+                      <td>Live scribe; postmortem draft starts during incident</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <h2 class="h4 mt-5">Disaster recovery and business continuity in depth</h2>
+              <p>DR/BCP is the engineering and organizational answer to “what if the primary way we run is gone?”</p>
+
+              <h3 class="h5 mt-4">Core concepts</h3>
+              <ul>
+                <li><strong>RTO (Recovery Time Objective)</strong> — how long the business can tolerate the service being down before unacceptable harm.</li>
+                <li><strong>RPO (Recovery Point Objective)</strong> — how much data loss is acceptable (last backup / replication lag).</li>
+                <li><strong>Backup</strong> — point-in-time copies; useless without tested restore.</li>
+                <li><strong>Replication</strong> — continuous or frequent copy to another site; watch for corruption replicating too.</li>
+                <li><strong>Failover</strong> — traffic or workload shifts to standby (DNS, load balancer, database promotion, Kubernetes cluster in another region).</li>
+                <li><strong>Failback</strong> — return to primary after disaster ends; often harder than failover.</li>
+              </ul>
+
+              <h3 class="h5 mt-4">Patterns by layer</h3>
+              <ul>
+                <li><strong>Application</strong> — multi-region active-active or active-passive; feature flags to shed load; idempotent workers so retries are safe.</li>
+                <li><strong>Data</strong> — cross-region replicas, backup vaults with immutability (ransomware-aware), regular restore drills. Know who is allowed to promote a replica to primary.</li>
+                <li><strong>Infrastructure</strong> — infrastructure as code in Git (<a href="gitops-principles.html">GitOps</a>) so a new region is “apply known state,” not artisanal clicking. Landing zones and network design matter—see <a href="aws-network-architecture-design.html">AWS network architecture</a> for multi-AZ and multi-region thinking.</li>
+                <li><strong>People</strong> — call trees, alternate comms if Slack is down, who declares a disaster and who can authorize spend on emergency capacity.</li>
+              </ul>
+
+              <h3 class="h5 mt-4">Security disasters</h3>
+              <p>Credential compromise, supply-chain poisoned images, or ransomware are disasters even if CPUs are idle. Playbooks differ: isolate, preserve evidence, rotate secrets, involve security and legal, communicate under regulatory obligations. Foundations from <a href="aws-cloud-security-foundations.html">cloud security</a> and <a href="iso-27001-lead-auditor-information-security.html">ISO 27001</a> thinking apply—contain first, investigate in parallel where policy allows.</p>
+
+              <h3 class="h5 mt-4">Game days and drills</h3>
+              <p>Calm in a real disaster comes from muscle memory in fake ones. Schedule table-top exercises (“region X is gone”) and technical failovers quarterly. Measure time-to-detect, time-to-mitigate, and time-to-restore. Fix the boring blockers—missing runbook, expired break-glass role, backup that never finished.</p>
+
+              <h2 class="h4 mt-5">Before the pager: design that makes calm possible</h2>
+              <p>Most incident stress is borrowed from yesterday’s shortcuts.</p>
+              <ul>
+                <li><strong>Observability</strong> — metrics, logs, traces tied to SLOs; ownership of dashboards per service.</li>
+                <li><strong>Runbooks</strong> — linked from alerts; include rollback, escalation, and “known weird.”</li>
+                <li><strong>Safe deploys</strong> — canaries, automated rollback, change windows for high-risk paths.</li>
+                <li><strong>Blast-radius limits</strong> — namespaces, accounts, cell-based architecture, rate limits.</li>
+                <li><strong>On-call that sleeps</strong> — fair rotations, sensible alert thresholds, follow-the-sun where you can.</li>
+                <li><strong>Declarative prod</strong> — when live matches Git, you spend fewer incidents hunting hand-edited drift.</li>
+              </ul>
+              <p>Kubernetes operators benefit from the same discipline: RBAC boundaries (<a href="kubernetes-cluster-rbac.html">cluster RBAC</a>), storage and CSI behavior documented (<a href="kubernetes-storage-pv-pvc-storageclass.html">PV/PVC/StorageClass</a>), and debug habits from hands-on practice (<a href="kubernetes-hands-on-5-debug-next-steps.html">debugging next steps</a>).</p>
+
+              <h2 class="h4 mt-5">During the incident: a ten-minute script</h2>
+              <p>Print this mentally when you join a bridge call:</p>
+              <ol>
+                <li><strong>0–2 min</strong> — Confirm impact and severity; open incident record; assign IC and scribe.</li>
+                <li><strong>2–5 min</strong> — Recent changes, dashboard review, customer-facing status draft.</li>
+                <li><strong>5–15 min</strong> — One mitigation (rollback / scale / failover / flag off); measure.</li>
+                <li><strong>Ongoing</strong> — IC runs timeline; comms every N minutes for SEV-1/2; no unapproved changes.</li>
+                <li><strong>Stabilized</strong> — Declare mitigated; hand off to root-cause work; schedule postmortem within 48–72 hours.</li>
+              </ol>
+
+              <h2 class="h4 mt-5">After: learning without blame theater</h2>
+              <p>A blameless postmortem asks <em>how the system allowed this</em>, not <em>who clicked wrong</em>. Strong postmortems include:</p>
+              <ul>
+                <li>Timeline with UTC timestamps</li>
+                <li>Impact (users, revenue, duration, SLO burn)</li>
+                <li>Contributing factors—not a single “root cause” fairy tale unless truly singular</li>
+                <li>What went well (fast rollback, clear IC)</li>
+                <li>Action items with owners and dates—automation, alerts, docs, architecture</li>
+              </ul>
+              <p>Close the loop in the open loops your mind would otherwise carry home—documented in the psychology post as the Zeigarnik effect. A finished postmortem helps people actually log off.</p>
+
+              <h2 class="h4 mt-5">Communication templates (calm is contagious)</h2>
+              <p>Internal update (Slack / bridge):</p>
+              <blockquote class="border-start border-3 ps-3 text-muted small">
+                <p class="mb-1"><strong>SEV-2 — Checkout latency</strong></p>
+                <p class="mb-1"><strong>Impact:</strong> ~15% of EU users; payments succeeding but slow.</p>
+                <p class="mb-1"><strong>Status:</strong> Mitigating — rolled back deploy <code>v2.4.1</code> at 14:32 UTC; watching p95.</p>
+                <p class="mb-0"><strong>Next:</strong> IC: Ana. Scribe: doc link. Next update 14:45 UTC.</p>
+              </blockquote>
+              <p>External status (short, honest, no jargon soup):</p>
+              <blockquote class="border-start border-3 ps-3 text-muted small">
+                <p class="mb-0">We are investigating elevated errors affecting sign-in in Europe. Some users may need to retry. We will update within 30 minutes.</p>
+              </blockquote>
+
+              <h2 class="h4 mt-5">Common pitfalls</h2>
+              <ul>
+                <li><strong>Hero culture</strong> — one person holds all context; calm looks like martyrdom until they burn out.</li>
+                <li><strong>Alert fatigue</strong> — ignored pages mean slow detection; tune alerts to symptoms users feel.</li>
+                <li><strong>Untested backups</strong> — discovery during ransomware is a disaster on top of a disaster.</li>
+                <li><strong>DR on paper only</strong> — DNS TTL, secret replication, and license limits bite during real failover.</li>
+                <li><strong>Fixing in prod without recording</strong> — you “recover” and lose the audit trail for learning.</li>
+              </ul>
+
+              <h2 class="h4 mt-5">How this fits your DevOps and SRE practice</h2>
+              <p>Incidents are where culture meets architecture. <a href="devops-historical-foundations.html">DevOps history</a> taught shared ownership; SRE added error budgets and sustainable on-call; platform engineering adds paved roads so fewer incidents start as “nobody knows this cluster.” Calm response is the human interface to all of that—train it like you train kubectl.</p>
+
+              <h2 class="h4 mt-5">Further reading</h2>
+              <ul>
+                <li>Google — <em>Site Reliability Engineering</em> (incident response, postmortems, on-call)</li>
+                <li>PagerDuty — incident response guides and severity definitions</li>
+                <li>Atlassian — incident handbook (roles and comms)</li>
+                <li>NIST — contingency planning (SP 800-34) for formal DR/BCP vocabulary</li>
+                <li>Will Larson — <em>An Elegant Puzzle</em> (organizational load during crises)</li>
+              </ul>
+
+              <p class="small text-muted mt-4 mb-2"><a href="../index.html#blog">Blog index</a> · <a href="devops-psychology-after-hours.html">DevOps psychology after hours</a> · <a href="devops-professional-nature.html">Nature of a DevOps professional</a> · <a href="gitops-principles.html">GitOps principles</a> · <a href="kubernetes-hands-on-5-debug-next-steps.html">Kubernetes debugging</a></p>
+              <p class="mb-0"><a href="../index.html#blog" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left" aria-hidden="true"></i> Back to blog list</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+  </main>
+  <footer id="footer">
+    <div class="container">
+      <div class="copyright">&copy; Copyright <strong><span>babulal.com.np</span></strong></div>
+      <div class="credits">Designed by <a href="https://babulal.com.np/">Babulal Tamang</a></div>
+    </div>
+  </footer>
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+  <script src="../assets/vendor/purecounter/purecounter_vanilla.js"></script>
+  <script src="../assets/vendor/aos/aos.js"></script>
+  <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="../assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="../assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="../assets/vendor/typed.js/typed.min.js"></script>
+  <script src="../assets/vendor/waypoints/noframework.waypoints.js"></script>
+  <script src="../assets/js/main.js"></script>
+</body>
+</html>
