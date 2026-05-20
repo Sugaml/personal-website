@@ -1,0 +1,298 @@
+<article class="inner-page blog-article pb-5">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-9 col-xl-8">
+            <header class="mb-4 pb-3 border-bottom" data-aos="fade-up">
+              <div class="blog-article-meta mb-3">
+                <p class="text-muted small mb-2">AI/ML · <time datetime="2026-05-19">19 May 2026</time> · <span class="blog-meta-label">Guide</span> · By <a href="../index.html#about" class="blog-author text-reset fw-semibold" rel="author">Babulal Tamang</a></p>
+              <ul class="blog-tags list-unstyled d-flex flex-wrap gap-1 mb-0" aria-label="Tags">
+                <li><span class="badge rounded-pill text-bg-light border text-muted">AI</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">ML</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Career</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Software</span></li>
+              </ul>
+              </div>
+              <h1 class="h2 mb-3">How to Become an AI Developer: Terminology, Architecture, Tech Stack, and Why It Matters</h1>
+              <p class="lead mb-3">“AI developer” is a real job title now—but it means different things in different companies. This guide is a map: the vocabulary you need, how AI systems are built, what to learn first, which tools teams actually use, and why the field is worth your time for the next decade and beyond.</p>
+              <div class="border-start border-primary border-4 ps-3 py-3 bg-light rounded mb-0" role="note">
+                <p class="small text-uppercase text-muted mb-1 fw-semibold">In short</p>
+                <p class="mb-0">Start with software fundamentals and data literacy, learn ML and generative-AI concepts in parallel with one small project, understand the full stack from data to deployed API, and treat safety, cost, and evaluation as engineering—not afterthoughts. History and credentials help; shipping something teachable helps more.</p>
+              </div>
+            </header>
+
+            <div class="blog-prose" data-aos="fade-up" data-aos-delay="50">
+
+              <h2 class="h4 mt-4">What is an “AI developer”?</h2>
+              <p>An <strong>AI developer</strong> builds software that uses machine learning or large language models as a core capability—not only notebooks in a research lab, and not only clicking through a chat UI. You integrate models into products: APIs, backends, agents, data pipelines, and the operational glue (auth, logging, scaling, cost controls) that makes them reliable in production.</p>
+              <p>Related roles overlap; knowing the difference saves confusion:</p>
+              <ul>
+                <li><strong>Data scientist</strong> — explores data, hypotheses, and models; heavy on statistics and experimentation.</li>
+                <li><strong>ML engineer</strong> — trains, evaluates, versions, and serves models; bridges data science and platform.</li>
+                <li><strong>MLOps / platform engineer</strong> — pipelines, registries, GPUs, monitoring, reproducibility at scale.</li>
+                <li><strong>AI application developer</strong> — product features on top of APIs (RAG, agents, copilots) with strong software craft.</li>
+                <li><strong>AI researcher</strong> — advances algorithms and publishes; often needs PhD-level math.</li>
+              </ul>
+              <p>Many of us wear several hats. If you already write backend or platform code, you are closer than you think: AI development is still <em>development</em>, with extra moving parts.</p>
+
+              <h2 class="h4 mt-5">Why AI—and why now?</h2>
+              <p>Artificial intelligence is not hype alone. Three forces converged:</p>
+              <ul>
+                <li><strong>Data and compute</strong> — cloud GPUs, cheap storage, and open datasets made training large models feasible.</li>
+                <li><strong>Algorithms</strong> — deep learning, then transformers, unlocked language, vision, and multimodal tasks at useful quality.</li>
+                <li><strong>Distribution</strong> — APIs and open weights put capable models in every IDE, browser, and enterprise workflow.</li>
+              </ul>
+              <p>Why it matters for developers:</p>
+              <ul>
+                <li><strong>Every product layer is touched</strong> — search, support, codegen, analytics, security, and operations all gain AI-assisted paths.</li>
+                <li><strong>Skills compound</strong> — Python, APIs, vectors, evaluation, and cloud patterns transfer across employers and stacks.</li>
+                <li><strong>Demand is structural</strong> — organizations need people who can ship AI features safely, not only experiment in demos.</li>
+              </ul>
+              <p>The future is not “AI replaces all developers.” It is <strong>developers who use AI well outperform those who ignore it</strong>—and teams that govern AI responsibly win trust. Expect smaller specialized models, more on-device inference, agentic workflows with human oversight, and regulation (e.g. ISO/IEC 42001-style AI management) as normal engineering constraints. For historical context on how we got here, see <a href="ai-historical-paradigms.html">From Symbols to Foundation Models</a>.</p>
+
+              <h2 class="h4 mt-5">Core terminology (glossary)</h2>
+              <p>Learn these terms once; they appear in every architecture diagram and job description.</p>
+
+              <h3 class="h5 mt-4">Learning and models</h3>
+              <dl>
+                <dt><strong>Artificial intelligence (AI)</strong></dt>
+                <dd class="mb-3">Broad field: systems that perform tasks associated with human intelligence (reasoning, perception, language, planning).</dd>
+                <dt><strong>Machine learning (ML)</strong></dt>
+                <dd class="mb-3">Systems that improve from data without explicit rules for every case.</dd>
+                <dt><strong>Deep learning</strong></dt>
+                <dd class="mb-3">ML using neural networks with many layers; dominant in vision and language today.</dd>
+                <dt><strong>Foundation model</strong></dt>
+                <dd class="mb-3">Large model pre-trained on broad data, then adapted (fine-tuned, prompted, or RAG-augmented) for tasks.</dd>
+                <dt><strong>Large language model (LLM)</strong></dt>
+                <dd class="mb-3">Foundation model for text (and often code); predicts tokens; powers chat and agents.</dd>
+                <dt><strong>Generative AI</strong></dt>
+                <dd class="mb-3">Models that create new content (text, images, audio, video) rather than only classifying inputs.</dd>
+                <dt><strong>Training</strong></dt>
+                <dd class="mb-3">Adjusting model weights on datasets; expensive, offline, needs GPUs for large models.</dd>
+                <dt><strong>Inference</strong></dt>
+                <dd class="mb-3">Running a trained model to get predictions or generations; what users hit in production.</dd>
+                <dt><strong>Fine-tuning</strong></dt>
+                <dd class="mb-3">Further training on domain-specific data to specialize behavior.</dd>
+                <dt><strong>Embedding</strong></dt>
+                <dd class="mb-3">Dense vector representation of text/images used for similarity search and RAG.</dd>
+              </dl>
+
+              <h3 class="h5 mt-4">Generative AI and applications</h3>
+              <dl>
+                <dt><strong>Prompt</strong></dt>
+                <dd class="mb-3">Input instructions and context sent to a model; engineering prompts is a real skill.</dd>
+                <dt><strong>Token</strong></dt>
+                <dd class="mb-3">Subword unit models process; billing and context limits are often token-based.</dd>
+                <dt><strong>Context window</strong></dt>
+                <dd class="mb-3">Maximum tokens the model can consider in one request.</dd>
+                <dt><strong>RAG (retrieval-augmented generation)</strong></dt>
+                <dd class="mb-3">Fetch relevant documents from a vector store, inject into the prompt, then generate—grounds answers in your data.</dd>
+                <dt><strong>Agent</strong></dt>
+                <dd class="mb-3">LLM loop that plans, calls tools (APIs, DB, code), and iterates toward a goal.</dd>
+                <dt><strong>Hallucination</strong></dt>
+                <dd class="mb-3">Confident but incorrect output; mitigated with RAG, citations, evals, and human review.</dd>
+                <dt><strong>Grounding</strong></dt>
+                <dd class="mb-3">Tying responses to verified sources (docs, DB rows, tool results).</dd>
+              </dl>
+
+              <h3 class="h5 mt-4">Metrics and quality</h3>
+              <dl>
+                <dt><strong>Loss</strong></dt>
+                <dd class="mb-3">Training objective the model minimizes; lower is better during training.</dd>
+                <dt><strong>Accuracy / precision / recall / F1</strong></dt>
+                <dd class="mb-3">Classic classification metrics; still used for structured ML tasks.</dd>
+                <dt><strong>BLEU, ROUGE, etc.</strong></dt>
+                <dd class="mb-3">Automated scores for text similarity; weak alone for LLM quality.</dd>
+                <dt><strong>LLM-as-judge / human eval</strong></dt>
+                <dd class="mb-3">Rating outputs for helpfulness, safety, and faithfulness—essential for Gen AI products.</dd>
+              </dl>
+
+              <h3 class="h5 mt-4">Operations and governance</h3>
+              <dl>
+                <dt><strong>MLOps</strong></dt>
+                <dd class="mb-3">CI/CD, versioning, monitoring, and deployment practices for ML systems.</dd>
+                <dt><strong>Model registry</strong></dt>
+                <dd class="mb-3">Catalog of trained artifacts with metadata and lineage.</dd>
+                <dt><strong>Feature store</strong></dt>
+                <dd class="mb-3">Reusable, consistent inputs for training and serving.</dd>
+                <dt><strong>GPU / TPU</strong></dt>
+                <dd class="mb-3">Accelerators for training and heavy inference.</dd>
+                <dt><strong>Responsible AI</strong></dt>
+                <dd class="mb-3">Fairness, privacy, safety, transparency, and compliance—built into design, not a slide deck.</dd>
+              </dl>
+
+              <h2 class="h4 mt-5">AI system architecture (how pieces fit)</h2>
+              <p>Production AI is a <strong>stack of layers</strong>. You do not need to master every layer on day one, but you should know where your work sits.</p>
+
+              <h3 class="h5 mt-4">Reference architecture</h3>
+              <pre class="bg-light p-3 rounded small" aria-label="AI system layers"><code>┌─────────────────────────────────────────────────────────────┐
+│  Application (UI, API, agents, business logic)              │
+├─────────────────────────────────────────────────────────────┤
+│  Orchestration (LangChain, LlamaIndex, custom workflows)    │
+├─────────────────────────────────────────────────────────────┤
+│  Model access (OpenAI, Anthropic, Bedrock, Ollama, vLLM)    │
+├─────────────────────────────────────────────────────────────┤
+│  Knowledge (vector DB, search, caches, feature store)         │
+├─────────────────────────────────────────────────────────────┤
+│  Data (lake, warehouse, pipelines, labeling, governance)      │
+├─────────────────────────────────────────────────────────────┤
+│  Platform (K8s, GPUs, IAM, observability, cost, security)   │
+└─────────────────────────────────────────────────────────────┘</code></pre>
+
+              <h3 class="h5 mt-4">Layer by layer</h3>
+              <ol>
+                <li><strong>Data</strong> — raw events, documents, images; cleaned, labeled, and governed. Bad data caps every model.</li>
+                <li><strong>Training (optional for many app devs)</strong> — notebooks or pipelines produce a model artifact; often you consume a vendor or open model instead.</li>
+                <li><strong>Model serving</strong> — HTTP/gRPC endpoint, batch jobs, or edge runtime; watch latency, throughput, and cost per token.</li>
+                <li><strong>Retrieval &amp; memory</strong> — chunk documents, embed, store in Pinecone, pgvector, OpenSearch, etc.; retrieve top-k for RAG.</li>
+                <li><strong>Application logic</strong> — auth, rate limits, prompt templates, tool definitions, guardrails, fallbacks.</li>
+                <li><strong>Observability</strong> — traces, prompt/response logging (with PII redaction), eval dashboards, drift alerts.</li>
+              </ol>
+              <p>If you come from platform engineering, this should feel familiar: it is microservices plus data plus GPUs plus new failure modes (nondeterminism, prompt injection, runaway token cost).</p>
+
+              <h2 class="h4 mt-5">Foundations: what to learn (and in what order)</h2>
+
+              <h3 class="h5 mt-4">1. Software engineering (non-negotiable)</h3>
+              <ul>
+                <li>One language deeply: <strong>Python</strong> is the default for AI; <strong>TypeScript</strong> or <strong>Go</strong> matter for product APIs and platform.</li>
+                <li>Git, testing, REST/gRPC, containers, basic SQL, and debugging production issues.</li>
+                <li>Security basics: secrets management, least-privilege IAM, input validation (including against prompt injection).</li>
+              </ul>
+
+              <h3 class="h5 mt-4">2. Math and statistics (enough, not everything)</h3>
+              <ul>
+                <li>Linear algebra (vectors, matrices), calculus intuition (gradients), probability, and descriptive statistics.</li>
+                <li>For application-focused AI devs, depth in <strong>evaluation design</strong> often beats manual backprop derivations.</li>
+              </ul>
+
+              <h3 class="h5 mt-4">3. Classical ML concepts</h3>
+              <ul>
+                <li>Supervised vs unsupervised learning, train/validation/test splits, overfitting, regularization.</li>
+                <li>Common algorithms: linear/logistic regression, trees, random forests, basic neural nets.</li>
+                <li>When <em>not</em> to use ML—a rules engine or SQL may be cheaper and clearer.</li>
+              </ul>
+
+              <h3 class="h5 mt-4">4. Deep learning and transformers (conceptual + one hands-on path)</h3>
+              <ul>
+                <li>Neural networks, CNNs (vision), RNNs (legacy sequence), <strong>transformers</strong> and attention.</li>
+                <li>Pre-training vs fine-tuning vs prompting; parameter count vs capability vs cost.</li>
+              </ul>
+
+              <h3 class="h5 mt-4">5. Generative AI and product patterns</h3>
+              <ul>
+                <li>Prompt design, structured outputs (JSON schema), streaming, tool use, multi-step agents.</li>
+                <li>RAG end-to-end: chunking strategy, embeddings, retrieval quality, citation in UI.</li>
+              </ul>
+
+              <h2 class="h4 mt-5">Tech stack: languages, frameworks, models, cloud</h2>
+
+              <h3 class="h5 mt-4">Languages</h3>
+              <ul>
+                <li><strong>Python</strong> — PyTorch, Hugging Face, LangChain, notebooks, training scripts.</li>
+                <li><strong>TypeScript / JavaScript</strong> — full-stack AI apps, Vercel AI SDK, edge deployments.</li>
+                <li><strong>SQL</strong> — features, analytics, and vector extensions (e.g. pgvector).</li>
+              </ul>
+
+              <h3 class="h5 mt-4">ML &amp; deep learning frameworks</h3>
+              <ul>
+                <li><strong>PyTorch</strong> — research and production training; huge ecosystem.</li>
+                <li><strong>TensorFlow / Keras</strong> — still common in enterprise and mobile (TF Lite).</li>
+                <li><strong>JAX</strong> — Google stack, high-performance research.</li>
+                <li><strong>scikit-learn</strong> — classical ML baselines and pipelines.</li>
+                <li><strong>Hugging Face Transformers</strong> — download, fine-tune, and serve thousands of open models.</li>
+              </ul>
+
+              <h3 class="h5 mt-4">Application &amp; orchestration</h3>
+              <ul>
+                <li><strong>LangChain</strong>, <strong>LlamaIndex</strong>, <strong>Semantic Kernel</strong> — chains, agents, connectors (learn concepts; avoid framework magic without understanding).</li>
+                <li><strong>OpenAI / Anthropic / Google APIs</strong> — managed frontier models.</li>
+                <li><strong>Ollama</strong>, <strong>llama.cpp</strong>, <strong>vLLM</strong> — local or self-hosted open models.</li>
+              </ul>
+
+              <h3 class="h5 mt-4">Models (families, not an exhaustive catalog)</h3>
+              <table class="table table-sm table-bordered">
+                <thead>
+                  <tr><th>Family</th><th>Examples</th><th>Typical use</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Closed API LLMs</td><td>GPT-4o, Claude, Gemini</td><td>General reasoning, agents, codegen</td></tr>
+                  <tr><td>Open weights LLMs</td><td>Llama, Mistral, Qwen</td><td>Self-host, fine-tune, air-gapped</td></tr>
+                  <tr><td>Code models</td><td>Codex-style, Code Llama, StarCoder</td><td>IDE assistants, PR review</td></tr>
+                  <tr><td>Embedding models</td><td>text-embedding-3, BGE, E5</td><td>RAG, search, clustering</td></tr>
+                  <tr><td>Vision / multimodal</td><td>GPT-4V-class, LLaVA</td><td>Docs, UI, image Q&amp;A</td></tr>
+                  <tr><td>Speech</td><td>Whisper</td><td>Transcription, voice apps</td></tr>
+                </tbody>
+              </table>
+              <p>Choose models by <strong>task fit, latency, cost, privacy, and eval scores</strong>—not leaderboard hype alone.</p>
+
+              <h3 class="h5 mt-4">Data &amp; vector stores</h3>
+              <ul>
+                <li>Warehouses: Snowflake, BigQuery, Redshift; lakes on S3 + Spark/DuckDB.</li>
+                <li>Vectors: Pinecone, Weaviate, Chroma, pgvector, OpenSearch k-NN.</li>
+                <li>Pipelines: Airflow, Dagster, dbt—for reliable features and document ingestion.</li>
+              </ul>
+
+              <h3 class="h5 mt-4">Cloud &amp; MLOps (especially on AWS)</h3>
+              <ul>
+                <li><strong>Amazon SageMaker</strong> — training, endpoints, pipelines, model registry.</li>
+                <li><strong>Bedrock</strong> — managed foundation models and knowledge bases.</li>
+                <li>Storage/compute: S3, ECR, ECS/EKS with GPU node pools, Lambda for light inference.</li>
+                <li>Observability: CloudWatch, Prometheus, LangSmith, Arize, Weights &amp; Biases.</li>
+              </ul>
+              <p>My notes from structured learning: <a href="aws-machine-learning-foundations.html">Machine Learning Foundations</a>, <a href="aws-generative-ai-foundations.html">Generative AI Foundations</a>, and <a href="aws-data-engineering.html">Data Engineering</a>.</p>
+
+              <h2 class="h4 mt-5">How to develop: a practical learning path</h2>
+              <p><strong>Phase 0 — Baseline (2–4 weeks)</strong></p>
+              <ul>
+                <li>Solidify Python or your main language, Git, and one small API project.</li>
+                <li>Complete an intro ML course (Andrew Ng’s ML specialization or equivalent).</li>
+              </ul>
+              <p><strong>Phase 1 — Build one classical ML project (3–6 weeks)</strong></p>
+              <ul>
+                <li>Pick a tabular dataset (Kaggle or public gov data); train a baseline, measure metrics, deploy a simple Flask/FastAPI predict endpoint.</li>
+              </ul>
+              <p><strong>Phase 2 — Generative AI application (4–8 weeks)</strong></p>
+              <ul>
+                <li>Build a <strong>RAG chatbot</strong> over your own docs: ingest PDFs/Markdown, chunk, embed, retrieve, answer with citations.</li>
+                <li>Add evals: 20–50 golden questions; track answer quality over prompt/model changes.</li>
+              </ul>
+              <p><strong>Phase 3 — Production habits (ongoing)</strong></p>
+              <ul>
+                <li>CI for prompts and schemas, cost dashboards, red-team basic prompt injection cases.</li>
+                <li>Read <a href="iso-42001-lead-auditor-ai-management.html">ISO/IEC 42001</a> themes if you touch regulated or enterprise AI.</li>
+              </ul>
+              <p><strong>Portfolio tip:</strong> One repo with README architecture diagram, sample eval results, and clear “what I’d do next in production” beats five half-finished tutorials.</p>
+
+              <h2 class="h4 mt-5">Common pitfalls</h2>
+              <ul>
+                <li><strong>Skipping software craft</strong> — notebooks do not replace tests, APIs, or observability.</li>
+                <li><strong>Tool-chasing</strong> — new frameworks weekly; master patterns (RAG, eval, serving) first.</li>
+                <li><strong>No evals</strong> — demos lie; metrics and human review decide if you ship.</li>
+                <li><strong>Ignoring cost and latency</strong> — token bills and p95 latency kill products silently.</li>
+                <li><strong>Trusting the model for facts</strong> — always ground or verify high-stakes answers.</li>
+              </ul>
+
+              <h2 class="h4 mt-5">Where the field is going</h2>
+              <ul>
+                <li><strong>Smaller, cheaper models</strong> for edge and high-volume tasks; frontier models for hard reasoning.</li>
+                <li><strong>Multimodal products</strong> — text, image, audio, and video in one workflow.</li>
+                <li><strong>Agents with guardrails</strong> — tool use plus policy, audit logs, and human approval steps.</li>
+                <li><strong>Regulation and standards</strong> — AI management systems, EU AI Act-style risk tiers, sector rules.</li>
+                <li><strong>AI-native platforms</strong> — inference, vectors, and evals as first-class cloud primitives (see also <a href="cloud-platform-evolution.html">cloud platform evolution</a>).</li>
+              </ul>
+              <p>The developers who thrive will combine <strong>product sense, solid engineering, and honest uncertainty</strong> about model limits—with the habit of measuring what actually helps users.</p>
+
+              <h2 class="h4 mt-5">Further reading</h2>
+              <ul>
+                <li><a href="ai-historical-paradigms.html">Historical paradigms of AI</a> — how the field evolved.</li>
+                <li>fast.ai, Hugging Face course, DeepLearning.AI short courses — hands-on depth.</li>
+                <li>Papers: “Attention Is All You Need”; OpenAI / Anthropic system cards for capability and safety framing.</li>
+                <li>Books: <em>Designing Machine Learning Systems</em> (Chip Huyen); <em>Build a Large Language Model (From Scratch)</em> (Sebastian Raschka) for implementers.</li>
+              </ul>
+
+              <p class="small text-muted mt-4 mb-2"><a href="../index.html#blog">Blog index</a> · <a href="ai-historical-paradigms.html">AI history</a> · <a href="aws-generative-ai-foundations.html">Generative AI Foundations</a> · <a href="iso-42001-lead-auditor-ai-management.html">ISO 42001 AI management</a></p>
+              <p class="mb-0"><a href="../index.html#blog" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left" aria-hidden="true"></i> Back to blog list</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>

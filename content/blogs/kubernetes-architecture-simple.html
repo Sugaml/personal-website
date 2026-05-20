@@ -1,0 +1,86 @@
+<article class="inner-page blog-article pb-5">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-9 col-xl-8">
+            <header class="mb-4 pb-3 border-bottom" data-aos="fade-up">
+              <div class="blog-article-meta mb-3">
+                <p class="text-muted small mb-2">Platform &amp; culture · <time datetime="2026-05-19">19 May 2026</time> · <span class="blog-meta-label">Essay</span> · By <a href="../index.html#about" class="blog-author text-reset fw-semibold" rel="author">Babulal Tamang</a></p>
+              <ul class="blog-tags list-unstyled d-flex flex-wrap gap-1 mb-0" aria-label="Tags">
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Kubernetes</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Architecture</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Control Plane</span></li>
+              </ul>
+              </div>
+              <h1 class="h2 mb-3">Kubernetes Architecture in Simple Terms</h1>
+              <p class="lead mb-3"><strong>Kubernetes</strong> (often shortened to <strong>K8s</strong>) is a system that runs your containerized applications across many machines and keeps them healthy. This note maps the moving parts in everyday language: what a cluster is, who makes decisions, who does the labor, and how traffic finds your app. For <em>when, why, and where</em> teams adopt it from a business angle, start with <a href="kubernetes-when-how-why-where.html">Kubernetes for business leaders</a>.</p>
+              <div class="border-start border-primary border-4 ps-3 py-3 bg-light rounded mb-0" role="note">
+                <p class="small text-uppercase text-muted mb-1 fw-semibold">In short</p>
+                <p class="mb-0">A <strong>cluster</strong> splits into a <strong>control plane</strong> (the brain: API, memory of state, schedulers, controllers) and <strong>worker nodes</strong> (the muscle: kubelet, runtime, networking). You declare <strong>Pods</strong> (wrappers around containers), scale them with <strong>Deployments</strong>, and expose them with <strong>Services</strong>. Everything flows through the API.</p>
+              </div>
+            </header>
+
+            <div class="blog-prose" data-aos="fade-up" data-aos-delay="50">
+
+              <h2 class="h4 mt-4">The one-sentence picture</h2>
+              <p>You describe <em>what</em> should run (images, replicas, ports, config), store that description somewhere trusted (often Git—see <a href="gitops-principles.html">GitOps</a>), and Kubernetes <strong>reconciles</strong>: it compares the live cluster to the declaration and nudges reality until they match, within the limits of hardware and policy.</p>
+
+              <h2 class="h4 mt-5">Cluster = control plane + worker nodes</h2>
+              <p>A <strong>cluster</strong> is the whole system you operate as one unit. A <strong>node</strong> is a single machine (VM or bare metal) that participates in the cluster.</p>
+              <ul>
+                <li><strong>Control plane nodes</strong> run the components that accept requests, remember state, place work, and repair drift. In production they are usually a small, highly available set.</li>
+                <li><strong>Worker nodes</strong> run your application containers. There are typically many of them; they report health and execute what the control plane assigns.</li>
+              </ul>
+              <p>You do not need to memorize every binary on day one. The useful split is: <strong>decisions and bookkeeping happen on the control plane; execution happens on workers.</strong></p>
+
+              <h2 class="h4 mt-5">Control plane components (the brain)</h2>
+              <p>Names vary slightly by distribution, but the ideas are stable:</p>
+              <ul>
+                <li><strong>kube-apiserver</strong> — The front door. <code>kubectl</code>, controllers, and schedulers all talk to this API. If the API is unavailable, most change stops (reads on cached data may still work in clients, but the source of truth is here).</li>
+                <li><strong>etcd</strong> — A consistent key-value store that holds the cluster&rsquo;s <strong>desired and observed state</strong>. It is not “your app database”; it is Kubernetes&rsquo; own memory.</li>
+                <li><strong>kube-scheduler</strong> — Watches for Pods without an assigned node and picks a node based on resources, affinity rules, taints/tolerations, and other constraints.</li>
+                <li><strong>kube-controller-manager</strong> — Runs controllers—loops that watch the API and take action. For example, the <strong>Deployment controller</strong> notices when replica counts do not match reality and creates or deletes Pods.</li>
+                <li><strong>cloud-controller-manager</strong> (when on a cloud) — Glues the cluster to the provider: load balancers, routes, volume labels—so Kubernetes can request “a cloud load balancer” without hard-coding one vendor&rsquo;s API into every binary.</li>
+              </ul>
+
+              <h2 class="h4 mt-5">Worker node components (the muscle)</h2>
+              <ul>
+                <li><strong>kubelet</strong> — An agent on each node that registers the node with the API server and ensures containers in assigned Pods are running as declared. If kubelet is unhealthy, that node is a bad place to land new work.</li>
+                <li><strong>Container runtime</strong> — Actually starts and stops containers (<strong>containerd</strong>, <strong>CRI-O</strong>, etc.). Kubernetes talks to the runtime through a standard interface (<a href="kubernetes-cri-csi-deep-dive.html#cri">CRI</a>).</li>
+                <li><strong>kube-proxy</strong> (or data-plane replacements in some setups) — Implements part of <strong>Service</strong> networking on the node so traffic to a Service IP can reach the right Pods.</li>
+              </ul>
+
+              <h2 class="h4 mt-5">Pods, Deployments, and Services (what you usually declare)</h2>
+              <ul>
+                <li><strong>Pod</strong> — The smallest deployable unit Kubernetes schedules. Often one main container (sometimes sidecars). Pods are <em>ephemeral</em>: they come and go; you design for replacement.</li>
+                <li><strong>Deployment</strong> — Declares desired replicas and rolling updates for stateless apps. It owns ReplicaSets, which own Pods—so you rarely create Pods by hand in production.</li>
+                <li><strong>Service</strong> — A stable virtual IP and DNS name in front of a set of Pods (via labels). Clients talk to the Service; Kubernetes load-balances to healthy Pods.</li>
+              </ul>
+              <p>For stateful systems you meet <strong>StatefulSets</strong>, <a href="kubernetes-storage-pv-pvc-storageclass.html">PVs, PVCs, and StorageClasses</a> (provisioned via <a href="kubernetes-cri-csi-deep-dive.html">CSI</a>), and operators; the architecture above still applies—controllers just enforce stronger identity and storage rules.</p>
+
+              <h2 class="h4 mt-5">Add-ons you will bump into</h2>
+              <p>These are not “core” in the same sense as kube-apiserver, but real clusters depend on them:</p>
+              <ul>
+                <li><strong>Container Network Interface (CNI)</strong> — Gives every Pod an IP and implements network policy in many installs.</li>
+                <li><strong>DNS</strong> (e.g. CoreDNS) — Resolves Service names inside the cluster.</li>
+                <li><strong>Ingress controller</strong> — HTTP/HTTPS routing from outside the cluster to Services.</li>
+                <li><strong>Metrics and logs</strong> — cAdvisor/kubelet metrics, Prometheus-style scraping, log agents—so you can see what the orchestrator cannot guess from YAML alone.</li>
+              </ul>
+
+              <h2 class="h4 mt-5">Mental model for incidents</h2>
+              <p>When something breaks, a practical order of questions is: <strong>Is the API reachable?</strong> → <strong>Is etcd healthy?</strong> → <strong>Are nodes Ready?</strong> → <strong>Did the Pod get scheduled?</strong> → <strong>Did the container start (image pull, crash loop)?</strong> → <strong>Does networking reach the Pod (Service, NetworkPolicy, ingress)?</strong> The architecture tells you which logs and metrics to open next.</p>
+
+              <h2 class="h4 mt-5">Further reading</h2>
+              <ul>
+                <li>Kubernetes documentation — <em>Concepts</em> and <em>Architecture</em> chapters (official diagrams and glossary)</li>
+                <li>CNCF landscape — CNI, ingress, and GitOps tools in context</li>
+                <li>My note on <a href="kubernetes-cluster-rbac.html">Kubernetes cluster RBAC</a> — who may call the API and how Roles and bindings work</li>
+                <li>My note on <a href="gitops-principles.html">GitOps principles</a> — how declarative clusters meet Git and continuous reconciliation</li>
+              </ul>
+
+              <p class="small text-muted mt-4 mb-2"><a href="../index.html#blog">Blog index</a> · <a href="kubernetes-hands-on-1-local-lab.html">Kubernetes hands-on course (5 parts)</a> · <a href="kubernetes-cluster-rbac.html">Cluster RBAC</a> · <a href="kubernetes-when-how-why-where.html">Kubernetes for business</a> · <a href="gitops-principles.html">GitOps principles</a> · <a href="cloud-platform-evolution.html">Cloud platform evolution</a></p>
+              <p class="mb-0"><a href="../index.html#blog" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left" aria-hidden="true"></i> Back to blog list</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>

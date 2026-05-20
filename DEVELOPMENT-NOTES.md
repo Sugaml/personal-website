@@ -2,6 +2,12 @@
 
 Short log of design decisions and content changes.
 
+## 2026-05-20 — Incidents & disaster response (guide)
+
+- **Title:** “When Production Breaks: Incidents, Disasters, and How to Respond Calmly” (article); index card “Incidents & disaster response”.
+- **Intent:** Deep guide on incident vs disaster, severity model, lifecycle (detect → learn), IC/scribe/comms roles, calm-response habits, DR/BCP (RTO/RPO, failover, security disasters, game days), pre-pager design, ten-minute bridge script, comms templates, pitfalls. Pairs with `devops-psychology-after-hours.html` (mind under pressure) with operational procedure.
+- **Files:** `blogs/incident-disaster-response-calm.html`, `index.html` (Platform section after DevOps psychology card), cross-link from psychology post.
+
 ## 2026-05-20 — Kubernetes storage PV / PVC / StorageClass (guide)
 
 - **Title:** “Kubernetes Storage: PV, PVC, and StorageClass Explained in Depth” (article); index card “Kubernetes storage (PV, PVC, StorageClass)”.

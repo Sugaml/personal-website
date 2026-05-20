@@ -1,0 +1,221 @@
+<article class="inner-page blog-article pb-5">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-9 col-xl-8">
+            <header class="mb-4 pb-3 border-bottom" data-aos="fade-up">
+              <div class="blog-article-meta mb-3">
+                <p class="text-muted small mb-2">AI/ML · <time datetime="2026-05-19">19 May 2026</time> · <span class="blog-meta-label">Essay</span> · By <a href="../index.html#about" class="blog-author text-reset fw-semibold" rel="author">Babulal Tamang</a></p>
+              <ul class="blog-tags list-unstyled d-flex flex-wrap gap-1 mb-0" aria-label="Tags">
+                <li><span class="badge rounded-pill text-bg-light border text-muted">AI</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">History</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Deep Learning</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Transformers</span></li>
+              </ul>
+              </div>
+              <h1 class="h2 mb-3">From Symbols to Foundation Models: The Historical Paradigms of Artificial Intelligence</h1>
+              <p class="lead mb-3">Artificial intelligence did not begin with ChatGPT. It is a chain of competing ideas—logic, rules, statistics, neurons, scale—each promising that machines could reason, learn, or behave intelligently. This post maps those paradigms, the people who shaped them, and where the field stands after more than seventy years of ambition and setback.</p>
+              <div class="border-start border-primary border-4 ps-3 py-3 bg-light rounded mb-0" role="note">
+                <p class="small text-uppercase text-muted mb-1 fw-semibold">In short</p>
+                <p class="mb-0">AI history is a sequence of paradigms: symbolic reasoning, expert systems, connectionist networks, statistical learning, deep learning, and large foundation models. Today’s systems are powerful pattern engines with real limits; governance and engineering matter as much as model size.</p>
+              </div>
+            </header>
+
+            <div class="blog-prose" data-aos="fade-up" data-aos-delay="50">
+
+              <h2 class="h4 mt-4">What we mean by a “paradigm”</h2>
+              <p>In science and engineering, a <strong>paradigm</strong> is more than a buzzword. It is a shared answer to three questions: What is intelligence? How should we build it? How do we know we succeeded? Each era of AI picked different answers—logic and symbols, hand-crafted rules, probability, layered neurons, or trillion-parameter language models trained on the web.</p>
+              <p>Paradigms rarely disappear overnight. Expert systems inform today’s knowledge graphs; symbolic planners sit inside robotics stacks; classical statistics still underpins evaluation and A/B tests. Understanding history helps you see why a tool works in one context and fails in another, and why “AI” in 2026 is not the same problem statement as in 1956.</p>
+
+              <h2 class="h4 mt-5">Before the name: computing, cybernetics, and the imitation game</h2>
+              <p>Long before anyone said “artificial intelligence,” thinkers asked whether machines could think.</p>
+              <ul>
+                <li><strong>Alan Turing</strong> (1950) proposed the <em>imitation game</em>—we now call it the Turing test—as a practical criterion for machine intelligence, sidestepping endless philosophy about consciousness.</li>
+                <li><strong>Norbert Wiener</strong> and the <strong>cybernetics</strong> movement treated control, feedback, and communication as unifying ideas across brains and machines.</li>
+                <li><strong>Warren McCulloch and Walter Pitts</strong> (1943) modeled neurons as logic gates, hinting that thought might be computation.</li>
+                <li>Early hardware—<strong>ENIAC</strong>, later stored-program machines—made simulation conceivable at scale.</li>
+              </ul>
+              <p>These threads set the stage: intelligence as information processing, not magic.</p>
+
+              <h2 class="h4 mt-5">Paradigm 1: Symbolic AI and the “thinking machine” (1950s–1970s)</h2>
+              <p>At the <strong>Dartmouth workshop</strong> (summer 1956), John McCarthy coined the term <strong>artificial intelligence</strong>. Attendees—including Marvin Minsky, Claude Shannon, and Nathaniel Rochester—bet that intelligence could be encoded as symbols manipulated by rules: if you could represent knowledge and search the space of inferences, you could build a mind.</p>
+              <p>Early wins were real but narrow:</p>
+              <ul>
+                <li><strong>Logic Theorist</strong> (Newell &amp; Simon) proved theorems in formal logic.</li>
+                <li><strong>ELIZA</strong> (Weizenbaum, 1966) mimicked a Rogerian therapist with pattern matching—convincing enough to unsettle its author about human gullibility.</li>
+                <li><strong>SHRDLU</strong> (Winograd) understood blocks-world language in a constrained microworld.</li>
+              </ul>
+              <p>The paradigm assumed that <strong>explicit representation + search</strong> would scale. It did not—commonsense knowledge and ambiguity exploded combinatorially. Funding cycles tightened; the first <strong>AI winter</strong> arrived when promises outran delivery.</p>
+              <p><strong>Key figures this era:</strong> McCarthy, Minsky, Allen Newell, Herbert Simon, Joseph Weizenbaum, Terry Winograd.</p>
+
+              <h2 class="h4 mt-5">Paradigm 2: Expert systems — knowledge as currency (1970s–1980s)</h2>
+              <p>Industry pivoted from general intelligence to <strong>expert systems</strong>: capture a specialist’s rules in an inference engine. If symbolic AI could not mimic a child, perhaps it could mimic a chemist or a doctor in a bounded domain.</p>
+              <ul>
+                <li><strong>DENDRAL</strong> (Stanford) inferred molecular structure from mass spectrometry data—early success in scientific AI.</li>
+                <li><strong>MYCIN</strong> (Shortliffe et al.) recommended antibiotics for blood infections; evaluations were promising, though deployment raised liability and workflow questions.</li>
+                <li>Commercial shells (e.g. Intellicorp, Teknowledge) spread the pattern: knowledge engineers interviewed experts, codified <em>if–then</em> rules, and attached explanation facilities.</li>
+              </ul>
+              <p>Expert systems delivered ROI in niches but were <strong>brittle</strong>: maintenance cost grew with rule count; conflicting rules appeared; tacit knowledge resisted interviews. A second winter followed when desktop computing and cheaper custom software undercut expensive AI projects.</p>
+              <p><strong>Key figures:</strong> Edward Feigenbaum, Bruce Buchanan, Randall Davis, Edward Shortliffe.</p>
+
+              <h2 class="h4 mt-5">Paradigm 3: Connectionism — learning in the weights (1940s roots, revivals 1980s–2010s)</h2>
+              <p>A parallel tradition treated intelligence as <strong>emergent from networks of simple units</strong>. Frank Rosenblatt’s <strong>perceptron</strong> (1958) could learn linear decision boundaries; Minsky and Papert’s book <em>Perceptrons</em> (1969) highlighted limitations and cooled enthusiasm for years.</p>
+              <p>The ideas never died. Breakthroughs returned when data, compute, and training algorithms aligned:</p>
+              <ul>
+                <li><strong>Backpropagation</strong> popularized by Rumelhart, Hinton, and Williams (1986) enabled multi-layer networks to learn internal representations.</li>
+                <li><strong>Convolutional networks</strong> for vision—Yann LeCun’s LeNet for digit recognition showed structured architectures matter.</li>
+                <li><strong>Recurrent networks</strong> and LSTMs (Hochreiter &amp; Schmidhuber, 1997) addressed sequences and memory for speech and text.</li>
+                <li><strong>Reinforcement learning</strong>—Richard Sutton and Andrew Barto’s framework; later DeepMind’s <strong>DQN</strong> (Mnih et al.) and <strong>AlphaGo</strong> (Silver et al.) learned policies through trial and reward.</li>
+              </ul>
+              <p>Connectionism reframed the question: instead of hand-writing rules, <strong>let the system learn features</strong> from examples. The cost was data hunger and opaque internals.</p>
+              <p><strong>Key figures:</strong> Rosenblatt, Geoffrey Hinton, Yann LeCun, Yoshua Bengio, Jürgen Schmidhuber, Richard Sutton, Andrew Barto, Demis Hassabis.</p>
+
+              <h2 class="h4 mt-5">Paradigm 4: Statistical machine learning — probability beats hand-crafting (1990s–2010s)</h2>
+              <p>As the web generated labeled and unlabeled data, <strong>machine learning</strong> became an engineering discipline distinct from “AI” in the symbolic sense. The paradigm: choose a model family, define a loss, optimize on data, validate on held-out sets.</p>
+              <ul>
+                <li><strong>Support vector machines</strong> (Vapnik) dominated many classification benchmarks.</li>
+                <li><strong>Ensemble methods</strong>—random forests (Leo Breiman), gradient boosting—won tabular competitions before deep nets ate vision and speech.</li>
+                <li><strong>Bayesian methods</strong> and graphical models handled uncertainty and sparse evidence.</li>
+                <li><strong>Unsupervised and representation learning</strong>—clustering, PCA, later autoencoders—fed downstream tasks.</li>
+              </ul>
+              <p>Core ideas from this era still matter: bias–variance tradeoffs, cross-validation, feature leakage, calibration, and honest baselines. Kaggle leaderboards and industrial recommender systems were built here as much as in research labs.</p>
+              <p><strong>Key figures:</strong> Vladimir Vapnik, Leo Breiman, Michael Jordan, Andrew Ng, Pedro Domingos, Tom Mitchell.</p>
+
+              <h2 class="h4 mt-5">Paradigm 5: Deep learning at scale — representation + data + GPUs (2012–2017)</h2>
+              <p>Alex Krizhevsky, Ilya Sutskever, and Geoffrey Hinton’s <strong>AlexNet</strong> (2012) crushed ImageNet benchmarks using GPUs and deep convolutional layers. The lesson spread: with enough data and compute, end-to-end learning could outperform painstaking feature engineering.</p>
+              <p>Milestones stacked quickly:</p>
+              <ul>
+                <li><strong>Sequence-to-sequence</strong> models and attention for machine translation.</li>
+                <li><strong>ResNets</strong> (He et al.) enabled very deep networks via skip connections.</li>
+                <li><strong>Generative adversarial networks</strong> (Goodfellow et al., 2014) for synthetic images.</li>
+                <li><strong>AlphaGo</strong> combining deep nets with Monte Carlo tree search—symbolic search married to learned intuition.</li>
+              </ul>
+              <p>“Deep learning” became the default for perception (vision, speech) and many structured prediction tasks. MLOps emerged because training pipelines, model registries, and drift monitoring were production problems, not notebook demos.</p>
+
+              <h2 class="h4 mt-5">Paradigm 6: Transformers and foundation models (2017–present)</h2>
+              <p>The paper <strong>“Attention Is All You Need”</strong> (Vaswani et al., 2017) introduced the <strong>Transformer</strong>: self-attention replaced recurrence for many sequence tasks, enabling parallel training at scale. Language modeling turned from niche to infrastructure.</p>
+              <p>What changed in practice:</p>
+              <ul>
+                <li><strong>Pre-train once, adapt many times</strong> — BERT (Devlin et al.), GPT lineages (Radford et al.; OpenAI), T5, and open weights from Meta, Mistral, and others.</li>
+                <li><strong>Scale laws</strong> — larger models and datasets often predictably improve capability—until they do not, or until cost dominates.</li>
+                <li><strong>Multimodality</strong> — vision-language models, speech, code; one interface, many modalities.</li>
+                <li><strong>Agents and tools</strong> — models that call APIs, browse, write code—closing the loop between prediction and action (with new failure modes).</li>
+              </ul>
+              <p>This is the era most people mean by “AI” in 2026: <strong>foundation models</strong>—general-purpose systems fine-tuned or prompted for specific work. It inherits connectionist learning but operates at civilizational data scale and corporate capital intensity.</p>
+              <p><strong>Key figures:</strong> Ashish Vaswani and co-authors; Sam Altman and OpenAI team; Demis Hassabis (DeepMind); Fei-Fei Li (vision and human-centered AI); Timnit Gebru and Margaret Mitchell (ethics and accountability in deployed systems).</p>
+
+              <h2 class="h4 mt-5">Paradigm shifts at a glance</h2>
+              <div class="table-responsive">
+                <table class="table table-sm table-bordered align-middle">
+                  <thead class="table-light">
+                    <tr>
+                      <th scope="col">Era</th>
+                      <th scope="col">Core idea</th>
+                      <th scope="col">Strength</th>
+                      <th scope="col">Limit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Symbolic AI</td>
+                      <td>Logic + symbols + search</td>
+                      <td>Interpretable reasoning in small worlds</td>
+                      <td>Knowledge acquisition bottleneck</td>
+                    </tr>
+                    <tr>
+                      <td>Expert systems</td>
+                      <td>Encode expert rules</td>
+                      <td>Commercial value in narrow domains</td>
+                      <td>Maintenance, brittleness</td>
+                    </tr>
+                    <tr>
+                      <td>Connectionism / deep nets</td>
+                      <td>Learn representations from data</td>
+                      <td>Perception, speech, complex patterns</td>
+                      <td>Data, compute, opacity</td>
+                    </tr>
+                    <tr>
+                      <td>Statistical ML</td>
+                      <td>Optimize loss on samples</td>
+                      <td>Strong baselines, rigorous evaluation</td>
+                      <td>Feature and distribution shift</td>
+                    </tr>
+                    <tr>
+                      <td>Foundation models</td>
+                      <td>Pre-trained general models + adaptation</td>
+                      <td>Flexibility, language, multimodal tasks</td>
+                      <td>Hallucination, cost, governance</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <h2 class="h4 mt-5">Who this post covers (and who it does not)</h2>
+              <p>No single article can list every contributor. The table below summarizes <strong>people and groups referenced above</strong>—a map for further reading, not a hall of fame ranked by importance.</p>
+              <div class="table-responsive">
+                <table class="table table-sm table-bordered align-middle">
+                  <thead class="table-light">
+                    <tr>
+                      <th scope="col">Person / group</th>
+                      <th scope="col">Contribution</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>Alan Turing</td><td>Computability; imitation game as operational test</td></tr>
+                    <tr><td>John McCarthy</td><td>Coined “AI”; Lisp; time-sharing ideas</td></tr>
+                    <tr><td>Marvin Minsky</td><td>Symbolic AI; society of mind; perceptron critique</td></tr>
+                    <tr><td>Allen Newell &amp; Herbert Simon</td><td>Physical symbol systems; early problem solvers</td></tr>
+                    <tr><td>Edward Feigenbaum &amp; colleagues</td><td>Expert systems movement</td></tr>
+                    <tr><td>Frank Rosenblatt</td><td>Perceptron; early neural learning</td></tr>
+                    <tr><td>Geoffrey Hinton, Yann LeCun, Yoshua Bengio</td><td>Deep learning revival; backprop, CNNs, recognition</td></tr>
+                    <tr><td>Richard Sutton &amp; Andrew Barto</td><td>Reinforcement learning textbook and theory</td></tr>
+                    <tr><td>Vladimir Vapnik</td><td>Statistical learning theory; SVMs</td></tr>
+                    <tr><td>Vaswani et al. / Transformer authors</td><td>Attention-based sequence modeling at scale</td></tr>
+                    <tr><td>OpenAI, DeepMind, Meta AI, Anthropic, others</td><td>Large-scale training, alignment research, open and closed model ecosystems</td></tr>
+                    <tr><td>Timnit Gebru, Margaret Mitchell, Joy Buolamwini</td><td>Fairness, accountability, and harms of deployed ML</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p>Women and global south researchers are underrepresented in popular narratives; modern AI also depends on <strong>data workers, annotators, and maintainers</strong> who rarely appear in headlines. A complete picture includes labor, supply chains, and environmental cost—not only architecture papers.</p>
+
+              <h2 class="h4 mt-5">AI winters and why hype repeats</h2>
+              <p>Funding and attention collapsed twice (roughly mid-1970s and late 1980s) when symbolic and expert-system roadmaps stalled. The pattern is familiar: a demo impresses executives, timelines shrink, integration costs are underestimated, and maintenance eats budgets.</p>
+              <p>Today's risk is different in scale but similar in shape: <strong>pilot purgatory</strong>—impressive prototypes that never reach governed production; or production systems without monitoring, rollback, or human override. History suggests measuring outcomes (quality, latency, cost, incident rate) beats declaring victory after a keynote.</p>
+
+              <h2 class="h4 mt-5">Where we are now (2026)</h2>
+              <p>Capability and caution coexist.</p>
+              <ul>
+                <li><strong>What works well</strong> — drafting and summarization, code assistance, search augmentation, document extraction, many perception tasks, personalization when privacy is handled carefully, and acceleration of research loops with human review.</li>
+                <li><strong>What remains hard</strong> — reliable planning over long horizons, verifiable truth in open domains, robustness to adversarial input, cheap on-device parity with cloud giants, and causal reasoning beyond pattern completion.</li>
+                <li><strong>Engineering reality</strong> — RAG, fine-tuning, eval harnesses, guardrails, cost controls, and observability are how teams ship; the model weights are one layer in a system.</li>
+                <li><strong>Governance</strong> — frameworks such as <strong>ISO/IEC 42001</strong> (AI management systems) and sector rules treat AI as organizational risk: roles, lifecycle, bias, transparency, and continual improvement—not only accuracy metrics.</li>
+                <li><strong>Platform angle</strong> — AI workloads need the same discipline as any critical service: data pipelines, identity, secrets, GPU/CPU scheduling, and incident response. Cloud and Kubernetes skills still matter; the “intelligence” is a service with SLAs.</li>
+              </ul>
+              <p>We are not at artificial general intelligence as portrayed in film. We are in a <strong>tool-rich, responsibility-heavy</strong> phase: foundation models as programmable infrastructure, with society still negotiating trust, copyright, labor impact, and safety research agendas.</p>
+
+              <h2 class="h4 mt-5">How the paradigms connect to practice</h2>
+              <p>If you build or operate systems today, the historical map is a decision guide:</p>
+              <ul>
+                <li>Need <strong>explainable rules</strong> in a regulated workflow? Symbolic and expert-system thinking still appears in policy engines and decision tables—often alongside ML.</li>
+                <li>Need <strong>prediction from structured logs or metrics</strong>? Classical ML and time-series methods may beat a large language model on cost and clarity.</li>
+                <li>Need <strong>language, vision, or multimodal UX</strong>? Foundation models plus retrieval and evals are the default experiment—prove value before scaling spend.</li>
+                <li>Need <strong>long-term autonomy</strong>? Reinforcement learning and planning research matter—but production usually demands human-in-the-loop until failure modes are bounded.</li>
+              </ul>
+              <p>On this site, credential posts on <a href="aws-machine-learning-foundations.html">AWS Machine Learning Foundations</a> and <a href="aws-generative-ai-foundations.html">Generative AI Foundations</a> cover practical building blocks; the <a href="iso-42001-lead-auditor-ai-management.html">ISO/IEC 42001</a> note covers audit-style governance. This essay is the narrative spine connecting them.</p>
+
+              <h2 class="h4 mt-5">Further reading</h2>
+              <ul>
+                <li>Stuart Russell &amp; Peter Norvig — <em>Artificial Intelligence: A Modern Approach</em> (comprehensive textbook)</li>
+                <li>Nils Nilsson — <em>The Quest for Artificial Intelligence</em> (historical survey)</li>
+                <li>Melanie Mitchell — <em>Artificial Intelligence: A Guide for Thinking Humans</em></li>
+                <li>Christopher Bishop — <em>Pattern Recognition and Machine Learning</em></li>
+                <li>Richard Sutton &amp; Andrew Barto — <em>Reinforcement Learning</em> (second edition, free online)</li>
+                <li>ISO/IEC 42001 — AI management system standard (for organizational context)</li>
+              </ul>
+
+              <p class="small text-muted mt-4 mb-2"><a href="../index.html#blog">Blog index</a> · <a href="how-to-become-ai-developer.html">How to become an AI developer</a> · <a href="aws-machine-learning-foundations.html">ML Foundations</a> · <a href="aws-generative-ai-foundations.html">Generative AI Foundations</a> · <a href="iso-42001-lead-auditor-ai-management.html">ISO 42001</a></p>
+              <p class="mb-0"><a href="../index.html#blog" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left" aria-hidden="true"></i> Back to blog list</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>

@@ -1,0 +1,382 @@
+{
+  "posts": [
+    {
+      "slug": "ai-historical-paradigms",
+      "file": "ai-historical-paradigms.html",
+      "title": "From Symbols to Foundation Models \u2014 Babulal Tamang",
+      "description": "A concise history of artificial intelligence: symbolic AI, expert systems, neural networks, statistical ML, deep learning, transformers, key pioneers, and where the field stands today.",
+      "keywords": "AI history, symbolic AI, neural networks, transformers, Babulal Tamang",
+      "breadcrumb": "AI historical paradigms",
+      "content_file": "ai-historical-paradigms.html"
+    },
+    {
+      "slug": "aws-cloud-architecting",
+      "file": "aws-cloud-architecting.html",
+      "title": "Cloud Architecting (AWS Academy) \u2014 Babulal Tamang",
+      "description": "What I learned in AWS Academy Cloud Architecting: design skills, foundations, Credly badge.",
+      "keywords": "AWS Academy, cloud architecting, availability, security, Credly, Babulal Tamang",
+      "breadcrumb": "Cloud Architecting",
+      "content_file": "aws-cloud-architecting.html"
+    },
+    {
+      "slug": "aws-cloud-practitioner",
+      "file": "aws-cloud-practitioner.html",
+      "title": "AWS Certified Cloud Practitioner \u2014 Babulal Tamang",
+      "description": "What I learned preparing for AWS Certified Cloud Practitioner: exam vs course, skills, Credly.",
+      "keywords": "AWS, Cloud Practitioner, certification, Credly, cloud basics, Babulal Tamang",
+      "breadcrumb": "AWS Cloud Practitioner",
+      "content_file": "aws-cloud-practitioner.html"
+    },
+    {
+      "slug": "aws-cloud-security-foundations",
+      "file": "aws-cloud-security-foundations.html",
+      "title": "Cloud Security Foundations (AWS Academy) \u2014 Babulal Tamang",
+      "description": "What I learned in AWS Academy Cloud Security Foundations: IAM, defense in depth, Credly badge.",
+      "keywords": "AWS Academy, cloud security, IAM, shared responsibility, Credly, Babulal Tamang",
+      "breadcrumb": "Cloud Security Foundations",
+      "content_file": "aws-cloud-security-foundations.html"
+    },
+    {
+      "slug": "aws-data-engineering",
+      "file": "aws-data-engineering.html",
+      "title": "Data Engineering (AWS Academy) \u2014 Babulal Tamang",
+      "description": "What I learned in AWS Academy Data Engineering: pipelines, skills, Credly badge.",
+      "keywords": "AWS Academy, data engineering, ETL, data quality, Credly, Babulal Tamang",
+      "breadcrumb": "Data Engineering",
+      "content_file": "aws-data-engineering.html"
+    },
+    {
+      "slug": "aws-ebs-s3-efs-storage-deep-dive",
+      "file": "aws-ebs-s3-efs-storage-deep-dive.html",
+      "title": "AWS EBS in Depth: EBS vs S3 vs EFS \u2014 Babulal Tamang",
+      "description": "Deep dive into Amazon EBS: volume types, performance, snapshots, encryption, and how block storage compares to S3 object storage and EFS shared file systems for architects and operators.",
+      "keywords": "AWS EBS, S3, EFS, block storage, object storage, file storage, cloud architect, Babulal Tamang",
+      "breadcrumb": "AWS EBS, S3, and EFS",
+      "content_file": "aws-ebs-s3-efs-storage-deep-dive.html"
+    },
+    {
+      "slug": "aws-gcp-azure-hyperscaler-comparison",
+      "file": "aws-gcp-azure-hyperscaler-comparison.html",
+      "title": "AWS vs GCP vs Azure \u2014 Hyperscaler Depth Comparison \u2014 Babulal Tamang",
+      "description": "A practical depth comparison of AWS, Google Cloud, and Microsoft Azure: market position, philosophy, enterprise fit, pricing models, hybrid strategy, talent, and when each hyperscaler tends to win.",
+      "keywords": "AWS, GCP, Azure, cloud comparison, hyperscaler, multi-cloud, Babulal Tamang",
+      "breadcrumb": "Hyperscaler comparison",
+      "content_file": "aws-gcp-azure-hyperscaler-comparison.html"
+    },
+    {
+      "slug": "aws-gcp-azure-services-mapping",
+      "file": "aws-gcp-azure-services-mapping.html",
+      "title": "AWS vs GCP vs Azure \u2014 Service-by-Service Mapping \u2014 Babulal Tamang",
+      "description": "Detailed mapping of AWS, Google Cloud, and Microsoft Azure services: compute, storage, networking, databases, identity, Kubernetes, observability, security, AI/ML, and integration.",
+      "keywords": "AWS, GCP, Azure, EC2, EKS, GKE, AKS, S3, BigQuery, service mapping, Babulal Tamang",
+      "breadcrumb": "Service mapping",
+      "content_file": "aws-gcp-azure-services-mapping.html"
+    },
+    {
+      "slug": "aws-generative-ai-foundations",
+      "file": "aws-generative-ai-foundations.html",
+      "title": "Generative AI Foundations (AWS Academy) \u2014 Babulal Tamang",
+      "description": "What I learned in AWS Academy Generative AI Foundations: skills, course context, and Credly badge link.",
+      "keywords": "Babulal Tamang",
+      "breadcrumb": "Generative AI Foundations",
+      "content_file": "aws-generative-ai-foundations.html"
+    },
+    {
+      "slug": "aws-iam-policy-json-anatomy",
+      "file": "aws-iam-policy-json-anatomy.html",
+      "title": "IAM Policy JSON Anatomy \u2014 Babulal Tamang",
+      "description": "Line-by-line guide to AWS IAM policy JSON: Version, Statement, Effect, Action, Resource, Principal, Condition keys, evaluation logic, ARNs, and least-privilege patterns.",
+      "keywords": "AWS IAM, policy JSON, least privilege, ABAC, security, Babulal Tamang",
+      "breadcrumb": "IAM policy JSON anatomy",
+      "content_file": "aws-iam-policy-json-anatomy.html"
+    },
+    {
+      "slug": "aws-machine-learning-foundations",
+      "file": "aws-machine-learning-foundations.html",
+      "title": "Machine Learning Foundations (AWS Academy) \u2014 Babulal Tamang",
+      "description": "What I learned in AWS Academy Machine Learning Foundations: skills, course context, Credly badge.",
+      "keywords": "AWS Academy, machine learning, SageMaker, ML foundations, Credly, Babulal Tamang",
+      "breadcrumb": "Machine Learning Foundations",
+      "content_file": "aws-machine-learning-foundations.html"
+    },
+    {
+      "slug": "aws-network-architecture-design",
+      "file": "aws-network-architecture-design.html",
+      "title": "Designing AWS Network Architecture \u2014 A Cloud Architect's Guide \u2014 Babulal Tamang",
+      "description": "How to design AWS network architecture as a cloud architect: requirements, VPC layering, routing, connectivity, security, multi-account hub-spoke, hybrid, and Well-Architected trade-offs.",
+      "keywords": "AWS, VPC, network architecture, hub-spoke, cloud architect, Babulal Tamang",
+      "breadcrumb": "AWS network architecture",
+      "content_file": "aws-network-architecture-design.html"
+    },
+    {
+      "slug": "aws-partner-enablement",
+      "file": "aws-partner-enablement.html",
+      "title": "AWS Partner enablement (Sales & Technical) \u2014 Babulal Tamang",
+      "description": "What I learned from AWS Partner Sales Accreditation and Technical Accredited badges.",
+      "keywords": "AWS Partner, sales accreditation, technical accredited, Credly, Babulal Tamang",
+      "breadcrumb": "AWS Partner enablement",
+      "content_file": "aws-partner-enablement.html"
+    },
+    {
+      "slug": "aws-s3-in-depth",
+      "file": "aws-s3-in-depth.html",
+      "title": "Amazon S3 in Depth \u2014 Object Storage on AWS \u2014 Babulal Tamang",
+      "description": "Deep dive into Amazon S3: buckets and keys, storage classes, security, replication, lifecycle, performance, compliance, and how object storage fits modern cloud architecture.",
+      "keywords": "Amazon S3, object storage, AWS, storage classes, S3 Glacier, cloud architect, Babulal Tamang",
+      "breadcrumb": "Amazon S3 in depth",
+      "content_file": "aws-s3-in-depth.html"
+    },
+    {
+      "slug": "cloud-platform-evolution",
+      "file": "cloud-platform-evolution.html",
+      "title": "The Cloud Platform \u2014 Why It Matters, How We Use It, and What Comes Next \u2014 Babulal Tamang",
+      "description": "What cloud platforms are, why organizations adopt them, how usage evolved from VMs to serverless and Kubernetes, practical guidance for cloud migration, and the trends shaping what comes after the shift.",
+      "keywords": "cloud platform, landing zone, migration, platform engineering, Babulal Tamang",
+      "breadcrumb": "Cloud platform evolution",
+      "content_file": "cloud-platform-evolution.html"
+    },
+    {
+      "slug": "credly-digital-badges",
+      "file": "credly-digital-badges.html",
+      "title": "Credly credentials \u2014 overview &amp; topic posts \u2014 Babulal Tamang",
+      "description": "Hub for Credly badges: verify all credentials, jump to topic-by-topic posts (AWS, ISO, OPSWAT), and full reference table.",
+      "keywords": "Credly, digital badges, AWS, ISO, certifications, Babulal Tamang",
+      "breadcrumb": "Credly overview",
+      "content_file": "credly-digital-badges.html"
+    },
+    {
+      "slug": "devops-historical-foundations",
+      "file": "devops-historical-foundations.html",
+      "title": "From the Wall of Confusion to Platform Teams \u2014 Babulal Tamang",
+      "description": "A concise history of DevOps: lean and agile roots, the 2009 movement, CI/CD, SRE, platform engineering, and where delivery culture is headed.",
+      "keywords": "DevOps history, CI/CD, SRE, platform engineering, Babulal Tamang",
+      "breadcrumb": "DevOps history",
+      "content_file": "devops-historical-foundations.html"
+    },
+    {
+      "slug": "devops-life-business-value",
+      "file": "devops-life-business-value.html",
+      "title": "Shipping Is the Strategy \u2014 DevOps Life and Business Value \u2014 Babulal Tamang",
+      "description": "What DevOps life really looks like day to day\u2014and how flow, feedback, and shared ownership translate into faster delivery, reliability, and measurable business outcomes.",
+      "keywords": "DevOps business value, DORA, platform engineering, Babulal Tamang",
+      "breadcrumb": "DevOps life &amp; business value",
+      "content_file": "devops-life-business-value.html"
+    },
+    {
+      "slug": "devops-professional-nature",
+      "file": "devops-professional-nature.html",
+      "title": "The Nature of a DevOps Professional \u2014 Babulal Tamang",
+      "description": "What professionalism looks like in DevOps: mindset, habits, communication, ownership, and the traits that earn trust across engineering, operations, security, and the business.",
+      "keywords": "DevOps professional, mindset, ownership, blameless, Babulal Tamang",
+      "breadcrumb": "DevOps professional nature",
+      "content_file": "devops-professional-nature.html"
+    },
+    {
+      "slug": "devops-psychology-after-hours",
+      "file": "devops-psychology-after-hours.html",
+      "title": "Production Never Sleeps in Your Head \u2014 DevOps Psychology \u2014 Babulal Tamang",
+      "description": "Why DevOps minds keep replaying incidents and deploys after office hours: how platform engineers think under pressure, react in crises, and build healthier boundaries without losing care for production.",
+      "keywords": "DevOps psychology, on-call stress, burnout, operations, Babulal Tamang",
+      "breadcrumb": "DevOps psychology",
+      "content_file": "devops-psychology-after-hours.html"
+    },
+    {
+      "slug": "docker-containerization-hidden-side",
+      "file": "docker-containerization-hidden-side.html",
+      "title": "Docker and Containerization \u2014 The Hidden Side \u2014 Babulal Tamang",
+      "description": "What Docker tutorials skip: images vs containers, namespaces and cgroups, layers and disk, networking, security, PID 1, and how containers relate to Kubernetes.",
+      "keywords": "Docker, containers, cgroups, namespaces, container security, Babulal Tamang",
+      "breadcrumb": "Docker hidden side",
+      "content_file": "docker-containerization-hidden-side.html"
+    },
+    {
+      "slug": "finops-greenops-1-invisible-bill",
+      "file": "finops-greenops-1-invisible-bill.html",
+      "title": "The Invisible Bill: How Technology Touches the Real World \u2014 Babulal Tamang",
+      "description": "Part 1 of a plain-language series on sustainability, FinOps, and GreenOps: why phones, apps, and cloud services have a real-world environmental footprint\u2014and why that matters to everyone.",
+      "keywords": "sustainability, digital footprint, FinOps, GreenOps, series, Babulal Tamang",
+      "breadcrumb": "Invisible bill (1/5)",
+      "content_file": "finops-greenops-1-invisible-bill.html"
+    },
+    {
+      "slug": "finops-greenops-2-conservation-matters",
+      "file": "finops-greenops-2-conservation-matters.html",
+      "title": "Living Within Our Means: Why Conservation and Sustainability Matter \u2014 Babulal Tamang",
+      "description": "Part 2: plain-language guide to environment conservation and sustainability\u2014why we must protect resources today so future generations can thrive, and how that connects to technology.",
+      "keywords": "conservation, sustainability, responsible technology, series, Babulal Tamang",
+      "breadcrumb": "Conservation matters (2/5)",
+      "content_file": "finops-greenops-2-conservation-matters.html"
+    },
+    {
+      "slug": "finops-greenops-3-finops-plain-english",
+      "file": "finops-greenops-3-finops-plain-english.html",
+      "title": "FinOps in Plain English: Making Cloud Spend Visible \u2014 Babulal Tamang",
+      "description": "Part 3: FinOps explained for everyone\u2014why cloud bills surprise teams, what FinOps practices do, and how financial accountability helps organizations without blocking innovation.",
+      "keywords": "FinOps, cloud cost, Inform Optimize Operate, series, Babulal Tamang",
+      "breadcrumb": "FinOps (3/5)",
+      "content_file": "finops-greenops-3-finops-plain-english.html"
+    },
+    {
+      "slug": "finops-greenops-4-greenops-plain-english",
+      "file": "finops-greenops-4-greenops-plain-english.html",
+      "title": "GreenOps in Plain English: Technology That Respects the Planet \u2014 Babulal Tamang",
+      "description": "Part 4: GreenOps explained for everyone\u2014how teams reduce the environmental impact of running software, from cleaner energy and efficient code to measuring carbon and avoiding greenwashing.",
+      "keywords": "GreenOps, sustainable IT, carbon, efficiency, series, Babulal Tamang",
+      "breadcrumb": "GreenOps (4/5)",
+      "content_file": "finops-greenops-4-greenops-plain-english.html"
+    },
+    {
+      "slug": "finops-greenops-5-smarter-lighter",
+      "file": "finops-greenops-5-smarter-lighter.html",
+      "title": "FinOps and GreenOps Together \u2014 A Cloud Architect's View \u2014 Babulal Tamang",
+      "description": "Part 5 (cloud architect): align FinOps and GreenOps in landing zones, architecture reviews, Well-Architected trade-offs, tagging, and platform guardrails\u2014one waste, two ledgers.",
+      "keywords": "FinOps, GreenOps, landing zone, Well-Architected, cloud architect, Babulal Tamang",
+      "breadcrumb": "FinOps + GreenOps (5/5)",
+      "content_file": "finops-greenops-5-smarter-lighter.html"
+    },
+    {
+      "slug": "gitops-principles",
+      "file": "gitops-principles.html",
+      "title": "Git as the Control Plane \u2014 GitOps Principles \u2014 Babulal Tamang",
+      "description": "What GitOps is, why teams adopt it, and the principles that make it reliable: declarative state, Git as source of truth, continuous reconciliation, security, and observability.",
+      "keywords": "GitOps, declarative, reconciliation, Argo CD, Flux, Babulal Tamang",
+      "breadcrumb": "GitOps principles",
+      "content_file": "gitops-principles.html"
+    },
+    {
+      "slug": "how-to-become-ai-developer",
+      "file": "how-to-become-ai-developer.html",
+      "title": "How to Become an AI Developer \u2014 Foundations, Terminology, Architecture &amp; Tech Stack \u2014 Babulal Tamang",
+      "description": "A practical guide to becoming an AI developer: core terminology, system architecture, models and frameworks, learning path, why AI matters, and where the field is headed.",
+      "keywords": "AI developer, machine learning, tech stack, learning path, Babulal Tamang",
+      "breadcrumb": "How to become an AI developer",
+      "content_file": "how-to-become-ai-developer.html"
+    },
+    {
+      "slug": "incident-disaster-response-calm",
+      "file": "incident-disaster-response-calm.html",
+      "title": "Incidents and Disasters: Respond Calmly When Production Breaks \u2014 Babulal Tamang",
+      "description": "A deep guide to incidents vs disasters, severity and lifecycle, incident command, disaster recovery, and how to stay calm under pressure\u2014structured habits that turn panic into procedure.",
+      "keywords": "incident response, disaster recovery, SRE, on-call, calm under pressure, Babulal Tamang",
+      "breadcrumb": "Incident &amp; disaster response",
+      "content_file": "incident-disaster-response-calm.html"
+    },
+    {
+      "slug": "iso-27001-lead-auditor-information-security",
+      "file": "iso-27001-lead-auditor-information-security.html",
+      "title": "ISO/IEC 27001 Lead Auditor (information security) \u2014 Babulal Tamang",
+      "description": "What ISO 27001 Lead Auditor training covers: ISMS audits, skills learned, Credly badge.",
+      "keywords": "ISO 27001, lead auditor, ISMS, information security, Credly, Babulal Tamang",
+      "breadcrumb": "ISO 27001 Lead Auditor",
+      "content_file": "iso-27001-lead-auditor-information-security.html"
+    },
+    {
+      "slug": "iso-42001-lead-auditor-ai-management",
+      "file": "iso-42001-lead-auditor-ai-management.html",
+      "title": "ISO/IEC 42001 Lead Auditor (AI management) \u2014 Babulal Tamang",
+      "description": "What ISO 42001 Lead Auditor training means for AI management systems, audits, and skills learned.",
+      "keywords": "ISO 42001, AI management, lead auditor, AIMS, Credly, Babulal Tamang",
+      "breadcrumb": "ISO 42001 Lead Auditor",
+      "content_file": "iso-42001-lead-auditor-ai-management.html"
+    },
+    {
+      "slug": "kubernetes-architecture-simple",
+      "file": "kubernetes-architecture-simple.html",
+      "title": "Kubernetes Architecture in Simple Terms \u2014 Babulal Tamang",
+      "description": "A plain-language tour of Kubernetes: clusters, control plane vs nodes, core components, and how Pods, Deployments, and Services fit together\u2014without drowning in jargon.",
+      "keywords": "Kubernetes architecture, control plane, pods, deployments, Babulal Tamang",
+      "breadcrumb": "Kubernetes architecture",
+      "content_file": "kubernetes-architecture-simple.html"
+    },
+    {
+      "slug": "kubernetes-cluster-rbac",
+      "file": "kubernetes-cluster-rbac.html",
+      "title": "Kubernetes Cluster RBAC \u2014 Best Understanding \u2014 Babulal Tamang",
+      "description": "A clear guide to Kubernetes RBAC: authentication vs authorization, Roles and ClusterRoles, bindings, verbs and resources, least privilege, kubectl can-i, and production pitfalls.",
+      "keywords": "Kubernetes RBAC, Role, ClusterRole, least privilege, authorization, Babulal Tamang",
+      "breadcrumb": "Kubernetes cluster RBAC",
+      "content_file": "kubernetes-cluster-rbac.html"
+    },
+    {
+      "slug": "kubernetes-cri-csi-deep-dive",
+      "file": "kubernetes-cri-csi-deep-dive.html",
+      "title": "Kubernetes CRI and CSI \u2014 Container Runtime and Storage Interfaces \u2014 Babulal Tamang",
+      "description": "An in-depth guide to Kubernetes CRI (Container Runtime Interface) and CSI (Container Storage Interface): why they exist, gRPC contracts, kubelet and sidecar flows, volume lifecycle, and production debugging.",
+      "keywords": "Babulal Tamang",
+      "breadcrumb": "CRI and CSI",
+      "content_file": "kubernetes-cri-csi-deep-dive.html"
+    },
+    {
+      "slug": "kubernetes-hands-on-1-local-lab",
+      "file": "kubernetes-hands-on-1-local-lab.html",
+      "title": "Kubernetes Hands-On Part 1: kind, k3s, or minikube \u2014 Babulal Tamang",
+      "description": "Part 1 of a beginner Kubernetes course: pick a local cluster (kind, k3s, minikube), install prerequisites, create a lab, and verify kubectl works\u2014before writing YAML.",
+      "keywords": "Kubernetes hands-on, kind, k3s, minikube, local lab, Babulal Tamang",
+      "breadcrumb": "K8s hands-on (1/5)",
+      "content_file": "kubernetes-hands-on-1-local-lab.html"
+    },
+    {
+      "slug": "kubernetes-hands-on-2-yaml-anatomy",
+      "file": "kubernetes-hands-on-2-yaml-anatomy.html",
+      "title": "Kubernetes Hands-On Part 2: YAML Manifest Anatomy \u2014 Babulal Tamang",
+      "description": "Part 2: anatomy of a Kubernetes YAML manifest\u2014apiVersion, kind, metadata, spec, labels, selectors, multi-document files, and kubectl explain for beginners.",
+      "keywords": "Kubernetes YAML, manifests, apiVersion, kubectl explain, Babulal Tamang",
+      "breadcrumb": "K8s hands-on (2/5)",
+      "content_file": "kubernetes-hands-on-2-yaml-anatomy.html"
+    },
+    {
+      "slug": "kubernetes-hands-on-3-first-workloads",
+      "file": "kubernetes-hands-on-3-first-workloads.html",
+      "title": "Kubernetes Hands-On Part 3: Pod, Deployment, Service \u2014 Babulal Tamang",
+      "description": "Part 3 hands-on: run your first Pod, scale with a Deployment, expose traffic with a Service, and use port-forward on kind, k3s, or minikube.",
+      "keywords": "Kubernetes workloads, Pod, Deployment, Service, hands-on, Babulal Tamang",
+      "breadcrumb": "K8s hands-on (3/5)",
+      "content_file": "kubernetes-hands-on-3-first-workloads.html"
+    },
+    {
+      "slug": "kubernetes-hands-on-4-day-one-practices",
+      "file": "kubernetes-hands-on-4-day-one-practices.html",
+      "title": "Kubernetes Hands-On Part 4: Day-One Best Practices \u2014 Babulal Tamang",
+      "description": "Part 4: Kubernetes best practices for beginners\u2014namespaces, recommended labels, resource requests and limits, security contexts, ConfigMaps, and why not to kubectl edit production.",
+      "keywords": "Kubernetes best practices, probes, resources, day-one, Babulal Tamang",
+      "breadcrumb": "K8s hands-on (4/5)",
+      "content_file": "kubernetes-hands-on-4-day-one-practices.html"
+    },
+    {
+      "slug": "kubernetes-hands-on-5-debug-next-steps",
+      "file": "kubernetes-hands-on-5-debug-next-steps.html",
+      "title": "Kubernetes Hands-On Part 5: Debug and Next Steps \u2014 Babulal Tamang",
+      "description": "Part 5: debug Kubernetes on kind, k3s, or minikube\u2014kubectl describe, logs, events, probes, common failures\u2014and a learning path toward GitOps and certification.",
+      "keywords": "Kubernetes debugging, kubectl, troubleshooting, hands-on, Babulal Tamang",
+      "breadcrumb": "K8s hands-on (5/5)",
+      "content_file": "kubernetes-hands-on-5-debug-next-steps.html"
+    },
+    {
+      "slug": "kubernetes-storage-pv-pvc-storageclass",
+      "file": "kubernetes-storage-pv-pvc-storageclass.html",
+      "title": "Kubernetes Storage: PV, PVC, and StorageClass \u2014 Babulal Tamang",
+      "description": "A detailed guide to Kubernetes persistent storage: PersistentVolumes, PersistentVolumeClaims, StorageClasses, dynamic provisioning, access modes, reclaim policies, CSI, and troubleshooting.",
+      "keywords": "Kubernetes storage, PersistentVolume, PVC, StorageClass, CSI, dynamic provisioning, Babulal Tamang",
+      "breadcrumb": "Kubernetes storage (PV, PVC, StorageClass)",
+      "content_file": "kubernetes-storage-pv-pvc-storageclass.html"
+    },
+    {
+      "slug": "kubernetes-when-how-why-where",
+      "file": "kubernetes-when-how-why-where.html",
+      "title": "Kubernetes for Business Leaders \u2014 When, How, Why, and Where \u2014 Babulal Tamang",
+      "description": "A plain-language guide to Kubernetes for executives and product leaders: what it is, why teams adopt it, when it pays off, how adoption works, and where it runs in the real world.",
+      "keywords": "Kubernetes, business value, when to use K8s, platform, Babulal Tamang",
+      "breadcrumb": "Kubernetes for business",
+      "content_file": "kubernetes-when-how-why-where.html"
+    },
+    {
+      "slug": "opswat-icip-critical-infrastructure",
+      "file": "opswat-icip-critical-infrastructure.html",
+      "title": "OPSWAT ICIP \u2014 Critical infrastructure protection \u2014 Babulal Tamang",
+      "description": "What I learned in OPSWAT Introduction to Critical Infrastructure Protection: topics, skills, Credly badge.",
+      "keywords": "OPSWAT, ICIP, critical infrastructure, CIP, Credly, Babulal Tamang",
+      "breadcrumb": "OPSWAT ICIP",
+      "content_file": "opswat-icip-critical-infrastructure.html"
+    }
+  ]
+}

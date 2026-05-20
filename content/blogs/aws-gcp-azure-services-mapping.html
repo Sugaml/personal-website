@@ -1,0 +1,210 @@
+<article class="inner-page blog-article pb-5">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-9 col-xl-8">
+            <header class="mb-4 pb-3 border-bottom" data-aos="fade-up">
+              <div class="blog-article-meta mb-3">
+                <p class="text-muted small mb-2">Platform &amp; cloud · <time datetime="2026-05-20">20 May 2026</time> · <span class="blog-meta-label">Guide · Part 2/2</span> · By <a href="../index.html#about" class="blog-author text-reset fw-semibold" rel="author">Babulal Tamang</a></p>
+              <ul class="blog-tags list-unstyled d-flex flex-wrap gap-1 mb-0" aria-label="Tags">
+                <li><span class="badge rounded-pill text-bg-light border text-muted">AWS</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">GCP</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Azure</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Services</span></li>
+              </ul>
+              </div>
+              <h1 class="h2 mb-3">AWS, GCP, and Azure: Service-by-Service Mapping for Architects</h1>
+              <p class="lead mb-3">Once you understand <em>why</em> each hyperscaler exists, you still need a Rosetta stone for <em>what</em> to provision. This reference maps core categories—compute through AI—to their AWS, Google Cloud, and Azure equivalents, with notes on when the match is close versus approximate.</p>
+              <div class="border-start border-primary border-4 ps-3 py-3 bg-light rounded mb-0" role="note">
+                <p class="small text-uppercase text-muted mb-1 fw-semibold">In short</p>
+                <p class="mb-0">Most building blocks have a parallel on all three clouds; names and defaults differ. Prefer portable patterns (Kubernetes, Postgres, S3-compatible APIs) where exit matters; embrace managed proprietary services where they buy clear operational wins.</p>
+              </div>
+            </header>
+
+                        <div class="blog-prose" data-aos="fade-up" data-aos-delay="50">
+
+              <p>Read <a href="aws-gcp-azure-hyperscaler-comparison.html">Part 1: depth comparison</a> for philosophy, enterprise fit, and selection criteria. Tables use current product names—verify in official docs before exams or procurement.</p>
+
+              <h2 class="h4 mt-4">Compute</h2>
+              <div class="table-responsive">
+                <table class="table table-sm table-bordered align-middle">
+                  <thead class="table-light"><tr><th scope="col">Capability</th><th scope="col">AWS</th><th scope="col">GCP</th><th scope="col">Azure</th></tr></thead>
+                  <tbody>
+                    <tr><th scope="row">Virtual machines</th><td>EC2</td><td>Compute Engine</td><td>Virtual Machines</td></tr>
+                    <tr><th scope="row">Auto scaling groups</th><td>Auto Scaling + EC2</td><td>MIG (Managed Instance Groups)</td><td>VM Scale Sets</td></tr>
+                    <tr><th scope="row">Spot / preemptible</th><td>EC2 Spot</td><td>Spot VMs / Preemptible</td><td>Spot VMs</td></tr>
+                    <tr><th scope="row">Serverless functions</th><td>Lambda</td><td>Cloud Functions</td><td>Azure Functions</td></tr>
+                    <tr><th scope="row">Container platform (managed)</th><td>ECS, Fargate</td><td>Cloud Run</td><td>Container Apps</td></tr>
+                    <tr><th scope="row">Kubernetes</th><td>EKS</td><td>GKE</td><td>AKS</td></tr>
+                    <tr><th scope="row">PaaS (code deploy)</th><td>Elastic Beanstalk, App Runner</td><td>App Engine</td><td>App Service</td></tr>
+                    <tr><th scope="row">Batch / HPC</th><td>AWS Batch</td><td>Batch</td><td>Azure Batch</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p><strong>Notes:</strong> GKE is often cited as the most integrated Kubernetes experience; AKS simplifies Windows node pools; EKS has the largest third-party add-on ecosystem. Fargate and Cloud Run both abstract nodes but differ in pricing and networking models.</p>
+
+              <h2 class="h4 mt-5">Networking</h2>
+              <div class="table-responsive">
+                <table class="table table-sm table-bordered align-middle">
+                  <thead class="table-light"><tr><th scope="col">Capability</th><th scope="col">AWS</th><th scope="col">GCP</th><th scope="col">Azure</th></tr></thead>
+                  <tbody>
+                    <tr><th scope="row">Virtual network</th><td>VPC</td><td>VPC</td><td>Virtual Network (VNet)</td></tr>
+                    <tr><th scope="row">Subnets</th><td>Subnet (per AZ)</td><td>Subnet (regional)</td><td>Subnet</td></tr>
+                    <tr><th scope="row">Load balancer (L4/L7)</th><td>ELB (ALB/NLB/CLB)</td><td>Cloud Load Balancing</td><td>Load Balancer, App Gateway</td></tr>
+                    <tr><th scope="row">CDN</th><td>CloudFront</td><td>Cloud CDN</td><td>Azure CDN / Front Door</td></tr>
+                    <tr><th scope="row">DNS</th><td>Route 53</td><td>Cloud DNS</td><td>Azure DNS</td></tr>
+                    <tr><th scope="row">Private connectivity</th><td>PrivateLink, VPC endpoints</td><td>Private Service Connect</td><td>Private Link</td></tr>
+                    <tr><th scope="row">VPN / dedicated line</th><td>Site-to-Site VPN, Direct Connect</td><td>Cloud VPN, Cloud Interconnect</td><td>VPN Gateway, ExpressRoute</td></tr>
+                    <tr><th scope="row">Firewall / WAF</th><td>WAF, Network Firewall, Shield</td><td>Cloud Armor, Cloud NGFW</td><td>WAF, Firewall, DDoS Protection</td></tr>
+                    <tr><th scope="row">API gateway</th><td>API Gateway</td><td>API Gateway</td><td>API Management</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p>GCP subnets are regional (one CIDR spans zones); AWS subnets are AZ-scoped. Azure Front Door is a global entry point comparable to CloudFront plus routing intelligence. For landing-zone design on AWS, see <a href="aws-network-architecture-design.html">network architecture</a>.</p>
+
+              <h2 class="h4 mt-5">Storage</h2>
+              <div class="table-responsive">
+                <table class="table table-sm table-bordered align-middle">
+                  <thead class="table-light"><tr><th scope="col">Capability</th><th scope="col">AWS</th><th scope="col">GCP</th><th scope="col">Azure</th></tr></thead>
+                  <tbody>
+                    <tr><th scope="row">Object storage</th><td>S3</td><td>Cloud Storage</td><td>Blob Storage</td></tr>
+                    <tr><th scope="row">Block volumes</th><td>EBS</td><td>Persistent Disk</td><td>Managed Disks</td></tr>
+                    <tr><th scope="row">File / NAS</th><td>EFS, FSx</td><td>Filestore</td><td>Azure Files</td></tr>
+                    <tr><th scope="row">Archive / cold</th><td>S3 Glacier</td><td>Archive / Coldline</td><td>Archive / Cool tier</td></tr>
+                    <tr><th scope="row">Hybrid transfer</th><td>Storage Gateway, Snowball</td><td>Transfer Appliance</td><td>Data Box</td></tr>
+                    <tr><th scope="row">Backup service</th><td>AWS Backup</td><td>Backup and DR</td><td>Azure Backup</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p>S3 remains the de facto API reference; many tools speak S3-compatible protocols to GCS and Blob via adapters. For Kubernetes volumes, compare <a href="kubernetes-storage-pv-pvc-storageclass.html">PV, PVC, and StorageClass</a> with each cloud’s CSI drivers.</p>
+
+              <h2 class="h4 mt-5">Databases and caching</h2>
+              <div class="table-responsive">
+                <table class="table table-sm table-bordered align-middle">
+                  <thead class="table-light"><tr><th scope="col">Capability</th><th scope="col">AWS</th><th scope="col">GCP</th><th scope="col">Azure</th></tr></thead>
+                  <tbody>
+                    <tr><th scope="row">Managed PostgreSQL</th><td>RDS, Aurora PostgreSQL</td><td>Cloud SQL, AlloyDB</td><td>Azure Database for PostgreSQL</td></tr>
+                    <tr><th scope="row">Managed MySQL</th><td>RDS, Aurora MySQL</td><td>Cloud SQL</td><td>Azure Database for MySQL</td></tr>
+                    <tr><th scope="row">Managed SQL Server</th><td>RDS SQL Server</td><td>Cloud SQL SQL Server</td><td>Azure SQL</td></tr>
+                    <tr><th scope="row">Global SQL / NewSQL</th><td>Aurora Global</td><td>Cloud Spanner</td><td>Azure SQL (geo-replication)</td></tr>
+                    <tr><th scope="row">NoSQL document</th><td>DynamoDB</td><td>Firestore</td><td>Cosmos DB</td></tr>
+                    <tr><th scope="row">Wide-column</th><td>Keyspaces (Cassandra)</td><td>Bigtable</td><td>Cassandra on Cosmos / VMs</td></tr>
+                    <tr><th scope="row">In-memory cache</th><td>ElastiCache (Redis/Memcached)</td><td>Memorystore</td><td>Azure Cache for Redis</td></tr>
+                    <tr><th scope="row">Data warehouse</th><td>Redshift</td><td>BigQuery</td><td>Synapse Analytics</td></tr>
+                    <tr><th scope="row">Search</th><td>OpenSearch Service</td><td>Elastic (partner) / self-managed</td><td>Azure AI Search</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p><strong>Approximate matches:</strong> DynamoDB and Cosmos DB both offer low-latency scale but different consistency models and APIs. BigQuery and Redshift both serve analytics; BigQuery separates storage and compute more aggressively. AlloyDB targets PostgreSQL-compatible OLTP with Google-scale replication.</p>
+
+              <h2 class="h4 mt-5">Identity, access, and secrets</h2>
+              <div class="table-responsive">
+                <table class="table table-sm table-bordered align-middle">
+                  <thead class="table-light"><tr><th scope="col">Capability</th><th scope="col">AWS</th><th scope="col">GCP</th><th scope="col">Azure</th></tr></thead>
+                  <tbody>
+                    <tr><th scope="row">Core IAM</th><td>IAM (users, roles, policies)</td><td>Cloud IAM</td><td>Azure RBAC + Entra ID</td></tr>
+                    <tr><th scope="row">Organization hierarchy</th><td>Organizations, SCPs</td><td>Organization policies</td><td>Management groups, Azure Policy</td></tr>
+                    <tr><th scope="row">Federation / SSO</th><td>IAM Identity Center</td><td>Workforce Identity Federation</td><td>Entra ID SSO</td></tr>
+                    <tr><th scope="row">Workload identity</th><td>IAM roles for service accounts</td><td>Workload Identity</td><td>Managed identities</td></tr>
+                    <tr><th scope="row">Secrets</th><td>Secrets Manager, SSM Parameter Store</td><td>Secret Manager</td><td>Key Vault</td></tr>
+                    <tr><th scope="row">KMS / encryption keys</th><td>KMS</td><td>Cloud KMS</td><td>Key Vault keys</td></tr>
+                    <tr><th scope="row">Directory / B2C</th><td>Cognito</td><td>Identity Platform</td><td>Entra External ID</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p>AWS policy JSON is its own language—see <a href="aws-iam-policy-json-anatomy.html">IAM policy anatomy</a>. Azure RBAC is role-based at resource scope; GCP IAM binds roles to principals on resources.</p>
+
+              <h2 class="h4 mt-5">Messaging, events, and integration</h2>
+              <div class="table-responsive">
+                <table class="table table-sm table-bordered align-middle">
+                  <thead class="table-light"><tr><th scope="col">Capability</th><th scope="col">AWS</th><th scope="col">GCP</th><th scope="col">Azure</th></tr></thead>
+                  <tbody>
+                    <tr><th scope="row">Pub/sub</th><td>SNS + SQS (patterns)</td><td>Pub/Sub</td><td>Service Bus, Event Grid</td></tr>
+                    <tr><th scope="row">Queue</th><td>SQS</td><td>Pub/Sub subscriptions</td><td>Service Bus queues</td></tr>
+                    <tr><th scope="row">Event bus</th><td>EventBridge</td><td>Eventarc</td><td>Event Grid</td></tr>
+                    <tr><th scope="row">Streaming</th><td>Kinesis Data Streams</td><td>Pub/Sub, Dataflow</td><td>Event Hubs</td></tr>
+                    <tr><th scope="row">Workflow orchestration</th><td>Step Functions</td><td>Workflows</td><td>Logic Apps, Durable Functions</td></tr>
+                    <tr><th scope="row">ETL / integration</th><td>Glue, AppFlow</td><td>Dataflow, Data Fusion</td><td>Data Factory</td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <h2 class="h4 mt-5">Observability and operations</h2>
+              <div class="table-responsive">
+                <table class="table table-sm table-bordered align-middle">
+                  <thead class="table-light"><tr><th scope="col">Capability</th><th scope="col">AWS</th><th scope="col">GCP</th><th scope="col">Azure</th></tr></thead>
+                  <tbody>
+                    <tr><th scope="row">Metrics &amp; dashboards</th><td>CloudWatch</td><td>Cloud Monitoring</td><td>Azure Monitor</td></tr>
+                    <tr><th scope="row">Logging</th><td>CloudWatch Logs</td><td>Cloud Logging</td><td>Log Analytics</td></tr>
+                    <tr><th scope="row">Tracing</th><td>X-Ray</td><td>Cloud Trace</td><td>Application Insights</td></tr>
+                    <tr><th scope="row">Alerting</th><td>CloudWatch Alarms</td><td>Alerting policies</td><td>Monitor alerts</td></tr>
+                    <tr><th scope="row">Infrastructure as code</th><td>CloudFormation, CDK</td><td>Deployment Manager, Terraform</td><td>Bicep, ARM, Terraform</td></tr>
+                    <tr><th scope="row">CI/CD</th><td>CodePipeline, CodeBuild</td><td>Cloud Build</td><td>Azure DevOps, GitHub Actions</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p>OpenTelemetry is portable across all three; managed backends differ.</p>
+
+              <h2 class="h4 mt-5">Security and governance</h2>
+              <div class="table-responsive">
+                <table class="table table-sm table-bordered align-middle">
+                  <thead class="table-light"><tr><th scope="col">Capability</th><th scope="col">AWS</th><th scope="col">GCP</th><th scope="col">Azure</th></tr></thead>
+                  <tbody>
+                    <tr><th scope="row">Posture / CSPM</th><td>Security Hub, Config</td><td>Security Command Center</td><td>Defender for Cloud</td></tr>
+                    <tr><th scope="row">Threat detection</th><td>GuardDuty</td><td>Event Threat Detection</td><td>Defender for Cloud</td></tr>
+                    <tr><th scope="row">Vulnerability scanning</th><td>Inspector</td><td>Container Analysis</td><td>Defender vulnerability mgmt</td></tr>
+                    <tr><th scope="row">Policy as code</th><td>SCPs, Access Analyzer</td><td>Org Policy</td><td>Azure Policy</td></tr>
+                    <tr><th scope="row">HSM</th><td>CloudHSM</td><td>Cloud HSM</td><td>Dedicated HSM</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p>Shared responsibility applies everywhere—see <a href="aws-cloud-security-foundations.html">cloud security foundations</a>.</p>
+
+              <h2 class="h4 mt-5">AI, ML, and data science</h2>
+              <div class="table-responsive">
+                <table class="table table-sm table-bordered align-middle">
+                  <thead class="table-light"><tr><th scope="col">Capability</th><th scope="col">AWS</th><th scope="col">GCP</th><th scope="col">Azure</th></tr></thead>
+                  <tbody>
+                    <tr><th scope="row">Managed notebooks</th><td>SageMaker Studio</td><td>Vertex AI Workbench</td><td>Azure ML compute instances</td></tr>
+                    <tr><th scope="row">Training / MLOps</th><td>SageMaker</td><td>Vertex AI</td><td>Azure Machine Learning</td></tr>
+                    <tr><th scope="row">Foundation model APIs</th><td>Bedrock</td><td>Vertex AI (Gemini)</td><td>Azure OpenAI Service</td></tr>
+                    <tr><th scope="row">Speech / vision APIs</th><td>Rekognition, Transcribe</td><td>Vision, Speech APIs</td><td>Azure AI services</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p>See <a href="aws-machine-learning-foundations.html">ML foundations</a> and <a href="aws-generative-ai-foundations.html">generative AI</a> for AWS depth; Vertex and Azure OpenAI are the usual GCP/Azure starting points for GenAI.</p>
+
+              <h2 class="h4 mt-5">DevOps, registry, and artifacts</h2>
+              <div class="table-responsive">
+                <table class="table table-sm table-bordered align-middle">
+                  <thead class="table-light"><tr><th scope="col">Capability</th><th scope="col">AWS</th><th scope="col">GCP</th><th scope="col">Azure</th></tr></thead>
+                  <tbody>
+                    <tr><th scope="row">Container registry</th><td>ECR</td><td>Artifact Registry</td><td>ACR</td></tr>
+                    <tr><th scope="row">Package / artifact repo</th><td>CodeArtifact</td><td>Artifact Registry</td><td>Artifacts (Azure DevOps)</td></tr>
+                    <tr><th scope="row">Configuration management</th><td>Systems Manager</td><td>OS Config</td><td>Automation, Guest Config</td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <h2 class="h4 mt-5">How to use this mapping in practice</h2>
+              <ol>
+                <li><strong>Start with capability, not logo.</strong> Define the job (regional SQL, global NoSQL, batch ETL) then pick the row.</li>
+                <li><strong>Check region availability</strong> for your short list before design sign-off.</li>
+                <li><strong>Prototype pricing</strong> with each provider’s calculator using your traffic shape.</li>
+                <li><strong>Prefer open interfaces</strong> where teams may switch clouds: Postgres, Kafka protocol, S3 API, Kubernetes, OpenTelemetry.</li>
+                <li><strong>Document exceptions</strong> where you accept lock-in (DynamoDB access patterns, BigQuery SQL, Entra conditional access).</li>
+              </ol>
+
+              <h2 class="h4 mt-5">Further reading</h2>
+              <ul>
+                <li>AWS, Google Cloud, and Microsoft Learn — official documentation and learning paths</li>
+                <li>Each provider’s architecture center and reference architectures</li>
+                <li><a href="aws-data-engineering.html">AWS data engineering</a> — pipelines and lakes on AWS (patterns often translate)</li>
+              </ul>
+
+              <p class="small text-muted mt-4 mb-2"><a href="../index.html#blog">Blog index</a> · <a href="aws-gcp-azure-hyperscaler-comparison.html">Part 1: Depth comparison</a> · <a href="cloud-platform-evolution.html">Cloud platform evolution</a></p>
+              <p class="mb-0"><a href="../index.html#blog" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left" aria-hidden="true"></i> Back to blog list</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>

@@ -1,0 +1,339 @@
+<article class="inner-page blog-article pb-5">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-9 col-xl-8">
+            <header class="mb-4 pb-3 border-bottom" data-aos="fade-up">
+              <div class="blog-article-meta mb-3">
+                <p class="text-muted small mb-2">Platform · <time datetime="2026-05-20">20 May 2026</time> · <span class="blog-meta-label">Guide</span> · By <a href="../index.html#about" class="blog-author text-reset fw-semibold" rel="author">Babulal Tamang</a></p>
+              <ul class="blog-tags list-unstyled d-flex flex-wrap gap-1 mb-0" aria-label="Tags">
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Kubernetes</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Storage</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">PV / PVC</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">CSI</span></li>
+              </ul>
+              </div>
+              <h1 class="h2 mb-3">Kubernetes Storage: PV, PVC, and StorageClass Explained in Depth</h1>
+              <p class="lead mb-3">Pods are ephemeral; disks usually are not. Kubernetes separates <strong>what an app asks for</strong> (<code>PersistentVolumeClaim</code>) from <strong>what the cluster provides</strong> (<code>PersistentVolume</code>) and <strong>how new disks are created</strong> (<code>StorageClass</code>). Once that triangle clicks, StatefulSets, databases, and “why is my Pod Pending?” start making sense.</p>
+              <div class="border-start border-primary border-4 ps-3 py-3 bg-light rounded mb-0" role="note">
+                <p class="small text-uppercase text-muted mb-1 fw-semibold">In short</p>
+                <p class="mb-0">A <strong>PVC</strong> is a namespace-scoped request (“give me 20 GiB, ReadWriteOnce, fast SSD”). A <strong>PV</strong> is cluster-scoped capacity that satisfies the claim. A <strong>StorageClass</strong> tells the provisioner how to create PVs dynamically. Bind a PVC to a Pod via <code>volumes</code> + <code>volumeMounts</code>; debug with <code>kubectl describe pvc</code> and Events when status stays <code>Pending</code>.</p>
+              </div>
+            </header>
+
+            <div class="blog-prose" data-aos="fade-up" data-aos-delay="50">
+
+              <h2 class="h4 mt-4">Why storage is a separate layer</h2>
+              <p>A Pod’s root filesystem lives on the node and dies with the Pod. That is fine for stateless web tiers; it is wrong for databases, queues, and anything that must survive rescheduling. Kubernetes models durable disk through the <strong>volume API</strong>: cluster administrators (or cloud integrations) expose capacity; application teams request it; the scheduler only places Pods once the request can be satisfied.</p>
+              <p>Three API objects carry most of the mental load:</p>
+              <table class="table table-sm table-bordered">
+                <thead>
+                  <tr>
+                    <th scope="col">Object</th>
+                    <th scope="col">Scope</th>
+                    <th scope="col">Role</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>PersistentVolume</code> (PV)</td>
+                    <td>Cluster</td>
+                    <td>Represents a piece of storage—NFS export, cloud disk, iSCSI LUN, etc.</td>
+                  </tr>
+                  <tr>
+                    <td><code>PersistentVolumeClaim</code> (PVC)</td>
+                    <td>Namespace</td>
+                    <td>Application’s request for storage (size, access mode, class)</td>
+                  </tr>
+                  <tr>
+                    <td><code>StorageClass</code></td>
+                    <td>Cluster</td>
+                    <td>Template for <strong>dynamic</strong> provisioning: “when someone asks for <code>fast-ssd</code>, create disks like this”</td>
+                  </tr>
+                </tbody>
+              </table>
+              <p>For control-plane context, see <a href="kubernetes-architecture-simple.html">Kubernetes architecture in simple terms</a>. For mounting volumes in Pods, <a href="kubernetes-hands-on-3-first-workloads.html">hands-on Part 3</a> is a practical companion.</p>
+
+              <h2 class="h4 mt-5">The binding lifecycle (static vs dynamic)</h2>
+              <p>Storage flows in one direction: <strong>PVC → PV → node → Pod</strong>.</p>
+              <ol>
+                <li>You create a <strong>PVC</strong> specifying size, <code>accessModes</code>, and optionally <code>storageClassName</code>.</li>
+                <li>The control plane finds or creates a matching <strong>PV</strong> and sets the PVC phase to <code>Bound</code>.</li>
+                <li>When a Pod references the PVC in <code>spec.volumes</code>, the scheduler must pick a node that can attach that volume (for many cloud disks, only one node at a time in <code>ReadWriteOnce</code> mode).</li>
+                <li>The <strong>kubelet</strong> mounts the volume into the container filesystem at the path you declare in <code>volumeMounts</code>.</li>
+              </ol>
+              <p><strong>Static provisioning:</strong> an admin creates PVs ahead of time (or they exist from a prior integration). A PVC binds to a PV that matches size, access mode, storage class, and selector labels.</p>
+              <p><strong>Dynamic provisioning:</strong> no pre-created PV. The PVC names a <code>StorageClass</code>; a <strong>provisioner</strong> (usually a CSI driver) creates a PV automatically and binds it. This is what managed Kubernetes (EKS, GKE, AKS) expects day to day.</p>
+
+              <h2 class="h4 mt-5">PersistentVolumeClaim (PVC) in detail</h2>
+              <p>A PVC is how a team asks for disk without caring whether the backing store is EBS, Azure Disk, or NFS—only the contract:</p>
+              <pre class="bg-light p-3 rounded"><code>apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: data-pvc
+  namespace: app
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: gp3
+  resources:
+    requests:
+      storage: 20Gi</code></pre>
+              <p>Important fields:</p>
+              <ul>
+                <li><strong><code>resources.requests.storage</code></strong> — Minimum size. For many provisioners you can expand later with <code>allowVolumeExpansion: true</code> on the StorageClass (not all drivers support shrink).</li>
+                <li><strong><code>accessModes</code></strong> — Must be compatible with the PV (see below).</li>
+                <li><strong><code>storageClassName</code></strong> — Selects which StorageClass provisions the volume. Omitting it uses the cluster’s <strong>default</strong> StorageClass (if one is annotated).</li>
+                <li><strong><code>volumeMode</code></strong> — <code>Filesystem</code> (default, formatted and mounted) or <code>Block</code> (raw device for databases that manage their own layout).</li>
+                <li><strong><code>selector</code></strong> — Optional label selector to bind only to PVs with matching labels (common in static setups).</li>
+              </ul>
+              <p>PVC phases: <code>Pending</code> (no suitable PV yet), <code>Bound</code>, <code>Lost</code> (underlying PV disappeared—data may be gone), <code>Released</code> (claim deleted but reclaim policy still owns the PV).</p>
+
+              <h2 class="h4 mt-5">PersistentVolume (PV) in detail</h2>
+              <p>A PV is cluster-scoped storage inventory. Example fragment for a statically provisioned NFS volume:</p>
+              <pre class="bg-light p-3 rounded"><code>apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs-pv-001
+spec:
+  capacity:
+    storage: 50Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: nfs
+  nfs:
+    server: 10.0.0.50
+    path: /exports/data</code></pre>
+              <p>PVs can also embed cloud-specific sources (<code>awsElasticBlockStore</code>, <code>gcePersistentDisk</code>, etc.), but modern clusters prefer <strong>CSI</strong> drivers that create PVs dynamically with a <code>csi</code> stanza instead of in-tree volume types.</p>
+              <p>Key PV fields:</p>
+              <ul>
+                <li><strong><code>capacity.storage</code></strong> — Advertised size (must be ≥ PVC request).</li>
+                <li><strong><code>claimRef</code></strong> — Set when bound; links to the PVC.</li>
+                <li><strong><code>persistentVolumeReclaimPolicy</code></strong> — What happens when the PVC is deleted (see reclaim policies).</li>
+                <li><strong><code>mountOptions</code></strong> — Passed to the mount (e.g. NFS <code>nfsvers=4.1</code>).</li>
+                <li><strong><code>nodeAffinity</code></strong> — Restricts which nodes can use the volume (zones/regions for zonal disks).</li>
+              </ul>
+
+              <h2 class="h4 mt-5">StorageClass in detail</h2>
+              <p>A StorageClass is a named recipe for dynamic disks:</p>
+              <pre class="bg-light p-3 rounded"><code>apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: gp3
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
+provisioner: ebs.csi.aws.com
+parameters:
+  type: gp3
+  encrypted: "true"
+volumeBindingMode: WaitForFirstConsumer
+allowVolumeExpansion: true
+reclaimPolicy: Delete</code></pre>
+              <p>Fields that matter in production:</p>
+              <ul>
+                <li><strong><code>provisioner</code></strong> — Identifies the CSI driver or legacy in-tree provisioner (prefer CSI for new clusters).</li>
+                <li><strong><code>parameters</code></strong> — Driver-specific: disk type, IOPS, filesystem, encryption, etc.</li>
+                <li><strong><code>reclaimPolicy</code></strong> — <code>Delete</code> or <code>Retain</code> for PVs this class creates (overrides default on dynamically provisioned PVs).</li>
+                <li><strong><code>volumeBindingMode</code></strong> — <code>Immediate</code> (provision as soon as PVC exists) vs <code>WaitForFirstConsumer</code> (delay until a Pod needs the volume so scheduling can respect topology/zone).</li>
+                <li><strong><code>allowedTopologies</code></strong> — Limits zones where volumes may be created.</li>
+                <li><strong><code>mountOptions</code></strong> — Default mount flags for volumes of this class.</li>
+              </ul>
+              <p>Mark exactly one class as default with <code>storageclass.kubernetes.io/is-default-class: "true"</code> so PVCs without <code>storageClassName</code> still work—or require explicit classes to avoid surprise bills on premium tiers.</p>
+
+              <h2 class="h4 mt-5">Access modes (who can mount how)</h2>
+              <table class="table table-sm table-bordered">
+                <thead>
+                  <tr>
+                    <th scope="col">Mode</th>
+                    <th scope="col">Abbrev</th>
+                    <th scope="col">Meaning</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>ReadWriteOnce</td>
+                    <td>RWO</td>
+                    <td>Single node read/write. Typical for block storage (EBS, PD). Multiple Pods on the <em>same</em> node can share if the driver allows.</td>
+                  </tr>
+                  <tr>
+                    <td>ReadOnlyMany</td>
+                    <td>ROX</td>
+                    <td>Many nodes read-only. Shared config or static assets.</td>
+                  </tr>
+                  <tr>
+                    <td>ReadWriteMany</td>
+                    <td>RWX</td>
+                    <td>Many nodes read/write. Requires NFS, EFS, Azure Files, CephFS, etc.—not plain zonal block disks.</td>
+                  </tr>
+                  <tr>
+                    <td>ReadWriteOncePod</td>
+                    <td>RWOP</td>
+                    <td>Single Pod only (Kubernetes 1.22+). Stricter than RWO for some CSI drivers.</td>
+                  </tr>
+                </tbody>
+              </table>
+              <p>The PVC’s requested modes must be a subset of the PV’s modes. Mismatch leaves the PVC <code>Pending</code> forever.</p>
+
+              <h2 class="h4 mt-5">Reclaim policies (what happens after delete)</h2>
+              <ul>
+                <li><strong>Delete</strong> — PVC deleted → PV and often the underlying cloud disk are removed. Default for dynamic classes in dev; verify backups first in prod.</li>
+                <li><strong>Retain</strong> — PVC deleted → PV object may go to <code>Released</code> but the disk/data remains. Admins must manually reattach or clean up. Safer for production databases when you need forensic recovery.</li>
+                <li><strong>Recycle</strong> — Deprecated; do not use on new clusters.</li>
+              </ul>
+              <p>Operational rule: production databases on <code>Retain</code> plus documented cleanup runbooks; ephemeral dev namespaces on <code>Delete</code> to control cost (see also <a href="finops-greenops-5-smarter-lighter.html">FinOps and architecture</a> for orphaned volume hygiene).</p>
+
+              <h2 class="h4 mt-5">CSI: how provisioners actually work today</h2>
+              <p>The <strong>Container Storage Interface (CSI)</strong> is the standard way volume drivers integrate with Kubernetes. Components you will see:</p>
+              <ul>
+                <li><strong>CSI driver controller</strong> — Creates/deletes volumes, snapshots (cluster-level).</li>
+                <li><strong>CSI node plugin</strong> — Mounts volumes on the kubelet’s node.</li>
+                <li><strong>External provisioner sidecar</strong> — Watches PVCs and calls CreateVolume on the driver.</li>
+                <li><strong>External attacher</strong> — Attaches block volumes to nodes in the cloud.</li>
+              </ul>
+              <p>When you <code>kubectl get storageclass</code> on EKS, GKE, or AKS, the <code>PROVISIONER</code> column shows names like <code>ebs.csi.aws.com</code> or <code>pd.csi.storage.gke.io</code>. Installing a driver (Helm chart or add-on) is a platform task; application teams consume it through StorageClass names. For how CSI fits next to CRI at the kubelet boundary, see <a href="kubernetes-cri-csi-deep-dive.html">CRI and CSI deep dive</a>.</p>
+
+              <h2 class="h4 mt-5">Wiring storage into a Pod</h2>
+              <p>PVCs do nothing until a Pod uses them:</p>
+              <pre class="bg-light p-3 rounded"><code>apiVersion: v1
+kind: Pod
+metadata:
+  name: app-with-data
+spec:
+  containers:
+    - name: app
+      image: myapp:1.0
+      volumeMounts:
+        - name: data
+          mountPath: /var/lib/data
+  volumes:
+    - name: data
+      persistentVolumeClaim:
+        claimName: data-pvc</code></pre>
+              <p>Notes:</p>
+              <ul>
+                <li><code>claimName</code> must exist in the <strong>same namespace</strong> as the Pod.</li>
+                <li><code>subPath</code> can mount a subdirectory of a volume (use carefully with concurrent writers).</li>
+                <li><code>readOnly: true</code> on the volume reference prevents writes at the kubelet layer.</li>
+                <li>For block mode, use <code>volumeDevices</code> instead of <code>volumeMounts</code> and a privileged or capable container.</li>
+              </ul>
+
+              <h2 class="h4 mt-5">StatefulSets and volumeClaimTemplates</h2>
+              <p>StatefulSets give each replica a stable network identity and, via <code>volumeClaimTemplates</code>, a dedicated PVC per Pod:</p>
+              <pre class="bg-light p-3 rounded"><code>apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: db
+spec:
+  serviceName: db
+  replicas: 3
+  selector:
+    matchLabels:
+      app: db
+  template:
+    metadata:
+      labels:
+        app: db
+    spec:
+      containers:
+        - name: db
+          image: postgres:16
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql/data
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: gp3
+        resources:
+          requests:
+            storage: 100Gi</code></pre>
+              <p>Kubernetes creates PVCs named <code>data-db-0</code>, <code>data-db-1</code>, … bound to Pods <code>db-0</code>, <code>db-1</code>, …. Scale-down keeps PVCs by default—an intentional data-safety choice that also causes orphaned disks if you forget cleanup.</p>
+
+              <h2 class="h4 mt-5">Snapshots and cloning (brief)</h2>
+              <p><code>VolumeSnapshot</code> and <code>VolumeSnapshotClass</code> (snapshot.storage.k8s.io API) capture point-in-time copies if the CSI driver supports them. Restore by creating a PVC from a <code>dataSource</code> pointing at a snapshot—useful for backups and cloning environments. Treat snapshots as part of your DR story, not a substitute for application-consistent backup where databases need quiescing.</p>
+
+              <h2 class="h4 mt-5">Troubleshooting cheat sheet</h2>
+              <table class="table table-sm table-bordered">
+                <thead>
+                  <tr>
+                    <th scope="col">Symptom</th>
+                    <th scope="col">Likely cause</th>
+                    <th scope="col">What to check</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>PVC <code>Pending</code></td>
+                    <td>No StorageClass, wrong class, no provisioner, insufficient quota</td>
+                    <td><code>kubectl describe pvc</code> Events; <code>get sc</code>; driver pods in <code>kube-system</code></td>
+                  </tr>
+                  <tr>
+                    <td>Pod <code>Pending</code>, volume events</td>
+                    <td>Volume in another AZ, RWO already attached elsewhere</td>
+                    <td><code>describe pod</code>; <code>WaitForFirstConsumer</code> topology; node labels</td>
+                  </tr>
+                  <tr>
+                    <td>Pod running, empty dir</td>
+                    <td>Wrong <code>mountPath</code>, <code>subPath</code>, or app writes elsewhere</td>
+                    <td>Exec and inspect; verify <code>volumeMounts</code></td>
+                  </tr>
+                  <tr>
+                    <td>Permission denied on mount</td>
+                    <td>UID/fsGroup mismatch, root-squash on NFS</td>
+                    <td><code>securityContext.fsGroup</code>; NFS export options</td>
+                  </tr>
+                  <tr>
+                    <td>Data gone after delete</td>
+                    <td><code>reclaimPolicy: Delete</code> on dynamic PV</td>
+                    <td>StorageClass reclaim policy; backups</td>
+                  </tr>
+                </tbody>
+              </table>
+              <p>Useful commands:</p>
+              <pre class="bg-light p-3 rounded"><code>kubectl get pvc,pv,sc
+kubectl describe pvc data-pvc -n app
+kubectl get events -n app --field-selector involvedObject.name=data-pvc
+kubectl describe pod app-with-data -n app</code></pre>
+
+              <h2 class="h4 mt-5">Production practices</h2>
+              <ul>
+                <li><strong>Name StorageClasses by intent</strong> — <code>fast-ssd</code>, <code>standard</code>, <code>archive</code>—not by cloud SKU alone, so apps stay portable at the YAML level.</li>
+                <li><strong>Use <code>WaitForFirstConsumer</code></strong> for zonal block storage so volumes land in the same zone as the Pod.</li>
+                <li><strong>Size with expansion in mind</strong> — Enable <code>allowVolumeExpansion</code> where supported; monitor disk usage like CPU.</li>
+                <li><strong>Separate dev and prod reclaim policies</strong> — <code>Delete</code> in dev sandboxes; <code>Retain</code> plus snapshots for prod data.</li>
+                <li><strong>Encrypt by default</strong> — StorageClass parameters or cloud account policies (aligns with <a href="kubernetes-cluster-rbac.html">cluster RBAC</a> for who can create PVCs).</li>
+                <li><strong>GitOps the templates</strong> — PVCs and StorageClasses in version control; avoid one-off <code>kubectl apply</code> in production (<a href="gitops-principles.html">GitOps principles</a>).</li>
+                <li><strong>Audit orphaned PVs</strong> — <code>Released</code> PVs and unattached cloud volumes are a recurring cost leak.</li>
+              </ul>
+
+              <h2 class="h4 mt-5">Local and lab clusters (kind, minikube)</h2>
+              <p>Local clusters often ship with a default StorageClass backed by <strong>hostPath</strong> or a lightweight provisioner (e.g. <code>rancher.io/local-path</code>, <code>standard</code> on minikube). Good for learning binding and mounts; not representative of zone topology, attach limits, or performance. Practice the same PVC → Pod flow from <a href="kubernetes-hands-on-1-local-lab.html">hands-on Part 1</a> before trusting production cloud classes.</p>
+
+              <h2 class="h4 mt-5">A practical learning path</h2>
+              <ol>
+                <li>List StorageClasses and create a PVC without a Pod; watch it bind (or stay Pending with <code>WaitForFirstConsumer</code>).</li>
+                <li>Deploy a Pod that mounts the PVC; write a file; delete the Pod; reschedule and confirm data persists.</li>
+                <li>Change reclaim policy on a test class and observe what happens when you delete the PVC.</li>
+                <li>Deploy a small StatefulSet with <code>volumeClaimTemplates</code> and scale up/down; inspect per-replica PVC names.</li>
+                <li>Intentionally request <code>ReadWriteMany</code> on a block-only class and read the Events—then fix it.</li>
+              </ol>
+
+              <h2 class="h4 mt-5">Further reading</h2>
+              <ul>
+                <li>Kubernetes documentation — <em>Storage</em>, <em>Persistent Volumes</em>, <em>Storage Classes</em>, <em>Volume Snapshots</em></li>
+                <li>Kubernetes documentation — <em>CSI Volume Cloning and Snapshots</em></li>
+                <li>CNCF CSI driver list — vendor drivers for AWS, Azure, GCP, Ceph, NFS, etc.</li>
+                <li>Kubernetes documentation — <em>StatefulSets</em> (identity and stable storage)</li>
+              </ul>
+
+              <p class="small text-muted mt-4 mb-2"><a href="../index.html#blog">Blog index</a> · <a href="kubernetes-architecture-simple.html">Kubernetes architecture</a> · <a href="kubernetes-cri-csi-deep-dive.html">CRI and CSI</a> · <a href="kubernetes-cluster-rbac.html">Cluster RBAC</a> · <a href="kubernetes-hands-on-3-first-workloads.html">Hands-on Part 3</a></p>
+              <p class="mb-0"><a href="../index.html#blog" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left" aria-hidden="true"></i> Back to blog list</a></p>
+
+              <p class="mb-0"><a href="../index.html#blog" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left" aria-hidden="true"></i> Back to blog list</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>

@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Amazon S3 in Depth — Object Storage on AWS — Babulal Tamang</title>
+  <meta content="Deep dive into Amazon S3: buckets and keys, storage classes, security, replication, lifecycle, performance, compliance, and how object storage fits modern cloud architecture." name="description">
+  <meta name="author" content="Babulal Tamang">
+  <meta name="keywords" content="Amazon S3, object storage, AWS, storage classes, S3 Glacier, cloud architect, Babulal Tamang">
+  <link href="../assets/img/favicon.png" rel="icon">
+  <link href="../assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="../assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="../assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="../assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="../assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <link href="../assets/css/style.css" rel="stylesheet">
+  <link href="../assets/css/theme-v2.css" rel="stylesheet">
+</head>
+<body class="theme-v2">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <button class="mobile-nav-toggle d-xl-none" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navbar"><i class="bi bi-list" aria-hidden="true"></i></button>
+  <header id="header">
+    <div class="d-flex flex-column">
+      <div class="profile sidebar-profile">
+        <div class="profile-avatar-wrap">
+          <img src="../assets/img/profile-img.jpg" class="profile-avatar img-fluid" width="132" height="132" alt="Portrait of Babulal Tamang">
+        </div>
+        <h1 class="text-light profile-name"><a href="../index.html">Babulal Tamang</a></h1>
+        <p class="profile-tagline">Platform · DevOps · Software · Cloud Architect · AI/ML Enthusiast</p>
+        <p class="profile-location"><i class="bi bi-geo-alt-fill" aria-hidden="true"></i><span>Kathmandu, Nepal</span></p>
+        <div class="social-links profile-social mt-3 text-center">
+          <a href="https://twitter.com/SugamLa20062317" class="twitter" aria-label="Twitter"><i class="bx bxl-twitter" aria-hidden="true"></i></a>
+          <a href="https://github.com/sugaml/" class="github" aria-label="GitHub"><i class="bx bxl-github" aria-hidden="true"></i></a>
+          <a href="https://www.linkedin.com/in/babulal-tamang-b6507121b/" class="linkedin" aria-label="LinkedIn"><i class="bx bxl-linkedin" aria-hidden="true"></i></a>
+        </div>
+      </div>
+      <nav id="navbar" class="nav-menu navbar" aria-label="Main navigation">
+        <ul>
+          <li><a href="../index.html#hero" class="nav-link scrollto"><i class="bx bx-home" aria-hidden="true"></i> <span>Home</span></a></li>
+          <li><a href="../index.html#about" class="nav-link scrollto"><i class="bx bx-user" aria-hidden="true"></i> <span>About</span></a></li>
+          <li><a href="../index.html#skills" class="nav-link scrollto"><i class="bx bx-code-block" aria-hidden="true"></i> <span>Skills</span></a></li>
+          <li><a href="../index.html#resume" class="nav-link scrollto"><i class="bx bx-file-blank" aria-hidden="true"></i> <span>Resume</span></a></li>
+          <li><a href="../index.html#certifications" class="nav-link scrollto"><i class="bx bx-award" aria-hidden="true"></i> <span>Certifications</span></a></li>
+          <li><a href="../index.html#blog" class="nav-link scrollto active"><i class="bx bx-book-content" aria-hidden="true"></i> <span>Blog</span></a></li>
+          <li><a href="../index.html#survey" class="nav-link scrollto"><i class="bx bx-shield-quarter" aria-hidden="true"></i> <span>Cybersecurity Survey</span></a></li>
+          <li><a href="../index.html#what-i-use" class="nav-link scrollto"><i class="bx bx-wrench" aria-hidden="true"></i> <span>What I Use</span></a></li>
+          <li><a href="../index.html#contact" class="nav-link scrollto"><i class="bx bx-envelope" aria-hidden="true"></i> <span>Contact</span></a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <main id="main">
+    <section class="breadcrumbs">
+      <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+          <h2>Blog</h2>
+          <ol>
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../index.html#blog">Blog</a></li>
+            <li>Amazon S3 in depth</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+    <article class="inner-page blog-article pb-5">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-9 col-xl-8">
+            <header class="mb-4 pb-3 border-bottom" data-aos="fade-up">
+              <div class="blog-article-meta mb-3">
+                <p class="text-muted small mb-2">AWS · Storage · <time datetime="2026-05-20">20 May 2026</time> · <span class="blog-meta-label">Guide</span> · By <a href="../index.html#about" class="blog-author text-reset fw-semibold" rel="author">Babulal Tamang</a></p>
+              <ul class="blog-tags list-unstyled d-flex flex-wrap gap-1 mb-0" aria-label="Tags">
+                <li><span class="badge rounded-pill text-bg-light border text-muted">AWS</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">S3</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Object storage</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Cloud architect</span></li>
+              </ul>
+              </div>
+              <h1 class="h2 mb-3">Amazon S3 in Depth: The Object Store That Became the Cloud’s Default Disk</h1>
+              <p class="lead mb-3"><strong>Amazon Simple Storage Service (S3)</strong> is not “cheap disk in the sky.” It is a regional object store with a global namespace, eleven-nines durability design, and an API that thousands of AWS services assume. If you architect data lakes, host static sites, back up workloads, or feed ML pipelines, S3 is usually in the path—whether you chose it explicitly or inherited it through snapshots, logs, and managed services.</p>
+              <div class="border-start border-primary border-4 ps-3 py-3 bg-light rounded mb-0" role="note">
+                <p class="small text-uppercase text-muted mb-1 fw-semibold">In short</p>
+                <p class="mb-0">S3 stores <strong>objects</strong> (bytes + metadata) under <strong>keys</strong> in <strong>buckets</strong> in a Region. You access it over HTTPS/API—never as a block device. Design around storage classes, lifecycle, encryption, least-privilege policies, and request patterns; treat buckets as security boundaries, not folders.</p>
+              </div>
+            </header>
+
+            <div class="blog-prose" data-aos="fade-up" data-aos-delay="50">
+
+              <h2 class="h4 mt-4">Object storage vs block and file</h2>
+              <p>Block storage (EBS) exposes sectors; your OS builds a filesystem. File storage (EFS) exposes paths and locks across NFS clients. <strong>Object storage</strong> exposes immutable blobs addressed by key, with rich metadata and HTTP semantics. There is no “seek to sector 42” API—you PUT, GET, LIST, and DELETE whole objects (or byte ranges within them).</p>
+              <p>That abstraction is why S3 scales: AWS can shard and replicate behind a key without you provisioning capacity. The trade-off is latency and access pattern. Millisecond API round trips suit backups, assets, analytics, and event-driven pipelines—not a transactional database’s random 8 KiB writes. For how S3 compares to EBS and EFS on AWS, see <a href="aws-ebs-s3-efs-storage-deep-dive.html">EBS, S3, and EFS compared</a>.</p>
+
+              <h2 class="h4 mt-5">Core building blocks</h2>
+
+              <h3 class="h5 mt-4">Bucket</h3>
+              <p>A <strong>bucket</strong> is a container for objects. Bucket names are <strong>globally unique</strong> across all AWS accounts (DNS-style names like <code>my-company-logs-prod</code>). You create a bucket in a <strong>Region</strong>; data at rest stays in that Region unless you replicate or copy elsewhere. Buckets are the unit for most policies, logging, replication rules, and public-access settings.</p>
+
+              <h3 class="h5 mt-4">Object and key</h3>
+              <p>An <strong>object</strong> consists of:</p>
+              <ul>
+                <li><strong>Key</strong> — UTF-8 identifier, often path-like: <code>raw/events/year=2026/month=05/day=20/part-00042.parquet</code></li>
+                <li><strong>Body</strong> — Up to 5 TiB per object in general-purpose storage classes (multipart upload required above 5 GiB for best practice)</li>
+                <li><strong>Metadata</strong> — System metadata (size, ETag, storage class) and user-defined key/value pairs</li>
+                <li><strong>Version ID</strong> — Present when versioning is enabled</li>
+              </ul>
+              <p>“Folders” in the console are a visual convenience: S3 is a flat key space. Prefixes (<code>logs/app/</code>) power LIST filtering and lifecycle rules.</p>
+
+              <h3 class="h5 mt-4">ARNs and access endpoints</h3>
+              <p>Objects and buckets have ARNs for IAM and AWS Backup. Requests hit Regional endpoints (<code>s3.ap-south-1.amazonaws.com</code>) or path-style / virtual-hosted-style URLs. From VPCs, a <strong>gateway endpoint</strong> for S3 keeps traffic on the AWS network and avoids NAT charges for high-volume private-subnet access—see <a href="aws-network-architecture-design.html">AWS network architecture</a>.</p>
+
+              <h2 class="h4 mt-5">Durability, availability, and consistency</h2>
+              <p>S3 Standard is designed for <strong>99.999999999% (11 nines)</strong> durability over a given year—meaning AWS spreads copies across multiple facilities in the Region. <strong>Availability</strong> is a separate SLA (e.g. 99.99% for Standard); durability does not mean your application never sees 503s during extreme events.</p>
+              <p><strong>Consistency:</strong> Today, S3 provides <strong>strong read-after-write consistency</strong> for PUTs and DELETEs of objects in all Regions—including LIST and HEAD after writes. Designs written around “eventual consistency for new keys” are outdated; still plan for application-level idempotency and retry logic on 5xx responses.</p>
+
+              <h2 class="h4 mt-5">Storage classes (choose on purpose)</h2>
+              <p>Each object has a <strong>storage class</strong> that drives durability, availability, minimum storage duration, retrieval fees, and retrieval time.</p>
+              <table class="table table-sm table-bordered">
+                <thead>
+                  <tr>
+                    <th scope="col">Class</th>
+                    <th scope="col">Access pattern</th>
+                    <th scope="col">Availability</th>
+                    <th scope="col">Notes</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>S3 Standard</strong></td>
+                    <td>Frequent</td>
+                    <td>99.99%</td>
+                    <td>Default for hot data; lowest latency</td>
+                  </tr>
+                  <tr>
+                    <td><strong>S3 Intelligent-Tiering</strong></td>
+                    <td>Unknown or changing</td>
+                    <td>Same as underlying tier</td>
+                    <td>Auto-moves between frequent and infrequent tiers; small monitoring fee per object</td>
+                  </tr>
+                  <tr>
+                    <td><strong>S3 Standard-IA</strong></td>
+                    <td>Infrequent, needs rapid access</td>
+                    <td>99.9%</td>
+                    <td>30-day minimum; retrieval charge per GB</td>
+                  </tr>
+                  <tr>
+                    <td><strong>S3 One Zone-IA</strong></td>
+                    <td>Infrequent, recreatable</td>
+                    <td>99.5% (single AZ)</td>
+                    <td>Lower cost; not for sole copy of irreplaceable data</td>
+                  </tr>
+                  <tr>
+                    <td><strong>S3 Glacier Instant Retrieval</strong></td>
+                    <td>Archive, ms retrieval</td>
+                    <td>99.9%</td>
+                    <td>90-day minimum; higher storage $/GB than Standard-IA</td>
+                  </tr>
+                  <tr>
+                    <td><strong>S3 Glacier Flexible Retrieval</strong></td>
+                    <td>Archive, minutes–hours</td>
+                    <td>99.99% (metadata)</td>
+                    <td>Formerly “Glacier”; expedited retrieval costs more</td>
+                  </tr>
+                  <tr>
+                    <td><strong>S3 Glacier Deep Archive</strong></td>
+                    <td>Archive, 12+ hours</td>
+                    <td>99.99% (metadata)</td>
+                    <td>Lowest $/GB; compliance and tape-replacement workloads</td>
+                  </tr>
+                  <tr>
+                    <td><strong>S3 Express One Zone</strong></td>
+                    <td>Very frequent, latency-sensitive</td>
+                    <td>Single AZ</td>
+                    <td>Directory buckets; single-digit ms; different API/bucket type</td>
+                  </tr>
+                </tbody>
+              </table>
+              <p><strong>Lifecycle rules</strong> transition objects between classes (e.g. Standard → Glacier after 90 days) or expire them. Combine with <strong>S3 Intelligent-Tiering</strong> when access patterns are messy; use explicit transitions when patterns are predictable and you want predictable bills.</p>
+
+              <h2 class="h4 mt-5">Upload and download mechanics</h2>
+
+              <h3 class="h5 mt-4">Single PUT vs multipart upload</h3>
+              <p>For objects larger than a few hundred MiB, use <strong>multipart upload</strong>: parallel parts, resume on failure, and completion with <code>CompleteMultipartUpload</code>. Failed or abandoned multipart uploads leave parts that still bill—automate abort rules in lifecycle configuration.</p>
+
+              <h3 class="h5 mt-4">Checksums and integrity</h3>
+              <p>Clients can send additional checksum headers (CRC32, CRC32C, SHA-1, SHA-256). S3 validates on upload and stores checksums for later verification—valuable for compliance and large dataset pipelines where bit rot must be detected, not assumed away.</p>
+
+              <h3 class="h5 mt-4">Performance at scale</h3>
+              <ul>
+                <li><strong>Horizontal scale</strong> — S3 scales request rate with your keyspace; avoid artificial single-key hotspots for write-heavy workloads.</li>
+                <li><strong>Prefix design</strong> — Use meaningful prefixes for LIST and lifecycle, not because “more slashes” magically multiplies throughput on modern S3.</li>
+                <li><strong>Transfer Acceleration</strong> — CloudFront edge uploads for distant clients.</li>
+                <li><strong>S3 Select / Glacier Select</strong> — SQL-like filtering on object contents to reduce data movement.</li>
+                <li><strong>Byte-range GET</strong> — Parallel downloads of large objects.</li>
+              </ul>
+
+              <h2 class="h4 mt-5">Security model (defense in depth)</h2>
+              <p>S3 security is IAM identities, resource policies, optional ACLs (legacy), encryption, and network path—layered together.</p>
+
+              <h3 class="h5 mt-4">Block Public Access</h3>
+              <p>Enable <strong>Block Public Access</strong> at the organization and account level first. It overrides bucket policies that would expose data. Public buckets remain a top breach pattern; SCPs plus this setting are baseline hygiene—aligned with <a href="aws-cloud-security-foundations.html">cloud security foundations</a>.</p>
+
+              <h3 class="h5 mt-4">IAM policies and bucket policies</h3>
+              <ul>
+                <li><strong>Identity-based (IAM)</strong> — What a role or user may do across buckets.</li>
+                <li><strong>Resource-based (bucket policy)</strong> — What principals may do to this bucket; required for cross-account access without assuming a role in the other account.</li>
+                <li><strong>Condition keys</strong> — Enforce TLS (<code>aws:SecureTransport</code>), source VPC (<code>aws:SourceVpce</code>), IP ranges, prefix, storage class, and encryption headers.</li>
+              </ul>
+              <p>Prefer <strong>least privilege</strong> actions: <code>s3:GetObject</code> on <code>arn:.../bucket/prefix/*</code> beats <code>s3:*</code>. For policy anatomy practice, see <a href="aws-iam-policy-json-anatomy.html">IAM policy JSON anatomy</a>.</p>
+
+              <h3 class="h5 mt-4">ACLs</h3>
+              <p><strong>S3 ACLs</strong> are largely legacy. New designs should use bucket policies and IAM; AWS recommends disabling ACLs with “Bucket owner enforced” object ownership.</p>
+
+              <h3 class="h5 mt-4">Encryption</h3>
+              <table class="table table-sm table-bordered">
+                <thead>
+                  <tr>
+                    <th scope="col">Option</th>
+                    <th scope="col">Who holds keys</th>
+                    <th scope="col">When to use</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>SSE-S3</strong> (AES-256)</td>
+                    <td>AWS</td>
+                    <td>Default encryption; simple compliance checkbox</td>
+                  </tr>
+                  <tr>
+                    <td><strong>SSE-KMS</strong></td>
+                    <td>AWS KMS CMK</td>
+                    <td>Audit trail per key use; separation of duties; watch KMS request costs at scale</td>
+                  </tr>
+                  <tr>
+                    <td><strong>SSE-C</strong></td>
+                    <td>Customer-provided per request</td>
+                    <td>Rare; you manage key material and rotation</td>
+                  </tr>
+                  <tr>
+                    <td><strong>DSSE-KMS</strong></td>
+                    <td>KMS with dual-layer</td>
+                    <td>Regulated workloads needing extra algorithmic layer</td>
+                  </tr>
+                </tbody>
+              </table>
+              <p>Set <strong>default encryption</strong> on every bucket. For buckets with strict compliance, deny PUTs without encryption headers via bucket policy.</p>
+
+              <h3 class="h5 mt-4">Access Points and Object Lambda</h3>
+              <p><strong>S3 Access Points</strong> give each application or team a dedicated hostname and policy—simplifying shared buckets with different prefix permissions. <strong>Multi-Region Access Points</strong> route clients to the nearest replica with failover. <strong>S3 Object Lambda</strong> runs Lambda on GET to transform objects (resize images, redact fields) without changing how clients address the bucket.</p>
+
+              <h2 class="h4 mt-5">Versioning, replication, and compliance</h2>
+
+              <h3 class="h5 mt-4">Versioning</h3>
+              <p>With <strong>versioning</strong> enabled, DELETE adds a delete marker; overwrites retain prior versions. Protects against operator mistakes and ransomware-style overwrites when combined with tight IAM and MFA Delete on versioned buckets. Cost grows with churn—lifecycle rules to expire noncurrent versions are essential.</p>
+
+              <h3 class="h5 mt-4">Replication</h3>
+              <ul>
+                <li><strong>Same-Region Replication (SRR)</strong> — Log aggregation, environment sync, ownership separation.</li>
+                <li><strong>Cross-Region Replication (CRR)</strong> — Disaster recovery, locality for global users; watch replication time control (RTC) SLA and transfer costs.</li>
+                <li><strong>Batch Replication</strong> — Backfill existing objects when enabling replication mid-life.</li>
+                <li><strong>Replication to S3 Glacier</strong> — DR copies land in cheaper tiers automatically.</li>
+              </ul>
+              <p>Replication is <strong>asynchronous</strong>. Failover runbooks must define how applications switch endpoints and whether conflict resolution is needed.</p>
+
+              <h3 class="h5 mt-4">S3 Object Lock and legal hold</h3>
+              <p><strong>Object Lock</strong> (WORM) supports compliance modes: governance (admins can override with permission) and compliance (no one deletes until retention expires). <strong>Legal hold</strong> blocks deletion regardless of retention. Pair with versioning for SEC 17a-4, HIPAA archive, and ransomware-resilient backup targets. Enable Object Lock only at bucket creation.</p>
+
+              <h2 class="h4 mt-5">Event-driven architecture</h2>
+              <p>S3 can notify downstream systems when objects are created, removed, or restored:</p>
+              <ul>
+                <li><strong>Amazon EventBridge</strong> — Preferred for rich filtering and multiple targets.</li>
+                <li><strong>Lambda</strong> — Thumbnail generation, virus scan, ETL kickoff.</li>
+                <li><strong>SQS</strong> — Buffering and decoupling for high burst ingest.</li>
+                <li><strong>SNS</strong> — Fan-out alerts.</li>
+              </ul>
+              <p>Design for <strong>at-least-once delivery</strong>: idempotent consumers, deduplication keys, and dead-letter queues. S3 → Lambda → downstream is a classic data-lake ingestion pattern used in <a href="aws-data-engineering.html">data engineering on AWS</a>.</p>
+
+              <h2 class="h4 mt-5">Observability and governance</h2>
+              <ul>
+                <li><strong>Server access logging</strong> — Detailed request logs to another bucket (mind recursion and cost).</li>
+                <li><strong>CloudTrail data events</strong> — Who called <code>GetObject</code> on sensitive prefixes (volume pricing—sample or scope prefixes).</li>
+                <li><strong>S3 Inventory</strong> — Scheduled CSV/Parquet reports of objects and metadata for audits.</li>
+                <li><strong>S3 Storage Lens</strong> — Organization-wide metrics, anomalies, and recommendations.</li>
+                <li><strong>S3 Storage Class Analysis</strong> — Suggests lifecycle transitions from access patterns.</li>
+                <li><strong>AWS Config</strong> — Rules for encryption, public access, versioning.</li>
+              </ul>
+
+              <h2 class="h4 mt-5">Mounting and “filesystem” patterns</h2>
+              <p>Standard S3 is not POSIX. Options when you need file-like access:</p>
+              <ul>
+                <li><strong>Application SDK</strong> — Best for new code; explicit object semantics.</li>
+                <li><strong>Mountpoint for Amazon S3</strong> — AWS-supported FUSE-style mount; read-heavy, sequential access; not a database data directory.</li>
+                <li><strong>Third-party adapters (s3fs, goofys)</strong> — Understand caching, consistency, and failure modes before production.</li>
+                <li><strong>Amazon EMR / Spark</strong> — Native <code>s3a://</code> with Hadoop-compatible semantics.</li>
+              </ul>
+              <p>If you need shared POSIX files across EC2 instances, use <strong>EFS</strong> or FSx—not S3 pretending to be NFS.</p>
+
+              <h2 class="h4 mt-5">How S3 fits the wider AWS platform</h2>
+              <table class="table table-sm table-bordered">
+                <thead>
+                  <tr>
+                    <th scope="col">Integration</th>
+                    <th scope="col">Role of S3</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>CloudFront</td>
+                    <td>Origin for static sites and signed URLs</td>
+                  </tr>
+                  <tr>
+                    <td>Athena, Glue, Redshift Spectrum</td>
+                    <td>Query layer over data lake prefixes</td>
+                  </tr>
+                  <tr>
+                    <td>EBS snapshots, RDS backups</td>
+                    <td>Durable backend you do not administer as buckets</td>
+                  </tr>
+                  <tr>
+                    <td>SageMaker, Bedrock</td>
+                    <td>Training data, model artifacts, batch inference I/O</td>
+                  </tr>
+                  <tr>
+                    <td>AWS Backup</td>
+                    <td>Centralized backup plans including S3</td>
+                  </tr>
+                  <tr>
+                    <td>Storage Gateway</td>
+                    <td>Hybrid cache with on-premises NFS/SMB/iSCSI</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <h2 class="h4 mt-5">Cost and FinOps levers</h2>
+              <p>S3 bills for storage (per class), requests, data transfer out to the internet, replication, retrieval (IA/Glacier), and features (Inventory, analytics). Common waste:</p>
+              <ul>
+                <li>Noncurrent versions never expired</li>
+                <li>Incomplete multipart uploads</li>
+                <li>Small objects in Intelligent-Tiering with monitoring overhead</li>
+                <li>Standard class for data accessed once a quarter</li>
+                <li>Cross-Region replication without business need</li>
+                <li>Heavy LIST operations in analytics anti-patterns</li>
+              </ul>
+              <p>Lifecycle to Glacier, tighten prefixes in Inventory, and use Storage Lens dashboards—see also <a href="finops-greenops-1-invisible-bill.html">FinOps: the invisible bill</a>.</p>
+
+              <h2 class="h4 mt-5">Operations: CLI patterns</h2>
+              <pre class="bg-light p-3 rounded"><code># Create bucket (Region required)
+aws s3api create-bucket --bucket my-app-data-prod-ap-south-1 \
+  --region ap-south-1 --create-bucket-configuration LocationConstraint=ap-south-1
+
+# Block public access (account or bucket level)
+aws s3api put-public-access-block --bucket my-app-data-prod-ap-south-1 \
+  --public-access-block-configuration BlockPublicAcls=true,IgnorePublicAcls=true,\
+BlockPublicPolicy=true,RestrictPublicBuckets=true
+
+# Default encryption with KMS
+aws s3api put-bucket-encryption --bucket my-app-data-prod-ap-south-1 \
+  --server-side-encryption-configuration '{"Rules":[{"ApplyServerSideEncryptionByDefault":{
+  "SSEAlgorithm":"aws:kms","KMSMasterKeyID":"arn:aws:kms:..."},"BucketKeyEnabled":true}]}'
+
+# Sync build artifacts (deploy pattern)
+aws s3 sync ./dist s3://my-app-assets-prod/ --delete --sse aws:kms
+
+# Presigned URL (time-limited download for clients)
+aws s3 presign s3://my-app-assets-prod/reports/q1.pdf --expires-in 3600</code></pre>
+              <p>Example lifecycle fragment (transition + abort stale multipart):</p>
+              <pre class="bg-light p-3 rounded"><code>{
+  "Rules": [{
+    "ID": "tier-and-tidy",
+    "Status": "Enabled",
+    "Filter": { "Prefix": "logs/" },
+    "Transitions": [{ "Days": 90, "StorageClass": "STANDARD_IA" }],
+    "NoncurrentVersionExpiration": { "NoncurrentDays": 30 },
+    "AbortIncompleteMultipartUpload": { "DaysAfterInitiation": 7 }
+  }]
+}</code></pre>
+
+              <h2 class="h4 mt-5">Architect checklist</h2>
+              <ol>
+                <li>Classify data: hot, warm, archive, compliance-bound.</li>
+                <li>One bucket per security/domain boundary; use prefixes for environments, not one giant public bucket.</li>
+                <li>Encryption by default; KMS where audit matters.</li>
+                <li>Versioning + lifecycle on anything operators touch.</li>
+                <li>Replication and Object Lock only where RPO/RTO or regulation requires—rehearse failover.</li>
+                <li>Events idempotent; monitor 4xx/5xx and replication lag.</li>
+                <li>VPC endpoints for private workloads; CloudFront for global read-heavy assets.</li>
+              </ol>
+
+              <h2 class="h4 mt-5">Common mistakes</h2>
+              <ul>
+                <li><strong>Public bucket policy drift</strong> — <code>"Principal": "*"</code> with <code>s3:GetObject</code> on sensitive prefixes.</li>
+                <li><strong>Using S3 as primary database storage</strong> — Wrong latency and semantics; use RDS, DynamoDB, or OpenSearch by access pattern.</li>
+                <li><strong>Ignoring delete markers and versions</strong> — Storage grows “invisibly” after incidents.</li>
+                <li><strong>Assuming replication is backup</strong> — Corrupt or encrypted objects replicate too; use versioning, Object Lock, and isolated accounts.</li>
+                <li><strong>KMS without bucket key</strong> — High request volume → KMS throttling and cost; enable S3 Bucket Keys.</li>
+                <li><strong>Listing huge buckets naively</strong> — Use Inventory or S3 Inventory reports instead of paginating millions of keys in app startup.</li>
+              </ul>
+
+              <h2 class="h4 mt-5">Further reading</h2>
+              <ul>
+                <li>AWS — <em>Amazon S3 User Guide</em> (security, performance, storage classes)</li>
+                <li>AWS — <em>Well-Architected Framework</em> — Security and Cost Optimization pillars</li>
+                <li>AWS — S3 best practices for security and for data lakes</li>
+                <li>AWS — Mountpoint for Amazon S3 documentation</li>
+              </ul>
+
+              <p class="small text-muted mt-4 mb-2"><a href="../index.html#blog">Blog index</a> · <a href="aws-ebs-s3-efs-storage-deep-dive.html">EBS, S3, and EFS</a> · <a href="aws-data-engineering.html">Data engineering on AWS</a> · <a href="aws-cloud-security-foundations.html">Cloud security foundations</a></p>
+              <p class="mb-0"><a href="../index.html#blog" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left" aria-hidden="true"></i> Back to blog list</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+  </main>
+  <footer id="footer">
+    <div class="container">
+      <div class="copyright">&copy; Copyright <strong><span>babulal.com.np</span></strong></div>
+      <div class="credits">Designed by <a href="https://babulal.com.np/">Babulal Tamang</a></div>
+    </div>
+  </footer>
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+  <script src="../assets/vendor/purecounter/purecounter_vanilla.js"></script>
+  <script src="../assets/vendor/aos/aos.js"></script>
+  <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="../assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="../assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="../assets/vendor/typed.js/typed.min.js"></script>
+  <script src="../assets/vendor/waypoints/noframework.waypoints.js"></script>
+  <script src="../assets/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<article class="inner-page blog-article pb-5">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-9 col-xl-8">
+            <header class="mb-4 pb-3 border-bottom" data-aos="fade-up">
+              <div class="blog-article-meta mb-3">
+                <p class="text-muted small mb-2">Platform &amp; culture · <time datetime="2026-05-19">19 May 2026</time> · <span class="blog-meta-label">Essay</span> · By <a href="../index.html#about" class="blog-author text-reset fw-semibold" rel="author">Babulal Tamang</a></p>
+              <ul class="blog-tags list-unstyled d-flex flex-wrap gap-1 mb-0" aria-label="Tags">
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Docker</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Containers</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">DevOps</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Linux</span></li>
+              </ul>
+              </div>
+              <h1 class="h2 mb-3">Docker and Containerization: The Hidden Side Most Tutorials Skip</h1>
+              <p class="lead mb-3">You can <code>docker run</code> an image in five minutes. That speed hides a stack of Linux primitives, storage tricks, and security trade-offs. This post is the knowledge base behind the commands: what actually runs, what can go wrong, and how containers connect to the platform work you will do next.</p>
+              <div class="border-start border-primary border-4 ps-3 py-3 bg-light rounded mb-0" role="note">
+                <p class="small text-uppercase text-muted mb-1 fw-semibold">In short</p>
+                <p class="mb-0">A <strong>container</strong> is a process (or tree of processes) isolated with <strong>namespaces</strong>, limited with <strong>cgroups</strong>, and started from a read-only <strong>image</strong> made of stacked layers. Docker is a convenient front end—not magic, not a VM, and not a substitute for hardening, observability, or orchestration when you outgrow a laptop.</p>
+              </div>
+            </header>
+
+            <div class="blog-prose" data-aos="fade-up" data-aos-delay="50">
+
+              <h2 class="h4 mt-4">The vocabulary people mix up</h2>
+              <p><strong>Image</strong> is a packaged filesystem plus metadata (default command, env vars, exposed ports). It is built in layers and usually stored in a registry. <strong>Container</strong> is a running instance of an image: writable layer on top, process(es) inside, network identity, mounts. You can have many containers from one image.</p>
+              <p><strong>Virtual machine</strong> runs a guest operating system on emulated or virtual hardware. A container shares the <em>host kernel</em> and only <em>looks</em> like its own environment. That is why containers start fast and stay smaller—but also why a Linux container on Linux is native, while “Linux container on Windows” involves extra plumbing.</p>
+              <p><strong>Docker</strong> popularized the developer experience (CLI, Dockerfile, Hub). Under the hood, modern engines use the <strong>OCI</strong> (Open Container Initiative) image and runtime specs so the same image can run with containerd, CRI-O, or other compliant runtimes—not only the Docker brand.</p>
+
+              <h2 class="h4 mt-5">What happens when you run a container</h2>
+              <p>When you type <code>docker run nginx</code>, more happens than “download and go”:</p>
+              <ol>
+                <li>The client talks to the <strong>container engine</strong> (historically the Docker daemon; today often containerd with a Docker-compatible API).</li>
+                <li>If the image is missing, layers are pulled from a registry and unpacked using a storage driver.</li>
+                <li>The engine asks a low-level runtime—typically <strong>runc</strong>—to create namespaces, apply cgroup limits, set up the root filesystem, and <code>exec</code> your process.</li>
+                <li>Networking hooks attach the container to a bridge, overlay, or host network as configured.</li>
+              </ol>
+              <p>The hidden lesson: <strong>your app is just PID 1 (or a child) on the host kernel</strong>, wearing a costume of isolated mount, process, network, and user IDs. Debug with that mental model—<code>docker exec</code> enters the same namespaces; host tools can still see cgroups and processes if you know where to look.</p>
+
+              <h2 class="h4 mt-5">Images are layers—and layers have consequences</h2>
+              <p>Each Dockerfile instruction that modifies the filesystem usually creates a <strong>new layer</strong>. Layers are stored read-only and shared between images (deduplication). When a container runs, Docker adds a thin <strong>writable container layer</strong>; changes there disappear when the container is removed unless you commit or use volumes.</p>
+              <p>Hidden costs:</p>
+              <ul>
+                <li><strong>Order matters in builds.</strong> Put rarely changing steps (base image, OS packages) before frequently changing steps (copy source, <code>npm install</code>) so cache hits save time and bandwidth.</li>
+                <li><strong>Deleted files can still weigh down an image.</strong> Removing a secret in a later layer does not remove it from earlier layers—anyone with the image can still extract it. Never bake secrets into images; inject at runtime.</li>
+                <li><strong>Disk fills up silently.</strong> Dangling images, stopped containers, and build cache accumulate. <code>docker system df</code> and prudent pruning are operational hygiene, not optional cleanup.</li>
+              </ul>
+              <p><strong>Multi-stage builds</strong> are the professional pattern: compile in a fat builder stage, copy only artifacts into a minimal runtime stage. You ship less attack surface and smaller transfers.</p>
+
+              <h2 class="h4 mt-5">Isolation: namespaces and cgroups</h2>
+              <p><strong>Namespaces</strong> slice what a process can see: its own PID list, network stack, mount tree, hostname, and (with user namespaces) UID mappings. They provide the illusion of a private machine.</p>
+              <p><strong>Cgroups</strong> (control groups) cap and account resources: CPU, memory, I/O, PIDs. Without limits, one container can starve the host—Kubernetes and Docker both expose these as requests and limits in different forms.</p>
+              <p>Isolation is <strong>not</strong> absolute. Misconfigured capabilities, privileged mode, host PID or network namespaces, and kernel bugs are how “container escape” enters incident reports. Default Docker containers are still more constrained than bare processes, but <strong>privileged: true</strong> is effectively root on the host with extra steps.</p>
+
+              <h2 class="h4 mt-5">Storage: the writable layer, volumes, and bind mounts</h2>
+              <ul>
+                <li><strong>Writable container layer</strong> — fine for ephemeral caches; bad for databases you care about.</li>
+                <li><strong>Volume</strong> — managed by Docker, portable across containers on the same engine, good default for persistent data.</li>
+                <li><strong>Bind mount</strong> — maps a host path into the container; powerful for development, risky in production if permissions or paths leak host data.</li>
+              </ul>
+              <p>Permissions bite quietly: processes in the image often run as root unless you set <code>USER</code>. Files created on volumes may be owned as root on the host, breaking CI or local editors. Plan UID/GID or fsGroup-style fixes before production.</p>
+
+              <h2 class="h4 mt-5">Networking: bridges, ports, and DNS</h2>
+              <p>Default bridge networking gives each container an IP on a virtual bridge; published ports (<code>-p 8080:80</code>) set up NAT from the host. <strong>Host network</strong> mode drops isolation and uses the host stack directly—fast, dangerous on multi-tenant machines.</p>
+              <p>On user-defined bridge networks, Docker provides an embedded <strong>DNS server</strong> so containers resolve each other by name—Compose service names depend on this. The hidden gotcha: containers on the default bridge do not get automatic DNS between containers; you need links (legacy) or a custom network.</p>
+              <p>In Kubernetes, networking moves to CNI plugins and Services; the mental model (Pod IP, ClusterIP, ingress) builds on the same idea—stable names in front of ephemeral workloads.</p>
+
+              <h2 class="h4 mt-5">Security: what “non-root in Dockerfile” does not fix</h2>
+              <ul>
+                <li><strong>Root inside the container</strong> is often still a powerful user on the host if the container is privileged or has dangerous capabilities (<code>CAP_SYS_ADMIN</code>, etc.).</li>
+                <li><strong>Image supply chain</strong> — trust registries, scan images, pin by <strong>digest</strong> (<code>nginx@sha256:…</code>) not only by tag (<code>latest</code> moves).</li>
+                <li><strong>Read-only root filesystem</strong> and dropping capabilities reduce blast radius; seccomp and AppArmor/SELinux profiles add depth where teams invest.</li>
+                <li><strong>The daemon is high value.</strong> Access to the Docker socket is root-equivalent on the host—never mount it into untrusted containers.</li>
+              </ul>
+              <p>Security is a stack: minimal base images (distroless, alpine with eyes open), no secrets in layers, regular patches, and runtime policy—not a single checkbox.</p>
+
+              <h2 class="h4 mt-5">PID 1, signals, and graceful shutdown</h2>
+              <p>In a container, your main process is often <strong>PID 1</strong>. On Linux, PID 1 has special duties: reaping zombie children and handling signals in ways normal apps ignore. If your app is a shell script wrapping Java, signals may never reach Java; Kubernetes or Docker stop timeouts then kill harshly.</p>
+              <p>Fixes people learn the hard way: use an init wrapper (<code>tini</code>, <code>dumb-init</code>), run the app directly as PID 1, or ensure your wrapper forwards <code>SIGTERM</code>. Set <code>STOPSIGNAL</code> and align stop grace periods with how long shutdown actually takes.</p>
+
+              <h2 class="h4 mt-5">Health, logs, and observability</h2>
+              <p><code>HEALTHCHECK</code> in a Dockerfile (or orchestrator probes later) tells the platform when to restart—not when users are happy. Logs go to stdout/stderr by design; the engine captures them. Hidden trap: log drivers and rotation—unbounded json-file logs can fill disks on long-lived VMs.</p>
+              <p>Metrics and traces still belong to your application. Containers do not replace APM; they make it easier to ship the same binary everywhere if instrumentation travels with the image.</p>
+
+              <h2 class="h4 mt-5">Compose, Swarm, and Kubernetes—where Docker stops</h2>
+              <p><strong>Docker Compose</strong> models multi-container apps on one host (or one Docker context)—excellent for dev and small deployments. <strong>Swarm</strong> added clustering but lost mindshare to Kubernetes.</p>
+              <p><strong>Kubernetes</strong> does not run “Docker the product” inside the cluster anymore; it schedules Pods via <a href="kubernetes-cri-csi-deep-dive.html#cri">CRI</a>, usually containerd, using the same OCI images you built with Docker or BuildKit. Your Dockerfile skills transfer; the control plane, Service mesh, and GitOps layers are the next chapter—see <a href="kubernetes-architecture-simple.html">Kubernetes architecture in simple terms</a> and <a href="gitops-principles.html">GitOps principles</a>.</p>
+
+              <h2 class="h4 mt-5">BuildKit and the modern build pipeline</h2>
+              <p>Classic <code>docker build</code> is sequential. <strong>BuildKit</strong> parallelizes independent stages, improves cache export/import, and supports secrets and SSH mounts during build without leaving credentials in layers. On current Docker Desktop and many CI images, BuildKit is default—worth enabling explicitly in pipelines that still disable it.</p>
+              <p>Pair BuildKit with a <strong>.dockerignore</strong> as strict as <code>.gitignore</code>. Sending the entire repo context into the daemon slows every build and can leak local files into layers.</p>
+
+              <h2 class="h4 mt-5">Checklist: hidden-side habits that survive production</h2>
+              <ul>
+                <li>Pin base images by digest in security-sensitive pipelines; rebuild on CVE, not on <code>latest</code> whims.</li>
+                <li>Run as non-root; read-only root where possible; no privileged unless documented and time-boxed.</li>
+                <li>One main process per container; handle signals and zombies deliberately.</li>
+                <li>Persist data on volumes; size and back them up; never rely on the writable layer.</li>
+                <li>Set memory and CPU limits before the orchestrator does it abruptly in prod.</li>
+                <li>Prune and monitor disk; treat the daemon socket like root credentials.</li>
+                <li>Scan images in CI; sign and attest when your org requires supply-chain proof.</li>
+              </ul>
+
+              <h2 class="h4 mt-5">Further reading</h2>
+              <ul>
+                <li>Docker documentation — build cache, multi-stage builds, networking, and security</li>
+                <li>Open Container Initiative — image and runtime specifications</li>
+                <li>Linux man pages — <code>namespaces(7)</code>, <code>cgroups(7)</code></li>
+                <li>Liz Rice — <em>Container Security</em> (O’Reilly) for depth beyond tutorials</li>
+                <li>CNCF / Kubernetes docs — from single host to cluster operations</li>
+              </ul>
+
+              <p class="small text-muted mt-4 mb-2"><a href="../index.html#blog">Blog index</a> · <a href="kubernetes-architecture-simple.html">Kubernetes architecture</a> · <a href="devops-historical-foundations.html">DevOps foundations</a></p>
+              <p class="mb-0"><a href="../index.html#blog" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left" aria-hidden="true"></i> Back to blog list</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>

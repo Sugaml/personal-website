@@ -1,0 +1,180 @@
+<article class="inner-page blog-article pb-5">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-9 col-xl-8">
+            <header class="mb-4 pb-3 border-bottom" data-aos="fade-up">
+              <div class="blog-article-meta mb-3">
+                <p class="text-muted small mb-2">Platform &amp; security · <time datetime="2026-05-20">20 May 2026</time> · <span class="blog-meta-label">Guide</span> · By <a href="../index.html#about" class="blog-author text-reset fw-semibold" rel="author">Babulal Tamang</a></p>
+              <ul class="blog-tags list-unstyled d-flex flex-wrap gap-1 mb-0" aria-label="Tags">
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Kubernetes</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">RBAC</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Security</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">IAM</span></li>
+              </ul>
+              </div>
+              <h1 class="h2 mb-3">Kubernetes Cluster RBAC: The Mental Model That Actually Sticks</h1>
+              <p class="lead mb-3"><strong>RBAC</strong> (Role-Based Access Control) is how Kubernetes answers one question after it knows <em>who</em> you are: <em>may this identity perform this action on this object?</em> It is not authentication. It is not network policy. It is the authorization layer on the API server—and once you see the four objects and the request path, cluster permissions stop feeling like magic.</p>
+              <div class="border-start border-primary border-4 ps-3 py-3 bg-light rounded mb-0" role="note">
+                <p class="small text-uppercase text-muted mb-1 fw-semibold">In short</p>
+                <p class="mb-0">Define <strong>permissions</strong> in a <code>Role</code> or <code>ClusterRole</code> (rules: apiGroups, resources, verbs). Attach them to <strong>subjects</strong> with a <code>RoleBinding</code> or <code>ClusterRoleBinding</code>. Namespace-scoped roles stay inside one namespace; cluster roles can reach cluster-wide resources or be reused across namespaces via bindings. Test with <code>kubectl auth can-i</code> and grant the smallest rule set that still lets work flow.</p>
+              </div>
+            </header>
+
+            <div class="blog-prose" data-aos="fade-up" data-aos-delay="50">
+
+              <h2 class="h4 mt-4">Where RBAC sits in the cluster</h2>
+              <p>Every change and read in Kubernetes flows through the <strong>kube-apiserver</strong>. Before your request mutates or returns data, the API server runs a chain of checks—authentication first, then authorization, then admission controllers. For background on the control plane, see <a href="kubernetes-architecture-simple.html">Kubernetes architecture in simple terms</a>.</p>
+              <ol>
+                <li><strong>Authentication</strong> — Proves identity. Examples: client certificate (common for humans and some controllers), bearer token (ServiceAccount JWT), OIDC (many enterprises), webhook token review.</li>
+                <li><strong>Authorization</strong> — Decides if that identity may do the operation. <strong>RBAC</strong> is the default and most common mode here.</li>
+                <li><strong>Admission</strong> — Enforces policies (Pod Security, resource quotas, OPA/Kyverno, mutating webhooks) after authorization says “allowed.”</li>
+              </ol>
+              <p>RBAC never replaces step one. A perfect <code>Role</code> does nothing if the caller cannot authenticate. Conversely, strong cloud IAM at the edge does not remove the need for in-cluster RBAC: anything that can reach the API still needs explicit rules inside the cluster.</p>
+
+              <h2 class="h4 mt-5">The four objects (and only four you need daily)</h2>
+              <p>RBAC in Kubernetes is deliberately small. Think in two pairs:</p>
+              <table class="table table-sm table-bordered">
+                <thead>
+                  <tr>
+                    <th scope="col">Permission definition</th>
+                    <th scope="col">Who gets it</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>Role</code> — rules in <strong>one namespace</strong></td>
+                    <td><code>RoleBinding</code> — links Role → subject(s) in that namespace</td>
+                  </tr>
+                  <tr>
+                    <td><code>ClusterRole</code> — rules cluster-wide <em>or</em> reusable template</td>
+                    <td><code>ClusterRoleBinding</code> — links ClusterRole → subject(s) everywhere it applies</td>
+                  </tr>
+                </tbody>
+              </table>
+              <p><strong>Role + RoleBinding</strong> is the default shape for application teams: “this group may manage Deployments and read Secrets in <code>team-a</code>.” <strong>ClusterRole + ClusterRoleBinding</strong> is for platform operators, CRD installers, or anyone who must touch nodes, namespaces, PersistentVolumes, or cluster-scoped custom resources.</p>
+              <p>Important nuance: a <code>ClusterRole</code> does not automatically mean “god mode.” It only defines <em>what could be granted</em>. Scope is determined by the <strong>binding</strong>: a <code>RoleBinding</code> that references a <code>ClusterRole</code> grants only the rules needed in <strong>that binding’s namespace</strong> (a common pattern for reusing the built-in <code>view</code>, <code>edit</code>, <code>admin</code> roles per namespace).</p>
+
+              <h2 class="h4 mt-5">Anatomy of a rule</h2>
+              <p>Permissions are a list of <strong>rules</strong>. Each rule names API groups, resources, optional resource names, and <strong>verbs</strong> (actions). A minimal read-only rule for Pods in the core API group looks like this:</p>
+              <pre class="bg-light p-3 rounded"><code>rules:
+- apiGroups: [""]           # "" = core group (Pods, Services, ConfigMaps, …)
+  resources: ["pods"]
+  verbs: ["get", "list", "watch"]</code></pre>
+              <p>Useful fields:</p>
+              <ul>
+                <li><strong><code>apiGroups</code></strong> — <code>""</code> for core; <code>apps</code> for Deployments; <code>rbac.authorization.k8s.io</code> for Roles themselves; <code>*</code> for all groups (avoid in custom roles unless you truly mean it).</li>
+                <li><strong><code>resources</code></strong> — Plural resource names (<code>pods</code>, <code>deployments</code>). Subresources use a slash: <code>pods/log</code>, <code>pods/exec</code> (exec is powerful—treat it like shell access).</li>
+                <li><strong><code>resourceNames</code></strong> — Restricts the rule to specific objects (least privilege for one Secret or ConfigMap).</li>
+                <li><strong><code>verbs</code></strong> — Common set: <code>get</code>, <code>list</code>, <code>watch</code>, <code>create</code>, <code>update</code>, <code>patch</code>, <code>delete</code>. Aggregated roles often add <code>deletecollection</code>. Non-resource URLs use <code>nonResourceURLs</code> and verbs like <code>get</code> (e.g. <code>/healthz</code>, <code>/metrics</code>).</li>
+              </ul>
+              <p>Discover what exists before you write YAML: <code>kubectl api-resources</code> lists resources; <code>kubectl explain pod.spec --api-version=v1</code> helps with schema. For manifest structure practice, the <a href="kubernetes-hands-on-2-yaml-anatomy.html">hands-on YAML anatomy</a> post pairs well with this one.</p>
+
+              <h2 class="h4 mt-5">Subjects: who receives the role</h2>
+              <p>Bindings point at <strong>subjects</strong>:</p>
+              <ul>
+                <li><strong><code>User</code></strong> — Opaque string from your authentication layer (e.g. <code>jane@corp.example</code> from OIDC). Kubernetes does not store User objects; RBAC only references the name the authenticator returns.</li>
+                <li><strong><code>Group</code></strong> — Same story—groups come from your IdP or certificate org field.</li>
+                <li><strong><code>ServiceAccount</code></strong> — A namespaced identity for Pods and controllers. This is how workloads call the API without sharing human credentials.</li>
+              </ul>
+              <p>Production hygiene: one ServiceAccount per workload (or per trust boundary), automount tokens only when needed, and bind narrowly. GitOps controllers (Flux, Argo CD) each deserve their own SA and ClusterRole scoped to the namespaces or clusters they manage—see <a href="gitops-principles.html">GitOps principles</a> for why blast radius matters.</p>
+
+              <h2 class="h4 mt-5">How the API server decides (evaluation in plain language)</h2>
+              <p>On each request, RBAC roughly:</p>
+              <ol>
+                <li>Collects all <code>RoleBindings</code> and <code>ClusterRoleBindings</code> whose subjects match the caller (user, group, or service account).</li>
+                <li>Resolves each binding to its <code>Role</code> or <code>ClusterRole</code> rules.</li>
+                <li>If <strong>any</strong> rule allows the requested verb on the requested resource (and namespace, if namespaced), access is granted.</li>
+                <li>Otherwise the request fails with <code>403 Forbidden</code>.</li>
+              </ol>
+              <p>RBAC is <strong>additive only</strong>—there is no “deny” rule in standard RBAC. To block something you combine least-privilege grants with admission policy (OPA, Kyverno) or avoid handing out wildcards. If you are used to AWS IAM, this differs from explicit <code>Deny</code> statements in policy evaluation; the mental model is closer to “union of allows” with separate guardrails elsewhere. For IAM document anatomy on AWS, see <a href="aws-iam-policy-json-anatomy.html">IAM policy JSON anatomy</a>.</p>
+
+              <h2 class="h4 mt-5">Built-in ClusterRoles you should recognize</h2>
+              <p>Kubernetes ships aggregated roles. Teams often bind these instead of inventing new ones:</p>
+              <ul>
+                <li><strong><code>view</code></strong> — Read-only access to most namespaced objects (no Secrets).</li>
+                <li><strong><code>edit</code></strong> — Read/write on most namespaced objects (no Roles/Bindings, no quota changes).</li>
+                <li><strong><code>admin</code></strong> — Full control within a namespace, including Roles and RoleBindings in that namespace.</li>
+                <li><strong><code>cluster-admin</code></strong> — Unrestricted cluster control. Use sparingly; break-glass only for many orgs.</li>
+              </ul>
+              <p>Platform teams frequently create <strong>custom ClusterRoles</strong> that embed only what CI, observability agents, or namespace admins need—then bind with <code>RoleBinding</code> per namespace so the same role definition stays DRY.</p>
+
+              <h2 class="h4 mt-5">Worked patterns (copy the idea, not blindly the YAML)</h2>
+
+              <h3 class="h5 mt-4">Namespace developer</h3>
+              <p>Grant <code>edit</code> in <code>team-a</code> via RoleBinding to OIDC group <code>team-a-devs</code>. Developers deploy apps; they cannot edit cluster nodes or other namespaces.</p>
+
+              <h3 class="h5 mt-4">Read-only SRE across one namespace</h3>
+              <p>Custom Role with <code>get/list/watch</code> on pods, events, deployments, and <code>pods/log</code>—no <code>delete</code>, no <code>pods/exec</code>.</p>
+
+              <h3 class="h5 mt-4">CI pipeline in its namespace</h3>
+              <p>ServiceAccount <code>ci-deploy</code> in <code>team-a</code> with permission to patch Deployments and read ConfigMaps—nothing cluster-wide.</p>
+
+              <h3 class="h5 mt-4">Cluster operator</h3>
+              <p>Separate break-glass ClusterRoleBinding for humans; day-to-day operators get a custom ClusterRole for nodes, storage classes, and CRDs—still not <code>cluster-admin</code> unless unavoidable.</p>
+
+              <h2 class="h4 mt-5">Verify before you ship</h2>
+              <p>RBAC bugs show up as mysterious “Forbidden” in CI at 2 a.m. Make checking habitual:</p>
+              <pre class="bg-light p-3 rounded"><code># As your current kubectl user
+kubectl auth can-i create deployments -n team-a
+
+# Impersonate a ServiceAccount (needs permission to impersonate)
+kubectl auth can-i list secrets -n team-a \
+  --as=system:serviceaccount:team-a:ci-deploy
+
+# List all permissions for a subject in a namespace
+kubectl auth can-i --list -n team-a \
+  --as=system:serviceaccount:team-a:ci-deploy</code></pre>
+              <p>In CI, run <code>can-i</code> after applying manifests, or use policy tests (e.g. validate rendered Roles with <code>kubeconform</code>, chart tests, or OPA conftest) so overly broad rules never merge.</p>
+
+              <h2 class="h4 mt-5">Least privilege that survives real teams</h2>
+              <ul>
+                <li><strong>Prefer namespace boundaries</strong> — Align Roles with team or product namespaces; use ClusterRoles only for true cluster surfaces.</li>
+                <li><strong>Avoid <code>*</code> on verbs or resources</strong> in custom roles unless you are generating a platform-wide admin role—and then protect it like root keys.</li>
+                <li><strong>Split human and automation identities</strong> — No shared “deploy” user; ServiceAccounts for controllers, OIDC users for people.</li>
+                <li><strong>Watch subresources</strong> — <code>pods/exec</code>, <code>pods/portforward</code>, and <code>secrets</code> access deserve explicit review.</li>
+                <li><strong>Aggregate carefully</strong> — Label-based <code>ClusterRole</code> aggregation is powerful for extensions; understand what your Helm chart adds to the API surface.</li>
+                <li><strong>Audit bindings</strong> — Periodically list ClusterRoleBindings; <code>cluster-admin</code> bindings should be countable on one hand.</li>
+              </ul>
+
+              <h2 class="h4 mt-5">RBAC vs other controls (do not confuse them)</h2>
+              <ul>
+                <li><strong>NetworkPolicy / service mesh</strong> — Controls traffic between Pods; does not stop a authorized caller from deleting a Deployment via the API.</li>
+                <li><strong>Pod Security admission</strong> — Restricts Pod spec fields; unrelated to who may call <code>kubectl delete</code>.</li>
+                <li><strong>Node / kubelet access</strong> — SSH to a node is a different trust domain; lock down nodes separately.</li>
+                <li><strong>Cloud IAM</strong> — Governs AWS/GCP/Azure APIs; EKS/IRSA and GKE Workload Identity <em>federate</em> cloud identity into ServiceAccounts—they do not replace Kubernetes RBAC for in-cluster API calls.</li>
+              </ul>
+
+              <h2 class="h4 mt-5">Common pitfalls</h2>
+              <ul>
+                <li><strong>Binding the wrong subject kind</strong> — Typo in ServiceAccount namespace or name silently leaves the workload powerless—or you bind the default SA in <code>default</code> by mistake.</li>
+                <li><strong>ClusterRoleBinding when RoleBinding would do</strong> — Grants cluster-wide reach when you meant one namespace.</li>
+                <li><strong>Forgetting subresources</strong> — Allowing <code>pods</code> but not <code>pods/log</code> breaks debugging; allowing <code>pods/exec</code> is equivalent to handing out shells.</li>
+                <li><strong>Assuming “view” sees Secrets</strong> — It does not; if someone needs Secret access, name that explicitly and narrowly.</li>
+                <li><strong>Editing live bindings only</strong> — Drift from Git undermines audit; store Roles and Bindings in version control (<a href="gitops-principles.html">GitOps</a>).</li>
+                <li><strong>Relying on ABAC or legacy modes</strong> — Modern clusters use RBAC; understand your distribution’s defaults on first boot.</li>
+              </ul>
+
+              <h2 class="h4 mt-5">A practical learning path</h2>
+              <ol>
+                <li>Stand up a lab cluster (<a href="kubernetes-hands-on-1-local-lab.html">hands-on Part 1</a>).</li>
+                <li>Create a namespace, a ServiceAccount, a tight Role, and a RoleBinding; deploy a Pod that uses the SA.</li>
+                <li>Run <code>kubectl auth can-i --list</code> before and after each change.</li>
+                <li>Intentionally trigger <code>403</code>, fix the rule, and document the binding in Git.</li>
+                <li>Read one production Helm chart’s RBAC templates—compare what the chart requests vs what you are willing to grant.</li>
+              </ol>
+
+              <h2 class="h4 mt-5">Further reading</h2>
+              <ul>
+                <li>Kubernetes documentation — <em>Using RBAC Authorization</em> (official reference for verbs, defaults, and escalation)</li>
+                <li>Kubernetes documentation — <em>Controlling Access to the Kubernetes API</em> (authentication modes overview)</li>
+                <li>CNCF and vendor guides — EKS/GKE/AKS integration patterns for OIDC and workload identity</li>
+                <li>NIST and CIS Kubernetes benchmarks — RBAC and audit configuration baselines</li>
+              </ul>
+
+              <p class="small text-muted mt-4 mb-2"><a href="../index.html#blog">Blog index</a> · <a href="kubernetes-architecture-simple.html">Kubernetes architecture</a> · <a href="gitops-principles.html">GitOps principles</a> · <a href="aws-iam-policy-json-anatomy.html">IAM policy anatomy</a></p>
+              <p class="mb-0"><a href="../index.html#blog" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left" aria-hidden="true"></i> Back to blog list</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
