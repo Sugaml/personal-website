@@ -2,6 +2,12 @@
 
 Short log of design decisions and content changes.
 
+## 2026-05-20 — Kubernetes storage PV / PVC / StorageClass (guide)
+
+- **Title:** “Kubernetes Storage: PV, PVC, and StorageClass Explained in Depth” (article); index card “Kubernetes storage (PV, PVC, StorageClass)”.
+- **Intent:** Object-model deep-dive—binding lifecycle, static vs dynamic provisioning, PVC/PV/StorageClass YAML, access modes, reclaim policies, volume modes, CSI overview, Pod mounts, StatefulSet `volumeClaimTemplates`, snapshots pointer, troubleshooting table, production practices. Complements `kubernetes-cri-csi-deep-dive.html` (CRI/CSI interfaces) with day-to-day manifest focus.
+- **Files:** `blogs/kubernetes-storage-pv-pvc-storageclass.html`, `index.html` (Platform section after CRI/CSI card), cross-link from `kubernetes-architecture-simple.html`.
+
 ## 2026-05-20 — Kubernetes CRI and CSI (guide)
 
 - **Title:** “CRI and CSI: How Kubernetes Plugs In Runtimes and Storage” (article); index card “Kubernetes CRI and CSI”.

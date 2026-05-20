@@ -125,7 +125,7 @@
                 <li><strong>Deployment</strong> — Declares desired replicas and rolling updates for stateless apps. It owns ReplicaSets, which own Pods—so you rarely create Pods by hand in production.</li>
                 <li><strong>Service</strong> — A stable virtual IP and DNS name in front of a set of Pods (via labels). Clients talk to the Service; Kubernetes load-balances to healthy Pods.</li>
               </ul>
-              <p>For stateful systems you meet <strong>StatefulSets</strong>, persistent volumes (via the <a href="kubernetes-cri-csi-deep-dive.html">CSI</a> storage interface), and operators; the architecture above still applies—controllers just enforce stronger identity and storage rules.</p>
+              <p>For stateful systems you meet <strong>StatefulSets</strong>, <a href="kubernetes-storage-pv-pvc-storageclass.html">PVs, PVCs, and StorageClasses</a> (provisioned via <a href="kubernetes-cri-csi-deep-dive.html">CSI</a>), and operators; the architecture above still applies—controllers just enforce stronger identity and storage rules.</p>
 
               <h2 class="h4 mt-5">Add-ons you will bump into</h2>
               <p>These are not “core” in the same sense as kube-apiserver, but real clusters depend on them:</p>

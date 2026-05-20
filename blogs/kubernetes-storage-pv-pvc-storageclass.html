@@ -260,7 +260,7 @@ reclaimPolicy: Delete</code></pre>
                 <li><strong>External provisioner sidecar</strong> — Watches PVCs and calls CreateVolume on the driver.</li>
                 <li><strong>External attacher</strong> — Attaches block volumes to nodes in the cloud.</li>
               </ul>
-              <p>When you <code>kubectl get storageclass</code> on EKS, GKE, or AKS, the <code>PROVISIONER</code> column shows names like <code>ebs.csi.aws.com</code> or <code>pd.csi.storage.gke.io</code>. Installing a driver (Helm chart or add-on) is a platform task; application teams consume it through StorageClass names.</p>
+              <p>When you <code>kubectl get storageclass</code> on EKS, GKE, or AKS, the <code>PROVISIONER</code> column shows names like <code>ebs.csi.aws.com</code> or <code>pd.csi.storage.gke.io</code>. Installing a driver (Helm chart or add-on) is a platform task; application teams consume it through StorageClass names. For how CSI fits next to CRI at the kubelet boundary, see <a href="kubernetes-cri-csi-deep-dive.html">CRI and CSI deep dive</a>.</p>
 
               <h2 class="h4 mt-5">Wiring storage into a Pod</h2>
               <p>PVCs do nothing until a Pod uses them:</p>
@@ -398,7 +398,7 @@ kubectl describe pod app-with-data -n app</code></pre>
                 <li>Kubernetes documentation — <em>StatefulSets</em> (identity and stable storage)</li>
               </ul>
 
-              <p class="small text-muted mt-4 mb-2"><a href="../index.html#blog">Blog index</a> · <a href="kubernetes-architecture-simple.html">Kubernetes architecture</a> · <a href="kubernetes-cluster-rbac.html">Cluster RBAC</a> · <a href="kubernetes-hands-on-3-first-workloads.html">Hands-on Part 3</a></p>
+              <p class="small text-muted mt-4 mb-2"><a href="../index.html#blog">Blog index</a> · <a href="kubernetes-architecture-simple.html">Kubernetes architecture</a> · <a href="kubernetes-cri-csi-deep-dive.html">CRI and CSI</a> · <a href="kubernetes-cluster-rbac.html">Cluster RBAC</a> · <a href="kubernetes-hands-on-3-first-workloads.html">Hands-on Part 3</a></p>
               <p class="mb-0"><a href="../index.html#blog" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left" aria-hidden="true"></i> Back to blog list</a></p>
 
               <p class="mb-0"><a href="../index.html#blog" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left" aria-hidden="true"></i> Back to blog list</a></p>
