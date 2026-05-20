@@ -2,6 +2,12 @@
 
 Short log of design decisions and content changes.
 
+## 2026-05-20 — Blog index opens only via expand icon (new tab)
+
+- **Intent:** Keep visitors on the homepage while reading posts; avoid same-tab navigation from blog cards.
+- **UX:** Each index card has a single `bi-box-arrow-up-right` control (`blog-open-icon`) with `target="_blank"`; removed inline “Read post →” text links and the Credly hub title/button links.
+- **Files:** `index.html`, `assets/css/style.css`, `assets/css/theme-v2.css`.
+
 ## 2026-05-20 — Site structure refactor (templates + build)
 
 - **Goal:** DRY blog chrome (header, nav, footer, assets) while keeping GitHub Pages URLs unchanged (`blogs/*.html`).

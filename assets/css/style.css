@@ -1454,6 +1454,47 @@ section {
 }
 
 /*--------------------------------------------------------------
+# Blog index — open in new tab (expand icon only)
+--------------------------------------------------------------*/
+#blog .blog-index-card .card-body,
+#blog .blog-card.position-relative > .card-body {
+  padding-bottom: 3.25rem;
+}
+
+#blog .blog-open-icon {
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: #149ddd;
+  color: #fff;
+  font-size: 1.15rem;
+  line-height: 1;
+  text-decoration: none;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+#blog .blog-open-icon:hover,
+#blog .blog-open-icon:focus {
+  color: #fff;
+  background: #117fad;
+  transform: scale(1.06);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+}
+
+#blog .blog-open-icon:focus-visible {
+  outline: 2px solid #149ddd;
+  outline-offset: 2px;
+}
+
+/*--------------------------------------------------------------
 # Survey (Google Form + mobile redirect)
 --------------------------------------------------------------*/
 .survey-mobile-hint {
