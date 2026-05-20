@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Container Runtime Interface (CRI) — In Depth — Babulal Tamang</title>
+  <meta content="What Kubernetes CRI is, why it exists, how kubelet talks to containerd and CRI-O, pod sandboxes, OCI images, dockershim removal, crictl debugging, and production implications." name="description">
+  <link href="../assets/img/favicon.png" rel="icon">
+  <link href="../assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="../assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="../assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="../assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="../assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <link href="../assets/css/style.css" rel="stylesheet">
+  <link href="../assets/css/theme-v2.css" rel="stylesheet">
+</head>
+<body class="theme-v2">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <button class="mobile-nav-toggle d-xl-none" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navbar"><i class="bi bi-list" aria-hidden="true"></i></button>
+  <header id="header">
+    <div class="d-flex flex-column">
+      <div class="profile sidebar-profile">
+        <div class="profile-avatar-wrap">
+          <img src="../assets/img/profile-img.jpg" class="profile-avatar img-fluid" width="132" height="132" alt="Portrait of Babulal Tamang">
+        </div>
+        <h1 class="text-light profile-name"><a href="../index.html">Babulal Tamang</a></h1>
+        <p class="profile-tagline">Platform · DevOps · Software · Cloud Architect · AI/ML Enthusiast</p>
+        <p class="profile-location"><i class="bi bi-geo-alt-fill" aria-hidden="true"></i><span>Kathmandu, Nepal</span></p>
+        <div class="social-links profile-social mt-3 text-center">
+          <a href="https://twitter.com/SugamLa20062317" class="twitter" aria-label="Twitter"><i class="bx bxl-twitter" aria-hidden="true"></i></a>
+          <a href="https://github.com/sugaml/" class="github" aria-label="GitHub"><i class="bx bxl-github" aria-hidden="true"></i></a>
+          <a href="https://www.linkedin.com/in/babulal-tamang-b6507121b/" class="linkedin" aria-label="LinkedIn"><i class="bx bxl-linkedin" aria-hidden="true"></i></a>
+        </div>
+      </div>
+      <nav id="navbar" class="nav-menu navbar" aria-label="Main navigation">
+        <ul>
+          <li><a href="../index.html#hero" class="nav-link scrollto"><i class="bx bx-home" aria-hidden="true"></i> <span>Home</span></a></li>
+          <li><a href="../index.html#about" class="nav-link scrollto"><i class="bx bx-user" aria-hidden="true"></i> <span>About</span></a></li>
+          <li><a href="../index.html#skills" class="nav-link scrollto"><i class="bx bx-code-block" aria-hidden="true"></i> <span>Skills</span></a></li>
+          <li><a href="../index.html#resume" class="nav-link scrollto"><i class="bx bx-file-blank" aria-hidden="true"></i> <span>Resume</span></a></li>
+          <li><a href="../index.html#certifications" class="nav-link scrollto"><i class="bx bx-award" aria-hidden="true"></i> <span>Certifications</span></a></li>
+          <li><a href="../index.html#blog" class="nav-link scrollto active"><i class="bx bx-book-content" aria-hidden="true"></i> <span>Blog</span></a></li>
+          <li><a href="../index.html#survey" class="nav-link scrollto"><i class="bx bx-shield-quarter" aria-hidden="true"></i> <span>Cybersecurity Survey</span></a></li>
+          <li><a href="../index.html#what-i-use" class="nav-link scrollto"><i class="bx bx-wrench" aria-hidden="true"></i> <span>What I Use</span></a></li>
+          <li><a href="../index.html#contact" class="nav-link scrollto"><i class="bx bx-envelope" aria-hidden="true"></i> <span>Contact</span></a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <main id="main">
+    <section class="breadcrumbs">
+      <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+          <h2>Blog</h2>
+          <ol>
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../index.html#blog">Blog</a></li>
+            <li>Container Runtime Interface (CRI)</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+    <article class="inner-page blog-article pb-5">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-9 col-xl-8">
+            <header class="mb-4 pb-3 border-bottom" data-aos="fade-up">
+              <p class="text-muted small mb-2">Platform &amp; culture · <time datetime="2026-05-20">20 May 2026</time></p>
+              <h1 class="h2 mb-3">The Container Runtime Interface (CRI): How Kubernetes Actually Runs Containers</h1>
+              <p class="lead mb-3">Kubernetes schedules Pods; something on each node must create namespaces, pull images, start processes, and report status. That “something” is not the API server—it is the <strong>kubelet</strong> talking to a <strong>container runtime</strong> through the <strong>Container Runtime Interface (CRI)</strong>. CRI is the contract that let Kubernetes shed its early Docker dependency and standardize on OCI-compliant engines like <strong>containerd</strong> and <strong>CRI-O</strong>.</p>
+              <div class="border-start border-primary border-4 ps-3 py-3 bg-light rounded mb-0" role="note">
+                <p class="small text-uppercase text-muted mb-1 fw-semibold">In short</p>
+                <p class="mb-0">CRI is a gRPC API between kubelet and a runtime. The runtime implements pod sandboxes and containers; underneath, OCI runtimes (typically <code>runc</code>) create the actual Linux namespaces and cgroups. Build images with Docker or BuildKit; run them in the cluster via CRI—same image format, different control path.</p>
+              </div>
+            </header>
+
+            <div class="blog-prose" data-aos="fade-up" data-aos-delay="50">
+
+              <h2 class="h4 mt-4">The problem CRI solved</h2>
+              <p>Early Kubernetes embedded Docker knowledge deep in the kubelet. Docker was both a developer tool <em>and</em> a low-level runtime, but its API was not designed for Kubernetes’ pod model (multiple containers sharing network and IPC, pause containers, granular lifecycle). Every Kubernetes release risked chasing Docker’s API surface.</p>
+              <p>In 2016 the project introduced <strong>CRI</strong>: a narrow, Kubernetes-owned gRPC interface. Runtimes implement CRI; kubelet calls it. Docker itself never implemented CRI natively—clusters used a <strong>dockershim</strong> adapter inside kubelet until it was removed in <strong>Kubernetes 1.24</strong> (2022). Today’s supported path is: kubelet → CRI → containerd or CRI-O → OCI runtime (<code>runc</code>, <code>crun</code>, etc.).</p>
+              <p>If you understand containers from the host up (namespaces, cgroups, images), see <a href="docker-containerization-hidden-side.html">Docker—the hidden side</a>. For where kubelet sits in the cluster, see <a href="kubernetes-architecture-simple.html">Kubernetes architecture in simple terms</a>.</p>
+
+              <h2 class="h4 mt-5">Layered model: who does what</h2>
+              <p>Confusion often comes from stacking three different “runtimes” in one sentence. Separating layers keeps troubleshooting sane:</p>
+              <ul>
+                <li><strong>Orchestrator (Kubernetes)</strong> — Decides <em>which</em> Pod runs <em>where</em>, health checks, volumes, secrets projected into the pod spec. The kubelet is the node agent that enforces that spec locally.</li>
+                <li><strong>CRI implementation (containerd, CRI-O)</strong> — Speaks CRI to kubelet. Manages image pulls, pod sandboxes, container create/start/stop, logging endpoints, and status. This is what people mean by “container runtime” in K8s docs.</li>
+                <li><strong>OCI runtime (<code>runc</code>, …)</strong> — Takes an OCI bundle (config + rootfs) and creates the isolated process on Linux. Fast, minimal, no cluster awareness.</li>
+              </ul>
+              <p><strong>Images</strong> follow the <a href="https://opencontainers.org/">OCI image spec</a>—layers, manifest, config—so an image built with Docker Desktop or BuildKit is the same artifact containerd pulls when kubelet asks for it.</p>
+
+              <h2 class="h4 mt-5">CRI services and the pod sandbox</h2>
+              <p>CRI defines two gRPC services (protobuf in the Kubernetes repo, versioned as <code>runtime.v1</code>):</p>
+              <ul>
+                <li><strong>RuntimeService</strong> — Pod sandboxes, containers, exec/attach/port-forward, status, and (where supported) checkpoint/restore hooks.</li>
+                <li><strong>ImageService</strong> — Pull, list, and remove images; map image names to filesystem references the runtime uses.</li>
+              </ul>
+              <p>Kubernetes does not ask the runtime to “run a Deployment.” It asks for a <strong>pod sandbox</strong> first, then one or more <strong>containers</strong> inside that sandbox.</p>
+              <p><strong>Pod sandbox</strong> — A logical environment with its own network namespace (and typically IPC/UTS sharing policy). The famous <strong>pause container</strong> (<code>registry.k8s.io/pause</code> or similar) often holds the sandbox alive while application containers start and exit. All containers in a Pod share the sandbox’s network namespace—hence <code>localhost</code> between sidecars works.</p>
+              <p>Typical sequence when kubelet syncs a Pod:</p>
+              <ol>
+                <li><code>RunPodSandbox</code> — Create sandbox; return sandbox ID.</li>
+                <li>For each container: <code>CreateContainer</code> (image, command, mounts, security context mapped to Linux options) → <code>StartContainer</code>.</li>
+                <li>Periodic <code>ContainerStatus</code> / <code>ListContainers</code> for readiness and restart decisions.</li>
+                <li>On teardown: <code>StopContainer</code> → <code>RemoveContainer</code> → <code>StopPodSandbox</code> → <code>RemovePodSandbox</code>.</li>
+              </ol>
+              <p>Image pulls happen via <code>ImageService.PullImage</code> (with credentials from kubelet-supplied secrets), often before sandbox creation. Pull policy <code>IfNotPresent</code> / <code>Always</code> is enforced at the kubelet layer; CRI executes the pull.</p>
+
+              <h2 class="h4 mt-5">What kubelet sends: from Pod spec to CRI config</h2>
+              <p>The API server stores a Pod manifest; the kubelet converts it into CRI messages. Important mappings operators feel in production:</p>
+              <ul>
+                <li><strong>Resources</strong> — CPU/memory limits become cgroup constraints applied when the OCI spec is built.</li>
+                <li><strong>Security context</strong> — <code>runAsUser</code>, <code>runAsNonRoot</code>, <code>readOnlyRootFilesystem</code>, <code>capabilities</code>, <code>seccompProfile</code>, <code>selinuxOptions</code> translate into Linux security settings on the container process.</li>
+                <li><strong>Mounts</strong> — ConfigMaps, Secrets, emptyDir, hostPath, and CSI volumes become bind mounts in the container filesystem namespace.</li>
+                <li><strong>Environment and command</strong> — Literal env, downward API, and secret-backed env vars are resolved by kubelet before <code>CreateContainer</code>.</li>
+                <li><strong>Probes</strong> — HTTP/TCP/exec probes are executed by kubelet (not CRI), but they depend on container status and network namespace from the sandbox.</li>
+              </ul>
+              <p>When something fails at “container won’t start,” the break is often in this translation—wrong mount, forbidden capability, or an image pull auth issue—not in the scheduler.</p>
+
+              <h2 class="h4 mt-5">containerd and the shim architecture</h2>
+              <p><strong>containerd</strong> is the default CRI backend on many distributions (EKS, GKE, AKS, kubeadm, kind, minikube). Internally it is more than CRI:</p>
+              <ul>
+                <li><strong>containerd</strong> — Daemon exposing CRI (when configured), image store, snapshotters (overlayfs, etc.), and metadata.</li>
+                <li><strong>containerd-shim</strong> — Per-container supervisor; keeps I/O and exit status after <code>containerd</code> restarts. Version 2 shims speak ttrpc and work with <code>runc</code> v2.</li>
+                <li><strong>runc</strong> — OCI-compliant low-level runtime that creates namespaces and cgroups.</li>
+              </ul>
+              <p>That separation matters for upgrades: restarting <code>containerd</code> should not kill all workloads because shims hold the process relationship. It also matters for debugging: you may see <code>containerd-shim-runc-v2</code> in <code>ps</code> alongside your app.</p>
+              <p>Docker Desktop and standalone Docker Engine still use containerd under the hood for container execution in modern versions—but <code>docker run</code> goes through Docker’s API, not CRI. Only kubelet uses CRI on the node.</p>
+
+              <h2 class="h4 mt-5">CRI-O: Kubernetes-native, OCI-first</h2>
+              <p><strong>CRI-O</strong> was built by Red Hat and the community specifically to implement CRI without carrying Docker’s historical baggage. It is lean, defaults to <code>runc</code> (or alternative OCI runtimes), and integrates tightly with Kubernetes release semantics—popular on OpenShift and many RHEL/Fedora/CentOS Stream flows.</p>
+              <p>Choosing CRI-O vs containerd is often a distribution decision, not a capability lottery: both implement the same CRI contracts Kubernetes tests. Differences show up in tooling (admin familiarity), storage/snapshot plugins, and operational packaging—not in whether Pods work.</p>
+
+              <h2 class="h4 mt-5">dockershim removal and what still uses Docker</h2>
+              <p>Until 1.24, you could point kubelet at Docker via dockershim. That path is gone. You should assume:</p>
+              <ul>
+                <li><strong>Inside the cluster</strong> — containerd or CRI-O (or another certified CRI implementation).</li>
+                <li><strong>On developer laptops</strong> — Docker or Podman for build/test; images push to a registry; the cluster pulls by reference.</li>
+                <li><strong>CI</strong> — <code>docker buildx</code>, Kaniko, BuildKit, or cloud-native builders—all produce OCI images consumable via CRI.</li>
+              </ul>
+              <p>“We use Docker in prod” for Kubernetes usually means “we use Docker to <em>build</em>” or “we use Docker on the VM for legacy scripts,” not “kubelet talks to dockerd.”</p>
+
+              <h2 class="h4 mt-5">CRI vs CNI vs CSI — three interfaces, one node</h2>
+              <p>Nodes integrate Kubernetes through several acronyms; mixing them causes muddled incident notes:</p>
+              <ul>
+                <li><strong>CRI</strong> — Containers and images (this article).</li>
+                <li><strong>CNI</strong> (Container Network Interface) — Plugs network interfaces into the pod sandbox (Calico, Cilium, Flannel, AWS VPC CNI, etc.). kubelet calls CNI after the sandbox exists.</li>
+                <li><strong>CSI</strong> (Container Storage Interface) — Attaches and mounts volumes; kubelet coordinates with node plugins and API objects (PV/PVC).</li>
+              </ul>
+              <p>A Pod stuck in <code>ContainerCreating</code> might be CRI (image pull, mount), CNI (IP allocation), or CSI (volume attach)—check events and component logs with that split in mind.</p>
+
+              <h2 class="h4 mt-5">Observability and debugging from the node</h2>
+              <p><code>kubectl</code> speaks to the API server, not to CRI. For node-local truth, use <strong>crictl</strong> (CRI-compatible CLI) with the same socket kubelet uses:</p>
+              <pre class="bg-light p-3 rounded small"><code># Typical socket paths (vary by distro)
+# containerd: /run/containerd/containerd.sock
+# CRI-O:      /var/run/crio/crio.sock
+
+export CONTAINER_RUNTIME_ENDPOINT=unix:///run/containerd/containerd.sock
+
+crictl pods
+crictl ps
+crictl images
+crictl inspect &lt;container-id&gt;
+crictl logs &lt;container-id&gt;</code></pre>
+              <p>Compare with <code>ctr -n k8s.io containers list</code> for containerd’s native namespace—useful when CRI and containerd metadata disagree after a partial failure.</p>
+              <p>kubelet logs (<code>journalctl -u kubelet</code>) show CRI RPC failures, image pull backoffs, and sandbox creation errors. Runtime logs (<code>containerd</code> / <code>crio</code>) add snapshotter and shim detail.</p>
+
+              <h2 class="h4 mt-5">Security and operations implications</h2>
+              <ul>
+                <li><strong>Socket access is root-equivalent.</strong> Anyone who can call the CRI socket on a node can start privileged workloads. Lock down SSH, protect break-glass, and treat node compromise as cluster compromise.</li>
+                <li><strong>Image pull secrets</strong> flow kubelet → CRI → registry. Misconfigured IAM, expired tokens, or rate limits surface as <code>ImagePullBackOff</code> in the API, rooted in CRI pull errors.</li>
+                <li><strong>User namespaces and rootless</strong> — Emerging Kubernetes features push identity mapping closer to the OCI runtime; CRI implementations must expose the right hooks. Stay current on release notes if you harden with user namespaces.</li>
+                <li><strong>Sandboxed runtimes</strong> — gVisor (<code>runsc</code>) and Kata Containers present different OCI-compatible runtimes selectable in containerd/CRI-O config for stronger isolation at a performance cost—not a different Kubernetes API.</li>
+                <li><strong>Garbage collection</strong> — kubelet evicts unused images and dead containers per thresholds; containerd/CRI-O also GC storage. Disk pressure on nodes is often image layer accumulation—watch <code>crictl images</code> and node allocatable/ephemeral storage.</li>
+              </ul>
+
+              <h2 class="h4 mt-5">Runtime comparison (practical, not religious)</h2>
+              <div class="table-responsive">
+                <table class="table table-sm table-bordered">
+                  <thead>
+                    <tr>
+                      <th scope="col">Engine</th>
+                      <th scope="col">Role</th>
+                      <th scope="col">Typical use</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>containerd</strong></td>
+                      <td>CRI + image/store + shims</td>
+                      <td>Default on major clouds and kind/minikube; broad docs and tooling</td>
+                    </tr>
+                    <tr>
+                      <td><strong>CRI-O</strong></td>
+                      <td>CRI-only daemon, OCI-focused</td>
+                      <td>OpenShift/RHEL ecosystems; minimal surface aligned to K8s releases</td>
+                    </tr>
+                    <tr>
+                      <td><strong>runc</strong></td>
+                      <td>OCI low-level runtime</td>
+                      <td>Actually creates containers; swapped for <code>crun</code>, <code>runsc</code> where configured</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Docker Engine</strong></td>
+                      <td>Developer/CI API; embeds containerd</td>
+                      <td>Build and local run; not kubelet’s CRI target since dockershim removal</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <h2 class="h4 mt-5">Failure modes you will see in production</h2>
+              <ul>
+                <li><strong><code>ErrImagePull</code> / <code>ImagePullBackOff</code></strong> — Registry auth, wrong tag, air-gapped cluster without mirror, or platform arch mismatch (<code>amd64</code> image on <code>arm64</code> node).</li>
+                <li><strong><code>CrashLoopBackOff</code></strong> — App exits; CRI reports exit code; kubelet backs off restarts. Root cause is usually application or probe, but check <code>crictl logs</code> before blaming the network.</li>
+                <li><strong><code>CreateContainerConfigError</code></strong> — Secret/ConfigMap missing, invalid subPath, forbidden sysctl.</li>
+                <li><strong>Sandbox not ready</strong> — CNI failed to assign an IP; looks like CRI from the outside but kubelet events mention network plugin timeouts.</li>
+                <li><strong>Disk pressure evictions</strong> — kubelet evicts Pods; image GC and log rotation on the node are part of the story.</li>
+              </ul>
+
+              <h2 class="h4 mt-5">How CRI fits the rest of your platform story</h2>
+              <p>CRI is the mechanical layer under the declarative world described in <a href="gitops-principles.html">GitOps principles</a> and the access controls in <a href="kubernetes-cluster-rbac.html">Kubernetes cluster RBAC</a>. Git declares an image digest; the scheduler places the Pod; kubelet drives CRI until the sandbox and containers match the spec. None of that replaces observability, policy admission, or sane resource requests—but when containers misbehave, knowing this stack separates “API problem” from “node execution problem.”</p>
+
+              <h2 class="h4 mt-5">Further reading</h2>
+              <ul>
+                <li>Kubernetes documentation — <em>Container Runtime Interface (CRI)</em> and kubelet configuration</li>
+                <li>containerd and CRI-O project docs — CRI plugin architecture, snapshotters, and troubleshooting</li>
+                <li>Open Container Initiative — image and runtime specifications</li>
+                <li>Kubernetes enhancement notes around dockershim removal (1.24 release notes)</li>
+              </ul>
+
+              <p class="small text-muted mt-4 mb-2"><a href="../index.html#blog">Blog index</a> · <a href="kubernetes-architecture-simple.html">Kubernetes architecture</a> · <a href="docker-containerization-hidden-side.html">Docker—the hidden side</a> · <a href="kubernetes-hands-on-1-local-lab.html">Kubernetes hands-on (Part 1)</a></p>
+              <p class="mb-0"><a href="../index.html#blog" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left" aria-hidden="true"></i> Back to blog list</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+  </main>
+  <footer id="footer">
+    <div class="container">
+      <div class="copyright">&copy; Copyright <strong><span>babulal.com.np</span></strong></div>
+      <div class="credits">Designed by <a href="https://babulal.com.np/">Babulal Tamang</a></div>
+    </div>
+  </footer>
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+  <script src="../assets/vendor/purecounter/purecounter_vanilla.js"></script>
+  <script src="../assets/vendor/aos/aos.js"></script>
+  <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="../assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="../assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="../assets/vendor/typed.js/typed.min.js"></script>
+  <script src="../assets/vendor/waypoints/noframework.waypoints.js"></script>
+  <script src="../assets/js/main.js"></script>
+</body>
+</html>

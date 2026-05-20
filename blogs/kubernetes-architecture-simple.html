@@ -115,7 +115,7 @@
               <h2 class="h4 mt-5">Worker node components (the muscle)</h2>
               <ul>
                 <li><strong>kubelet</strong> — An agent on each node that registers the node with the API server and ensures containers in assigned Pods are running as declared. If kubelet is unhealthy, that node is a bad place to land new work.</li>
-                <li><strong>Container runtime</strong> — Actually starts and stops containers (<strong>containerd</strong>, <strong>CRI-O</strong>, etc.). Kubernetes talks to the runtime through a standard interface (CRI).</li>
+                <li><strong>Container runtime</strong> — Actually starts and stops containers (<strong>containerd</strong>, <strong>CRI-O</strong>, etc.). Kubernetes talks to the runtime through a standard interface (<a href="kubernetes-cri-csi-deep-dive.html">CRI</a>).</li>
                 <li><strong>kube-proxy</strong> (or data-plane replacements in some setups) — Implements part of <strong>Service</strong> networking on the node so traffic to a Service IP can reach the right Pods.</li>
               </ul>
 
