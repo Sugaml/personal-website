@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>AI and ML Terminology: A Practical Glossary — Babulal Tamang</title>
+  <meta content="A practical glossary of AI and ML terms for builders: scope (AI, ML, deep learning, Gen AI), often-confused pairs, learning paradigms, training vs inference, LLMs, RAG, evals, MLOps, and governance." name="description">
+  <meta name="author" content="Babulal Tamang">
+  <meta name="keywords" content="AI terminology, ML glossary, LLM, RAG, machine learning definitions, Babulal Tamang">
+  <link href="../assets/img/favicon.png" rel="icon">
+  <link href="../assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="../assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="../assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="../assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="../assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <link href="../assets/css/style.css" rel="stylesheet">
+  <link href="../assets/css/theme-v2.css" rel="stylesheet">
+</head>
+<body class="theme-v2">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <button class="mobile-nav-toggle d-xl-none" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navbar"><i class="bi bi-list" aria-hidden="true"></i></button>
+  <header id="header">
+    <div class="d-flex flex-column">
+      <div class="profile sidebar-profile">
+        <div class="profile-avatar-wrap">
+          <img src="../assets/img/profile-img.jpg" class="profile-avatar img-fluid" width="132" height="132" alt="Portrait of Babulal Tamang">
+        </div>
+        <h1 class="text-light profile-name"><a href="../index.html">Babulal Tamang</a></h1>
+        <p class="profile-tagline">Platform · DevOps · Software · Cloud Architect · AI/ML Enthusiast</p>
+        <p class="profile-location"><i class="bi bi-geo-alt-fill" aria-hidden="true"></i><span>Kathmandu, Nepal</span></p>
+        <div class="social-links profile-social mt-3 text-center">
+          <a href="https://twitter.com/SugamLa20062317" class="twitter" aria-label="Twitter"><i class="bx bxl-twitter" aria-hidden="true"></i></a>
+          <a href="https://github.com/sugaml/" class="github" aria-label="GitHub"><i class="bx bxl-github" aria-hidden="true"></i></a>
+          <a href="https://www.linkedin.com/in/babulal-tamang-b6507121b/" class="linkedin" aria-label="LinkedIn"><i class="bx bxl-linkedin" aria-hidden="true"></i></a>
+        </div>
+      </div>
+      <nav id="navbar" class="nav-menu navbar" aria-label="Main navigation">
+        <ul>
+          <li><a href="../index.html#hero" class="nav-link scrollto"><i class="bx bx-home" aria-hidden="true"></i> <span>Home</span></a></li>
+          <li><a href="../index.html#about" class="nav-link scrollto"><i class="bx bx-user" aria-hidden="true"></i> <span>About</span></a></li>
+          <li><a href="../index.html#skills" class="nav-link scrollto"><i class="bx bx-code-block" aria-hidden="true"></i> <span>Skills</span></a></li>
+          <li><a href="../index.html#resume" class="nav-link scrollto"><i class="bx bx-file-blank" aria-hidden="true"></i> <span>Resume</span></a></li>
+          <li><a href="../index.html#certifications" class="nav-link scrollto"><i class="bx bx-award" aria-hidden="true"></i> <span>Certifications</span></a></li>
+          <li><a href="../index.html#blog" class="nav-link scrollto active"><i class="bx bx-book-content" aria-hidden="true"></i> <span>Blog</span></a></li>
+          <li><a href="../index.html#survey" class="nav-link scrollto"><i class="bx bx-shield-quarter" aria-hidden="true"></i> <span>Cybersecurity Survey</span></a></li>
+          <li><a href="../index.html#what-i-use" class="nav-link scrollto"><i class="bx bx-wrench" aria-hidden="true"></i> <span>What I Use</span></a></li>
+          <li><a href="../index.html#contact" class="nav-link scrollto"><i class="bx bx-envelope" aria-hidden="true"></i> <span>Contact</span></a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <main id="main">
+    <section class="breadcrumbs">
+      <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+          <h2>Blog</h2>
+          <ol>
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../index.html#blog">Blog</a></li>
+            <li>AI and ML terminology</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+    <article class="inner-page blog-article pb-5">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-9 col-xl-8">
+            <header class="mb-4 pb-3 border-bottom" data-aos="fade-up">
+              <div class="blog-article-meta mb-3">
+                <p class="text-muted small mb-2">AI/ML · <time datetime="2026-05-20">20 May 2026</time> · <span class="blog-meta-label">Reference</span> · By <a href="../index.html#about" class="blog-author text-reset fw-semibold" rel="author">Babulal Tamang</a></p>
+              <ul class="blog-tags list-unstyled d-flex flex-wrap gap-1 mb-0" aria-label="Tags">
+                <li><span class="badge rounded-pill text-bg-light border text-muted">AI</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">ML</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Glossary</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">LLM</span></li>
+              </ul>
+              </div>
+              <h1 class="h2 mb-3">AI and ML Terminology: A Practical Glossary for Builders</h1>
+              <p class="lead mb-3">Job posts, architecture reviews, and vendor decks reuse the same words—often with different meanings. This glossary defines the terms you will see in the wild, groups them by theme, and calls out pairs that people confuse.</p>
+              <div class="border-start border-primary border-4 ps-3 py-3 bg-light rounded mb-0" role="note">
+                <p class="small text-uppercase text-muted mb-1 fw-semibold">In short</p>
+                <p class="mb-0">AI is the broad field; ML learns from data; deep learning uses neural networks; generative AI creates new outputs. Know training vs inference, parameters vs hyperparameters, RAG vs fine-tuning, and eval vs monitoring—then dive into the deep guides linked below.</p>
+              </div>
+            </header>
+
+            <div class="blog-prose" data-aos="fade-up" data-aos-delay="50">
+
+              <h2 class="h4 mt-4">How to use this page</h2>
+              <p>Skim the <strong>scope diagram</strong> and <strong>often-confused pairs</strong> first. Use the themed sections as a lookup while reading papers, RFCs, or product docs. For implementation depth, follow the links to longer guides on this site—not every term needs a full tutorial here.</p>
+
+              <h2 class="h4 mt-5">Scope: how the terms nest</h2>
+              <pre class="bg-light p-3 rounded small" aria-label="AI scope nesting"><code>Artificial Intelligence (AI)
+└── Machine Learning (ML) — learn from data
+    └── Deep Learning — neural networks with many layers
+        └── Generative AI — create text, images, audio, code, …
+            └── Large Language Models (LLMs) — language-focused foundation models</code></pre>
+              <p><strong>Not everything smart is ML.</strong> Rule engines, search indexes, and optimization solvers can be “AI” in marketing copy without training on labeled datasets. When someone says “we use AI,” ask whether they mean <em>learned models</em>, <em>heuristics</em>, or <em>vendor APIs</em>.</p>
+
+              <h2 class="h4 mt-5">Often confused (quick reference)</h2>
+              <div class="table-responsive">
+              <table class="table table-sm table-bordered">
+                <thead>
+                  <tr><th>Term A</th><th>Term B</th><th>Distinction</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>AI</td><td>ML</td><td>AI is the umbrella; ML is the subset that improves from data.</td></tr>
+                  <tr><td>ML</td><td>Deep learning</td><td>Deep learning is ML with deep neural networks—dominant in vision and language today.</td></tr>
+                  <tr><td>Training</td><td>Inference</td><td>Training adjusts weights offline; inference runs the model to produce outputs in production.</td></tr>
+                  <tr><td>Parameter</td><td>Hyperparameter</td><td>Parameters are learned (weights); hyperparameters are set by humans (learning rate, layers).</td></tr>
+                  <tr><td>Fine-tuning</td><td>RAG</td><td>Fine-tuning changes weights; RAG retrieves external documents at query time. See <a href="rag-retrieval-augmented-generation-deep-dive.html">RAG in depth</a>.</td></tr>
+                  <tr><td>Prompting</td><td>Fine-tuning</td><td>Prompting steers a frozen model; fine-tuning updates weights on domain data.</td></tr>
+                  <tr><td>Embedding</td><td>Token</td><td>Tokens are model input units; embeddings are dense vectors (often of tokens or documents).</td></tr>
+                  <tr><td>Accuracy</td><td>Loss</td><td>Accuracy is a human-facing metric; loss is what optimization minimizes during training.</td></tr>
+                  <tr><td>Model</td><td>Dataset</td><td>The model is the artifact; the dataset is what you train on—quality caps both.</td></tr>
+                  <tr><td>AGI</td><td>Gen AI</td><td>AGI (aspirational general intelligence) ≠ generative AI (models that create content).</td></tr>
+                </tbody>
+              </table>
+              </div>
+
+              <h2 class="h4 mt-5">1. Big picture</h2>
+              <dl>
+                <dt><strong>Artificial intelligence (AI)</strong></dt>
+                <dd class="mb-3">Systems that perform tasks associated with human intelligence—perception, language, reasoning, planning. In product language it often means anything automated; in engineering, be specific.</dd>
+                <dt><strong>Machine learning (ML)</strong></dt>
+                <dd class="mb-3">Programs that improve performance on a task through experience (data), without hand-coding every rule.</dd>
+                <dt><strong>Deep learning</strong></dt>
+                <dd class="mb-3">ML using neural networks with many layers; backbone of modern vision, speech, and language systems.</dd>
+                <dt><strong>Generative AI</strong></dt>
+                <dd class="mb-3">Models that <em>create</em> new samples (text, images, audio, video, code) rather than only assigning labels. Guide: <a href="generative-ai-in-depth.html">Generative AI in depth</a>.</dd>
+                <dt><strong>Discriminative model</strong></dt>
+                <dd class="mb-3">Learns boundaries between classes (e.g. spam vs not spam). Contrasts with generative models that model how data is produced.</dd>
+                <dt><strong>Foundation model</strong></dt>
+                <dd class="mb-3">Large model pre-trained on broad data, then adapted via prompting, fine-tuning, or RAG. See <a href="ai-foundation-models-deep-dive.html">AI foundation models in depth</a>.</dd>
+                <dt><strong>Artificial general intelligence (AGI)</strong></dt>
+                <dd class="mb-3">Hypothetical systems with human-level generality across tasks—not the same as today’s narrow or foundation models.</dd>
+              </dl>
+
+              <h2 class="h4 mt-5">2. Learning paradigms</h2>
+              <dl>
+                <dt><strong>Supervised learning</strong></dt>
+                <dd class="mb-3">Train on input–label pairs (e.g. email → spam/ham). Most tabular and classification workflows.</dd>
+                <dt><strong>Unsupervised learning</strong></dt>
+                <dd class="mb-3">Find structure without labels—clustering, dimensionality reduction, anomaly detection.</dd>
+                <dt><strong>Semi-supervised learning</strong></dt>
+                <dd class="mb-3">Mix of labeled and unlabeled data—common when labels are expensive.</dd>
+                <dt><strong>Self-supervised learning</strong></dt>
+                <dd class="mb-3">Create supervision from the data itself (e.g. predict masked words)—how most LLMs are pre-trained.</dd>
+                <dt><strong>Reinforcement learning (RL)</strong></dt>
+                <dd class="mb-3">Agent learns via rewards and penalties; used in games, robotics, and RLHF for alignment.</dd>
+                <dt><strong>Reinforcement learning from human feedback (RLHF)</strong></dt>
+                <dd class="mb-3">Fine-tune models using human preference rankings—common post-training step for chat models.</dd>
+                <dt><strong>Transfer learning</strong></dt>
+                <dd class="mb-3">Reuse a model trained on one task or dataset for another—foundation models are the extreme case.</dd>
+                <dt><strong>Online vs batch learning</strong></dt>
+                <dd class="mb-3">Online updates from a stream; batch retrains on scheduled snapshots—production trade-offs differ.</dd>
+              </dl>
+
+              <h2 class="h4 mt-5">3. Data, features, and labels</h2>
+              <dl>
+                <dt><strong>Dataset / corpus</strong></dt>
+                <dd class="mb-3">Collection of examples used for training or evaluation—quality and diversity matter more than raw size alone.</dd>
+                <dt><strong>Label / ground truth</strong></dt>
+                <dd class="mb-3">Correct answer for supervised training—errors in labels become errors in the model.</dd>
+                <dt><strong>Feature</strong></dt>
+                <dd class="mb-3">Input signal the model uses—columns in tabular ML, pixels in vision, tokens in language.</dd>
+                <dt><strong>Feature engineering</strong></dt>
+                <dd class="mb-3">Designing or transforming inputs (scaling, encoding, aggregations)—still critical for classical ML.</dd>
+                <dt><strong>Feature store</strong></dt>
+                <dd class="mb-3">Shared, versioned features for training and serving so train/serve skew stays low.</dd>
+                <dt><strong>Train / validation / test split</strong></dt>
+                <dd class="mb-3">Hold data out to tune hyperparameters (validation) and report final performance (test)—never tune on the test set.</dd>
+                <dt><strong>Data leakage</strong></dt>
+                <dd class="mb-3">Information from the future or target sneaks into features—metrics look great, production fails.</dd>
+                <dt><strong>Class imbalance</strong></dt>
+                <dd class="mb-3">Rare positive class (fraud, defects)—accuracy misleads; use precision, recall, F1, or cost-sensitive metrics.</dd>
+                <dt><strong>Data drift</strong></dt>
+                <dd class="mb-3">Input distribution changes over time (new users, new products)—model quality can drop without retraining.</dd>
+                <dt><strong>Concept drift</strong></dt>
+                <dd class="mb-3">Relationship between inputs and labels changes—the world changed, not just the data mix.</dd>
+              </dl>
+
+              <h2 class="h4 mt-5">4. Models and architecture</h2>
+              <dl>
+                <dt><strong>Model / artifact</strong></dt>
+                <dd class="mb-3">Trained weights plus metadata (version, metrics, lineage)—what you deploy or call via API.</dd>
+                <dt><strong>Neural network</strong></dt>
+                <dd class="mb-3">Layers of connected units (neurons) with non-linear activations—universal approximators in theory, data-hungry in practice.</dd>
+                <dt><strong>Layer / hidden layer</strong></dt>
+                <dd class="mb-3">Intermediate representations between input and output—“deep” means many such layers.</dd>
+                <dt><strong>Parameter (weight)</strong></dt>
+                <dd class="mb-3">Learned values in the network—billions in large LLMs (“7B”, “70B” refer to parameter count).</dd>
+                <dt><strong>Hyperparameter</strong></dt>
+                <dd class="mb-3">Human-chosen settings: learning rate, batch size, architecture depth—not updated by gradient descent on a single training run’s loss in the same way as weights.</dd>
+                <dt><strong>CNN (convolutional neural network)</strong></dt>
+                <dd class="mb-3">Architecture for images and spatial data—local filters, translation invariance.</dd>
+                <dt><strong>RNN / LSTM</strong></dt>
+                <dd class="mb-3">Sequence models before transformers dominated—still seen in legacy time-series stacks.</dd>
+                <dt><strong>Transformer</strong></dt>
+                <dd class="mb-3">Architecture based on self-attention—core of modern LLMs and many multimodal systems.</dd>
+                <dt><strong>Attention / self-attention</strong></dt>
+                <dd class="mb-3">Mechanism to weigh which parts of the input matter for each output position.</dd>
+                <dt><strong>Encoder / decoder</strong></dt>
+                <dd class="mb-3">Encoder maps input to representations; decoder generates output—many LLMs are decoder-only.</dd>
+                <dt><strong>Multimodal model</strong></dt>
+                <dd class="mb-3">Handles more than one modality (text + image, text + audio) in one system.</dd>
+                <dt><strong>Ensemble</strong></dt>
+                <dd class="mb-3">Combine multiple models (voting, averaging) for stability—common in classical ML competitions.</dd>
+              </dl>
+
+              <h2 class="h4 mt-5">5. Training and optimization</h2>
+              <dl>
+                <dt><strong>Training</strong></dt>
+                <dd class="mb-3">Adjust model weights to minimize loss on training data—GPU-heavy for large models.</dd>
+                <dt><strong>Pre-training</strong></dt>
+                <dd class="mb-3">Large-scale training on broad data (e.g. next-token prediction)—produces a base foundation model.</dd>
+                <dt><strong>Fine-tuning</strong></dt>
+                <dd class="mb-3">Further training on narrower data to specialize behavior—instruction tuning is a common form.</dd>
+                <dt><strong>Instruction tuning</strong></dt>
+                <dd class="mb-3">Fine-tune on prompt–response pairs so the model follows user instructions in chat UIs.</dd>
+                <dt><strong>Alignment</strong></dt>
+                <dd class="mb-3">Post-training to match human values and policies—RLHF, constitutional AI, red-teaming.</dd>
+                <dt><strong>Loss function</strong></dt>
+                <dd class="mb-3">Scalar the optimizer minimizes (cross-entropy, MSE, etc.)—proxy for task quality, not always identical to business metrics.</dd>
+                <dt><strong>Gradient descent</strong></dt>
+                <dd class="mb-3">Update weights in the direction that reduces loss—backpropagation computes gradients.</dd>
+                <dt><strong>Epoch</strong></dt>
+                <dd class="mb-3">One full pass over the training dataset.</dd>
+                <dt><strong>Batch size</strong></dt>
+                <dd class="mb-3">Examples per gradient update—larger batches need more memory; affect training dynamics.</dd>
+                <dt><strong>Learning rate</strong></dt>
+                <dd class="mb-3">Step size for weight updates—too high diverges; too low trains forever.</dd>
+                <dt><strong>Overfitting</strong></dt>
+                <dd class="mb-3">Model memorizes training data, fails on new data—regularization, more data, or simpler models help.</dd>
+                <dt><strong>Underfitting</strong></dt>
+                <dd class="mb-3">Model too simple to capture the signal—needs capacity, features, or longer training.</dd>
+                <dt><strong>Regularization</strong></dt>
+                <dd class="mb-3">Penalties (L1/L2, dropout) that discourage complexity and reduce overfitting.</dd>
+                <dt><strong>Checkpoint</strong></dt>
+                <dd class="mb-3">Saved snapshot of weights during training—for resume, A/B, or rollback.</dd>
+              </dl>
+
+              <h2 class="h4 mt-5">6. Inference and serving</h2>
+              <dl>
+                <dt><strong>Inference</strong></dt>
+                <dd class="mb-3">Running the trained model to get predictions or generations—what users hit in production.</dd>
+                <dt><strong>Latency / throughput</strong></dt>
+                <dd class="mb-3">Time per request vs requests per second—LLMs care about time-to-first-token and tokens/sec.</dd>
+                <dt><strong>Batch inference</strong></dt>
+                <dd class="mb-3">Score many inputs together for efficiency—higher latency per item, lower cost per row.</dd>
+                <dt><strong>Real-time inference</strong></dt>
+                <dd class="mb-3">Low-latency online scoring—often autoscaled endpoints or serverless with cold-start trade-offs.</dd>
+                <dt><strong>Model serving</strong></dt>
+                <dd class="mb-3">Hosting layer (SageMaker, Triton, vLLM, Bedrock) that loads artifacts and exposes APIs.</dd>
+                <dt><strong>Quantization</strong></dt>
+                <dd class="mb-3">Lower precision weights (INT8, INT4) for smaller memory and faster inference—slight quality trade-off.</dd>
+                <dt><strong>Distillation</strong></dt>
+                <dd class="mb-3">Train a smaller “student” model to mimic a larger “teacher”—cheaper deployment.</dd>
+                <dt><strong>KV cache</strong></dt>
+                <dd class="mb-3">Stores attention keys/values during autoregressive generation—critical for fast LLM inference. See <a href="llm-in-depth.html">LLMs in depth</a>.</dd>
+              </dl>
+
+              <h2 class="h4 mt-5">7. Generative AI and language models</h2>
+              <dl>
+                <dt><strong>Large language model (LLM)</strong></dt>
+                <dd class="mb-3">Foundation model for text (and often code)—predicts next tokens; powers chat and agents.</dd>
+                <dt><strong>Token</strong></dt>
+                <dd class="mb-3">Subword unit the model reads/writes—context limits and API billing are often token-based.</dd>
+                <dt><strong>Tokenization</strong></dt>
+                <dd class="mb-3">Splitting text into tokens (BPE, SentencePiece)—affects languages, code, and rare words.</dd>
+                <dt><strong>Context window</strong></dt>
+                <dd class="mb-3">Maximum tokens in one request—prompt + completion must fit.</dd>
+                <dt><strong>Prompt</strong></dt>
+                <dd class="mb-3">Instructions and context sent to the model—templates and versioning matter in production.</dd>
+                <dt><strong>System / user / assistant messages</strong></dt>
+                <dd class="mb-3">Chat roles—system sets behavior; user asks; assistant responds.</dd>
+                <dt><strong>Completion / generation</strong></dt>
+                <dd class="mb-3">Model output stream—often sampled, not deterministic.</dd>
+                <dt><strong>Temperature / top-p / top-k</strong></dt>
+                <dd class="mb-3">Sampling controls—higher temperature = more random; lower = more deterministic.</dd>
+                <dt><strong>Hallucination</strong></dt>
+                <dd class="mb-3">Fluent but false output—mitigate with RAG, citations, evals, and human review.</dd>
+                <dt><strong>Grounding</strong></dt>
+                <dd class="mb-3">Tying answers to verified sources (docs, DB, tool results).</dd>
+                <dt><strong>Closed vs open weights</strong></dt>
+                <dd class="mb-3">API-only (GPT-4 class) vs downloadable weights (Llama, Mistral)—privacy, cost, and control differ.</dd>
+              </dl>
+
+              <h2 class="h4 mt-5">8. RAG, agents, and application patterns</h2>
+              <dl>
+                <dt><strong>Embedding</strong></dt>
+                <dd class="mb-3">Dense vector representation of text or images—similar meaning → nearby vectors in search.</dd>
+                <dt><strong>Vector database / vector search</strong></dt>
+                <dd class="mb-3">Store embeddings and retrieve nearest neighbors—Pinecone, pgvector, OpenSearch k-NN, etc.</dd>
+                <dt><strong>Chunking</strong></dt>
+                <dd class="mb-3">Splitting documents for retrieval—chunk size and overlap strongly affect RAG quality.</dd>
+                <dt><strong>RAG (retrieval-augmented generation)</strong></dt>
+                <dd class="mb-3">Retrieve relevant chunks, inject into the prompt, then generate—grounds answers in your data. <a href="rag-retrieval-augmented-generation-deep-dive.html">RAG in depth</a>.</dd>
+                <dt><strong>Reranking</strong></dt>
+                <dd class="mb-3">Second-stage model scores retrieved chunks for relevance before the LLM sees them.</dd>
+                <dt><strong>Agent</strong></dt>
+                <dd class="mb-3">LLM loop that plans, calls tools (APIs, SQL, code), and iterates—needs guardrails and audit logs.</dd>
+                <dt><strong>Tool use / function calling</strong></dt>
+                <dd class="mb-3">Model emits structured calls your app executes—calendar, DB, ticket systems.</dd>
+                <dt><strong>Prompt injection</strong></dt>
+                <dd class="mb-3">Untrusted text tricks the model into ignoring policies—treat user content as hostile input.</dd>
+                <dt><strong>Guardrails</strong></dt>
+                <dd class="mb-3">Filters and policies on inputs/outputs—PII redaction, topic blocks, schema validation.</dd>
+              </dl>
+
+              <h2 class="h4 mt-5">9. Evaluation and quality</h2>
+              <dl>
+                <dt><strong>Metric</strong></dt>
+                <dd class="mb-3">Number that summarizes performance—choose metrics aligned with user harm and business goals.</dd>
+                <dt><strong>Baseline</strong></dt>
+                <dd class="mb-3">Simple reference (rules, random, previous model)—proves the new approach earns its complexity.</dd>
+                <dt><strong>Accuracy</strong></dt>
+                <dd class="mb-3">Fraction correct—misleading on imbalanced classes.</dd>
+                <dt><strong>Precision / recall / F1</strong></dt>
+                <dd class="mb-3">Precision: of predicted positives, how many are right. Recall: of actual positives, how many you found. F1 balances both.</dd>
+                <dt><strong>ROC-AUC / PR-AUC</strong></dt>
+                <dd class="mb-3">Threshold-independent summaries for binary classifiers—PR-AUC often better when positives are rare.</dd>
+                <dt><strong>RMSE / MAE</strong></dt>
+                <dd class="mb-3">Regression errors—root mean square vs mean absolute.</dd>
+                <dt><strong>BLEU / ROUGE</strong></dt>
+                <dd class="mb-3">N-gram overlap with reference text—weak alone for open-ended LLM answers.</dd>
+                <dt><strong>Perplexity</strong></dt>
+                <dd class="mb-3">How surprised the model is by held-out text—common in language modeling, not always user-facing.</dd>
+                <dt><strong>Benchmark</strong></dt>
+                <dd class="mb-3">Standardized test suite (MMLU, HumanEval)—useful for comparison, not a substitute for your eval set.</dd>
+                <dt><strong>Golden set / eval harness</strong></dt>
+                <dd class="mb-3">Curated questions with expected properties—run on every prompt or model change.</dd>
+                <dt><strong>LLM-as-judge</strong></dt>
+                <dd class="mb-3">Another model scores outputs—scale evals; validate against human ratings.</dd>
+                <dt><strong>A/B test</strong></dt>
+                <dd class="mb-3">Live comparison of variants on real traffic—ultimate test for product impact.</dd>
+              </dl>
+
+              <h2 class="h4 mt-5">10. Production, MLOps, and platform</h2>
+              <dl>
+                <dt><strong>MLOps</strong></dt>
+                <dd class="mb-3">Practices to ship and operate ML reliably—pipelines, versioning, monitoring, governance.</dd>
+                <dt><strong>ML pipeline</strong></dt>
+                <dd class="mb-3">Automated flow: ingest → validate → train → evaluate → register → deploy.</dd>
+                <dt><strong>Model registry</strong></dt>
+                <dd class="mb-3">Catalog of approved artifacts with lineage and promotion stages (staging → prod).</dd>
+                <dt><strong>Experiment tracking</strong></dt>
+                <dd class="mb-3">Log hyperparameters, metrics, and artifacts per run—Weights &amp; Biases, MLflow, etc.</dd>
+                <dt><strong>Train/serve skew</strong></dt>
+                <dd class="mb-3">Training features differ from production features—silent quality killer.</dd>
+                <dt><strong>Shadow deployment / canary</strong></dt>
+                <dd class="mb-3">Run new model alongside old; shift traffic gradually after metrics hold.</dd>
+                <dt><strong>Observability</strong></dt>
+                <dd class="mb-3">Logs, metrics, traces—plus ML-specific: prediction distributions, data drift, cost per request.</dd>
+                <dt><strong>GPU / TPU</strong></dt>
+                <dd class="mb-3">Accelerators for training and heavy inference—capacity planning and quotas matter on cloud.</dd>
+                <dt><strong>SageMaker / Bedrock (AWS)</strong></dt>
+                <dd class="mb-3">Managed training/serving vs managed foundation-model APIs—see <a href="aws-machine-learning-foundations.html">ML Foundations</a> and <a href="aws-generative-ai-foundations.html">Generative AI Foundations</a>.</dd>
+              </dl>
+
+              <h2 class="h4 mt-5">11. Safety, ethics, and governance</h2>
+              <dl>
+                <dt><strong>Bias / fairness</strong></dt>
+                <dd class="mb-3">Unequal error or harm across groups—measure disaggregated metrics; fix data and objectives.</dd>
+                <dt><strong>Explainability</strong></dt>
+                <dd class="mb-3">How much you can justify a prediction—SHAP for tabular; citations and traces for LLMs.</dd>
+                <dt><strong>PII / privacy</strong></dt>
+                <dd class="mb-3">Personal data in training or logs—minimize, redact, and respect retention policies.</dd>
+                <dt><strong>Responsible AI</strong></dt>
+                <dd class="mb-3">Safety, transparency, accountability, and compliance built into the lifecycle—not a checklist at launch.</dd>
+                <dt><strong>AI management system (e.g. ISO/IEC 42001)</strong></dt>
+                <dd class="mb-3">Organizational framework for AI risk and governance—see <a href="iso-42001-lead-auditor-ai-management.html">ISO 42001 notes</a>.</dd>
+                <dt><strong>Red teaming</strong></dt>
+                <dd class="mb-3">Adversarial testing for misuse, jailbreaks, and harmful outputs before release.</dd>
+              </dl>
+
+              <h2 class="h4 mt-5">Acronyms at a glance</h2>
+              <div class="table-responsive">
+              <table class="table table-sm table-bordered small">
+                <tbody>
+                  <tr><td><strong>ML</strong></td><td>Machine learning</td></tr>
+                  <tr><td><strong>DL</strong></td><td>Deep learning</td></tr>
+                  <tr><td><strong>LLM</strong></td><td>Large language model</td></tr>
+                  <tr><td><strong>NLP</strong></td><td>Natural language processing</td></tr>
+                  <tr><td><strong>CV</strong></td><td>Computer vision</td></tr>
+                  <tr><td><strong>RAG</strong></td><td>Retrieval-augmented generation</td></tr>
+                  <tr><td><strong>RLHF</strong></td><td>Reinforcement learning from human feedback</td></tr>
+                  <tr><td><strong>MLOps</strong></td><td>ML + DevOps practices for production ML</td></tr>
+                  <tr><td><strong>API</strong></td><td>Application programming interface (here: model endpoints)</td></tr>
+                  <tr><td><strong>GPU</strong></td><td>Graphics processing unit (used for ML compute)</td></tr>
+                  <tr><td><strong>LoRA</strong></td><td>Low-rank adaptation—efficient fine-tuning</td></tr>
+                  <tr><td><strong>PEFT</strong></td><td>Parameter-efficient fine-tuning</td></tr>
+                </tbody>
+              </table>
+              </div>
+
+              <h2 class="h4 mt-5">Where to go next</h2>
+              <ul>
+                <li><a href="how-to-become-ai-developer.html">How to become an AI developer</a> — career map, stack, and learning path (includes a shorter glossary).</li>
+                <li><a href="ai-historical-paradigms.html">AI historical paradigms</a> — how the field evolved.</li>
+                <li><a href="llm-in-depth.html">LLMs in depth</a> · <a href="generative-ai-in-depth.html">Generative AI in depth</a> · <a href="rag-retrieval-augmented-generation-deep-dive.html">RAG in depth</a></li>
+              </ul>
+
+              <p class="small text-muted mt-4 mb-2"><a href="../index.html#blog">Blog index</a> · <a href="ai-foundation-models-deep-dive.html">Foundation models</a> · <a href="aws-machine-learning-foundations.html">AWS ML Foundations</a></p>
+              <p class="mb-0"><a href="../index.html#blog" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left" aria-hidden="true"></i> Back to blog list</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+  </main>
+  <footer id="footer">
+    <div class="container">
+      <div class="copyright">&copy; Copyright <strong><span>babulal.com.np</span></strong></div>
+      <div class="credits">Designed by <a href="https://babulal.com.np/">Babulal Tamang</a></div>
+    </div>
+  </footer>
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+  <script src="../assets/vendor/purecounter/purecounter_vanilla.js"></script>
+  <script src="../assets/vendor/aos/aos.js"></script>
+  <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="../assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="../assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="../assets/vendor/typed.js/typed.min.js"></script>
+  <script src="../assets/vendor/waypoints/noframework.waypoints.js"></script>
+  <script src="../assets/js/main.js"></script>
+</body>
+</html>

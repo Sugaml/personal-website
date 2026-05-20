@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Amazon EMR & Hadoop Components in Depth — Babulal Tamang</title>
+  <meta content="Deep dive into Amazon EMR clusters and Hadoop: HDFS, YARN, MapReduce, master/core/task nodes, Spark on EMR, Hive and lake formats, security, cost, troubleshooting, and when to use EMR vs Glue vs Athena." name="description">
+  <meta name="author" content="Babulal Tamang">
+  <meta name="keywords" content="Amazon EMR, Hadoop, HDFS, YARN, Spark, data lake, AWS, Babulal Tamang">
+  <link href="../assets/img/favicon.png" rel="icon">
+  <link href="../assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="../assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="../assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="../assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="../assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <link href="../assets/css/style.css" rel="stylesheet">
+  <link href="../assets/css/theme-v2.css" rel="stylesheet">
+</head>
+<body class="theme-v2">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <button class="mobile-nav-toggle d-xl-none" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navbar"><i class="bi bi-list" aria-hidden="true"></i></button>
+  <header id="header">
+    <div class="d-flex flex-column">
+      <div class="profile sidebar-profile">
+        <div class="profile-avatar-wrap">
+          <img src="../assets/img/profile-img.jpg" class="profile-avatar img-fluid" width="132" height="132" alt="Portrait of Babulal Tamang">
+        </div>
+        <h1 class="text-light profile-name"><a href="../index.html">Babulal Tamang</a></h1>
+        <p class="profile-tagline">Platform · DevOps · Software · Cloud Architect · AI/ML Enthusiast</p>
+        <p class="profile-location"><i class="bi bi-geo-alt-fill" aria-hidden="true"></i><span>Kathmandu, Nepal</span></p>
+        <div class="social-links profile-social mt-3 text-center">
+          <a href="https://twitter.com/SugamLa20062317" class="twitter" aria-label="Twitter"><i class="bx bxl-twitter" aria-hidden="true"></i></a>
+          <a href="https://github.com/sugaml/" class="github" aria-label="GitHub"><i class="bx bxl-github" aria-hidden="true"></i></a>
+          <a href="https://www.linkedin.com/in/babulal-tamang-b6507121b/" class="linkedin" aria-label="LinkedIn"><i class="bx bxl-linkedin" aria-hidden="true"></i></a>
+        </div>
+      </div>
+      <nav id="navbar" class="nav-menu navbar" aria-label="Main navigation">
+        <ul>
+          <li><a href="../index.html#hero" class="nav-link scrollto"><i class="bx bx-home" aria-hidden="true"></i> <span>Home</span></a></li>
+          <li><a href="../index.html#about" class="nav-link scrollto"><i class="bx bx-user" aria-hidden="true"></i> <span>About</span></a></li>
+          <li><a href="../index.html#skills" class="nav-link scrollto"><i class="bx bx-code-block" aria-hidden="true"></i> <span>Skills</span></a></li>
+          <li><a href="../index.html#resume" class="nav-link scrollto"><i class="bx bx-file-blank" aria-hidden="true"></i> <span>Resume</span></a></li>
+          <li><a href="../index.html#certifications" class="nav-link scrollto"><i class="bx bx-award" aria-hidden="true"></i> <span>Certifications</span></a></li>
+          <li><a href="../index.html#blog" class="nav-link scrollto active"><i class="bx bx-book-content" aria-hidden="true"></i> <span>Blog</span></a></li>
+          <li><a href="../index.html#survey" class="nav-link scrollto"><i class="bx bx-shield-quarter" aria-hidden="true"></i> <span>Cybersecurity Survey</span></a></li>
+          <li><a href="../index.html#what-i-use" class="nav-link scrollto"><i class="bx bx-wrench" aria-hidden="true"></i> <span>What I Use</span></a></li>
+          <li><a href="../index.html#contact" class="nav-link scrollto"><i class="bx bx-envelope" aria-hidden="true"></i> <span>Contact</span></a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <main id="main">
+    <section class="breadcrumbs">
+      <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+          <h2>Blog</h2>
+          <ol>
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../index.html#blog">Blog</a></li>
+            <li>EMR & Hadoop in depth</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+    <article class="inner-page blog-article pb-5">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-9 col-xl-8">
+            <header class="mb-4 pb-3 border-bottom" data-aos="fade-up">
+              <div class="blog-article-meta mb-3">
+                <p class="text-muted small mb-2">AWS · Data · <time datetime="2026-05-20">20 May 2026</time> · <span class="blog-meta-label">Guide</span> · By <a href="../index.html#about" class="blog-author text-reset fw-semibold" rel="author">Babulal Tamang</a></p>
+              <ul class="blog-tags list-unstyled d-flex flex-wrap gap-1 mb-0" aria-label="Tags">
+                <li><span class="badge rounded-pill text-bg-light border text-muted">AWS</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">EMR</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Hadoop</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Spark</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Data engineering</span></li>
+              </ul>
+              </div>
+              <h1 class="h2 mb-3">Amazon EMR and Hadoop Components in Depth: Clusters, Storage, and the Distributed Runtime</h1>
+              <p class="lead mb-3"><strong>Amazon EMR (Elastic MapReduce)</strong> is AWS’s managed platform for running Apache Hadoop, Apache Spark, Hive, Presto, HBase, and dozens of related frameworks at scale. Under the hood it is still the same problem Hadoop was built to solve: store huge datasets across many machines and run parallel jobs that survive node failures. EMR hides much of the day-one operations—AMI selection, daemon layout, patching—but architects and data engineers still need to understand <em>what</em> runs on the cluster and <em>how</em> components interact, or costs and outages become mysterious fast.</p>
+              <div class="border-start border-primary border-4 ps-3 py-3 bg-light rounded mb-0" role="note">
+                <p class="small text-uppercase text-muted mb-1 fw-semibold">In short</p>
+                <p class="mb-0">An EMR cluster is a fleet of EC2 instances running Hadoop’s storage layer (historically HDFS, today often <strong>S3</strong>), resource manager (<strong>YARN</strong>), and application frameworks (<strong>Spark</strong>, Hive, etc.). <strong>Master</strong> nodes coordinate; <strong>core</strong> nodes run tasks and may hold HDFS data; <strong>task</strong> nodes are elastic workers. Design around transient clusters, right-sized instance fleets, and the S3 data lake—not pet HDFS on core nodes unless you have a reason.</p>
+              </div>
+            </header>
+
+            <div class="blog-prose" data-aos="fade-up" data-aos-delay="50">
+
+              <h2 class="h4 mt-4">Why Hadoop still matters on AWS</h2>
+              <p>“We use Spark” does not mean Hadoop disappeared. Spark on EMR still schedules containers through <strong>YARN</strong> (or runs in client/cluster mode against the same cluster), reads through Hadoop-compatible filesystem APIs (<code>s3a://</code>, <code>hdfs://</code>), and often depends on the Hive Metastore for table definitions. MapReduce is rarely written greenfield today, but its execution model—map shards, shuffle, reduce merge—is the mental model behind Spark stages, Hive Tez, and many SQL engines.</p>
+              <p>EMR’s value is operational: you get versioned <strong>EMR releases</strong> (e.g. emr-7.x) bundling tested combinations of Hadoop 3.x, Spark, Hive, Livy, Flink, and connectors—plus integration with IAM, CloudWatch, Auto Scaling, Spot, and Step Functions. For pipeline context and Academy framing, see <a href="aws-data-engineering.html">Data Engineering on AWS</a>; for where objects live, see <a href="aws-s3-in-depth.html">Amazon S3 in depth</a>.</p>
+
+              <h2 class="h4 mt-5">The Hadoop stack: three layers</h2>
+              <p>Think of Hadoop as three cooperating layers:</p>
+              <ol>
+                <li><strong>Storage</strong> — HDFS or, on modern AWS designs, Amazon S3 via the Hadoop <code>FileSystem</code> abstraction (<code>s3a</code>).</li>
+                <li><strong>Resource management</strong> — YARN allocates CPU and memory across applications.</li>
+                <li><strong>Processing frameworks</strong> — MapReduce (legacy), Spark, Tez, Hive execution engines, etc.</li>
+              </ol>
+              <p>Common supporting services sit beside this core: <strong>ZooKeeper</strong> (coordination), the <strong>Hive Metastore</strong> (catalog), <strong>Ranger</strong> or IAM-based auth (policy), and optional <strong>HBase</strong> (wide-column store on HDFS).</p>
+
+              <h2 class="h4 mt-5">HDFS: how distributed storage works</h2>
+              <p><strong>Hadoop Distributed File System (HDFS)</strong> splits files into fixed-size <strong>blocks</strong> (often 128 MiB or 256 MiB) and replicates each block across DataNodes for fault tolerance. The default replication factor is 3: one replica on the local rack, two on other racks when topology is configured.</p>
+
+              <h3 class="h5 mt-4">NameNode and DataNodes</h3>
+              <ul>
+                <li><strong>NameNode</strong> — Holds metadata (namespace tree, block locations). It does not store file bytes. A standby NameNode (HA pair) takes over on failure when HA is enabled.</li>
+                <li><strong>DataNode</strong> — Stores blocks and serves read/write pipelines. Reports heartbeat and block reports to the NameNode.</li>
+                <li><strong>Secondary NameNode / Checkpointing</strong> — Not a hot standby; assists with fsimage edits checkpointing in non-HA legacy layouts. With HA, JournalNodes persist edits.</li>
+              </ul>
+              <p>Write path: client asks NameNode for block locations → writes to a pipeline of DataNodes → replicas acknowledged. Read path: client gets block locations → reads directly from nearest DataNode.</p>
+
+              <h3 class="h5 mt-4">HDFS on EMR vs S3-first architectures</h3>
+              <p>EMR still runs HDFS on <strong>core</strong> nodes for scratch, spill, and libraries, but production data lakes almost always use <strong>S3</strong> as the system of record. Reasons are operational: S3 decouples storage from compute, survives cluster termination, and bills per GB-month without sizing clusters for disk. HDFS on a small core fleet is fine for temporary shuffle-heavy work; relying on HDFS for durable multi-terabyte datasets ties your data lifecycle to cluster uptime and core-node disk sizing.</p>
+              <p>The <code>s3a://</code> filesystem implements Hadoop’s API over S3. Important knobs for engineers: <strong>consistent listing</strong> (S3 is strongly consistent for new objects today, but LIST at scale still needs prefix discipline), <strong>multipart uploads</strong> for large writes, <strong>server-side encryption</strong> (SSE-S3, SSE-KMS), and <strong>committers</strong> for Spark/Hive so jobs do not leave partial outputs on failure (S3Guard is legacy; modern Spark uses staging/commit protocols appropriate to the EMR release).</p>
+
+              <h2 class="h4 mt-5">YARN: the cluster operating system</h2>
+              <p><strong>Yet Another Resource Negotiator (YARN)</strong> separates <em>cluster resource management</em> from <em>application logic</em>. MapReduce v2, Spark on YARN, Hive-on-Tez, and Flink (YARN session) all request containers from YARN.</p>
+
+              <h3 class="h5 mt-4">Key daemons</h3>
+              <ul>
+                <li><strong>ResourceManager (RM)</strong> — Global scheduler; tracks cluster capacity and application queues.</li>
+                <li><strong>NodeManager (NM)</strong> — Per-node agent; launches containers, monitors local resources, reports to RM.</li>
+                <li><strong>ApplicationMaster (AM)</strong> — One per application; negotiates containers with RM and tracks task progress (Spark’s driver in cluster mode participates in this story).</li>
+              </ul>
+
+              <h3 class="h5 mt-4">Queues, fairness, and capacity</h3>
+              <p>Multi-tenant clusters use <strong>YARN queues</strong> (CapacityScheduler or FairScheduler) with weights, ACLs, and preemption. On EMR, you configure capacity scheduler settings in <code>yarn-site.xml</code> classifications or via the console when creating the cluster. Symptoms of bad queue design: one team’s overnight Spark job starves another’s SLA-bound ETL, or small jobs wait behind a monopolizing “mega-app.”</p>
+              <p>Sizing heuristic: leave headroom on NodeManagers for HDFS DataNode and OS overhead on core nodes; on task-only nodes you can pack executors tighter. <strong>vcores</strong> and <strong>memory</strong> requested by Spark (<code>spark.executor.memory</code>, <code>spark.executor.cores</code>, <code>spark.dynamicAllocation</code>) must fit inside YARN container limits—misalignment produces apps stuck in ACCEPTED or containers OOM-killed.</p>
+
+              <h2 class="h4 mt-5">MapReduce: the original execution engine</h2>
+              <p><strong>MapReduce</strong> processes data in two phases:</p>
+              <ol>
+                <li><strong>Map</strong> — Read input splits (HDFS block-aligned or S3 byte ranges); emit key-value pairs per record.</li>
+                <li><strong>Shuffle &amp; sort</strong> — Partition by key, sort locally, transfer across network to reducers.</li>
+                <li><strong>Reduce</strong> — Merge sorted runs; compute aggregates or joins per key.</li>
+              </ol>
+              <p>Everything expensive in MapReduce is usually the <strong>shuffle</strong>: disk spill, network fan-in, and skewed keys (“hot” reducers). Spark improves this with in-memory pipelines and more flexible DAGs, but <strong>stage shuffle</strong> remains the same bottleneck class—watch <code>spark.sql.shuffle.partitions</code> and skew hints.</p>
+              <p>You may still see MapReduce in older Hive (MR engine), DistCp-style tooling, or legacy JARs. EMR does not forbid it; it is simply not where new feature work goes.</p>
+
+              <h2 class="h4 mt-5">EMR cluster anatomy</h2>
+              <p>When you launch an EMR cluster, AWS provisions EC2 instances with an EMR AMI and starts services in a defined order (Hadoop → YARN → installed applications).</p>
+
+              <h3 class="h5 mt-4">Instance groups (classic model)</h3>
+              <table class="table table-sm table-bordered">
+                <thead><tr><th>Role</th><th>Purpose</th><th>Notes</th></tr></thead>
+                <tbody>
+                  <tr><td><strong>Master</strong></td><td>NameNode (if HDFS), ResourceManager, cluster apps (HiveServer2, Spark history server, Zeppelin, etc.)</td><td>Typically one instance (or two for HA in advanced setups). Not a place to run heavy executors.</td></tr>
+                  <tr><td><strong>Core</strong></td><td>DataNode + NodeManager</td><td>Runs tasks and stores HDFS blocks. Scaling down core nodes requires HDFS rebalance/decommission discipline.</td></tr>
+                  <tr><td><strong>Task</strong></td><td>NodeManager only</td><td>Elastic workers; no HDFS—safe to scale with Spot and terminate when idle.</td></tr>
+                </tbody>
+              </table>
+
+              <h3 class="h5 mt-4">Instance fleets (flexible model)</h3>
+              <p><strong>Instance fleets</strong> let you mix instance types and purchase options (On-Demand + Spot) per role with target capacities and timeouts. AWS places instances from declared fleets—useful for Spot diversification and cost optimization without locking to a single instance type.</p>
+
+              <h3 class="h5 mt-4">Transient vs long-lived clusters</h3>
+              <ul>
+                <li><strong>Transient</strong> — Boot → run steps → auto-terminate. Ideal for batch ETL with predictable inputs; you pay only for runtime.</li>
+                <li><strong>Long-lived</strong> — Shared analytics cluster or notebook hub. Simpler for ad hoc SQL but needs patching discipline, queue governance, and stricter security reviews.</li>
+              </ul>
+              <p><strong>EMR on EKS</strong> and <strong>EMR Serverless</strong> shift operational models: EKS runs Spark jobs on Kubernetes without a classic EC2 cluster; Serverless runs Spark without managing instances at all—pay per vCPU/memory-hour of job execution. Choose them when team skills and workload shape match; classic EMR remains common for Hadoop-native apps and mixed-framework clusters.</p>
+
+              <h2 class="h4 mt-5">EMR releases and applications</h2>
+              <p>An <strong>EMR release</strong> is a manifest: Hadoop version, Spark, Hive, Pig, HBase, Flink, Livy, Zeppelin, and AWS connectors (for example the EMRFS S3 optimizations). Pin releases in production; upgrading in place can change serializer defaults, Hive metastore compatibility, or Python/Scala versions.</p>
+              <p>When creating a cluster you select applications to install. Common combinations:</p>
+              <ul>
+                <li><strong>Spark</strong> — Default for batch/stream processing, MLlib, structured streaming.</li>
+                <li><strong>Hive</strong> — SQL over tables; metastore often externalized to RDS (Apache Hive Metastore) or AWS Glue Data Catalog.</li>
+                <li><strong>Tez</strong> — Execution engine for Hive instead of MapReduce.</li>
+                <li><strong>Hue / Zeppelin</strong> — Notebooks and SQL UI (lock down auth in production).</li>
+                <li><strong>Presto/Trino</strong> — Interactive SQL (often on separate clusters for blast-radius isolation).</li>
+                <li><strong>HBase</strong> — Low-latency wide-column on HDFS; ops-heavy, co-locate masters thoughtfully.</li>
+              </ul>
+
+              <h2 class="h4 mt-5">Spark on EMR (what most teams actually run)</h2>
+              <p><strong>Apache Spark</strong> generalizes MapReduce with a DAG of transformations and actions, keeping datasets in memory when possible. On EMR:</p>
+              <ul>
+                <li><strong>Deploy modes</strong> — <code>cluster</code> (driver inside YARN) vs <code>client</code> (driver on edge node or laptop; cluster handles executors).</li>
+                <li><strong>Dynamic allocation</strong> — Scale executors with load; pair with YARN queue limits.</li>
+                <li><strong>Shuffle service</strong> — External shuffle service on NodeManagers helps resilience when executors disappear.</li>
+                <li><strong>History server</strong> — Debug failed stages; logs land in S3 when configured.</li>
+              </ul>
+              <p>Read Parquet/ORC in S3 with partition pruning (<code>spark.sql.sources.partitionColumnTypeInference</code>, metastore stats). For columnar formats and compression in lake design, align with analytics in <a href="sql-course-relational-databases.html">SQL and relational modeling</a> thinking—schemas still matter at petabyte scale.</p>
+
+              <h2 class="h4 mt-5">Hive, catalog, and table formats</h2>
+              <p><strong>Apache Hive</strong> provides SQL and metastore tables over files in S3/HDFS. Modern lakes add:</p>
+              <ul>
+                <li><strong>Apache Iceberg / Delta Lake / Hudi</strong> — Table formats with ACID-ish commits, time travel, and schema evolution on S3.</li>
+                <li><strong>AWS Glue Data Catalog</strong> — Serverless metastore compatible with Athena, EMR, and Redshift Spectrum.</li>
+              </ul>
+              <p>HiveServer2 on the master exposes JDBC/ODBC; throttle concurrent users on smaller masters. Compile plans to Tez or Spark rather than MapReduce for performance.</p>
+
+              <h2 class="h4 mt-5">Supporting components you will touch in production</h2>
+              <ul>
+                <li><strong>ZooKeeper</strong> — Coordination for HBase, Kafka old versions, some HA services; small ensemble, keep off overloaded masters.</li>
+                <li><strong>Apache Livy</strong> — REST API for Spark sessions (notebooks, job submissions).</li>
+                <li><strong>Apache Flink</strong> — True streaming with state; YARN per-job or session modes on EMR.</li>
+                <li><strong>Sqoop / DistCp</strong> — Bulk relational import and distributed copy (still seen in migration playbooks).</li>
+                <li><strong>EMRFS</strong> — Consistent S3 view and optimizations layered on Hadoop S3A (follow EMR release docs for current recommendations).</li>
+              </ul>
+
+              <h2 class="h4 mt-5">Security and governance</h2>
+              <ul>
+                <li><strong>IAM roles for EC2</strong> — Instance profile grants S3, KMS, Glue, and other API access—no long-lived keys on nodes.</li>
+                <li><strong>Security configurations</strong> — EMR object encapsulating encryption at rest (EBS, S3, in-transit TLS), Kerberos options, and authorization.</li>
+                <li><strong>Kerberos</strong> — Strong identity for multi-tenant Hadoop; operational overhead (KDC, keytabs, renewals). Common in enterprise hybrid migrations.</li>
+                <li><strong>Lake Formation</strong> — Fine-grained S3 table/column permissions feeding Athena/EMR through the Glue catalog.</li>
+                <li><strong>Network</strong> — Clusters in private subnets; restrict security groups; use VPC endpoints for S3/KMS to avoid NAT costs—see <a href="aws-network-architecture-design.html">AWS network architecture</a>.</li>
+              </ul>
+              <p>EMR blocks public SSH by default in modern wizards; use Systems Manager Session Manager or bastion patterns with least privilege.</p>
+
+              <h2 class="h4 mt-5">Operations: bootstrap actions, steps, and scaling</h2>
+              <p><strong>Bootstrap actions</strong> — Scripts run on node provision (install Python deps, agents, tuning). Keep them idempotent and fast; failed bootstrap wastes cluster minutes.</p>
+              <p><strong>Steps</strong> — Ordered work units (Spark jar, Hive script, Pig, shell). A cluster can auto-terminate when steps complete. Use Step concurrency carefully when dependencies exist.</p>
+              <p><strong>Managed scaling</strong> — EMR adjusts task (and sometimes core) capacity based on YARN metrics. Pair with Spot task fleets for cost; cap maximum capacity to prevent runaway bills.</p>
+              <p><strong>Logs</strong> — Push container and step logs to S3 (<code>s3://my-logs/emr/</code>); wire CloudWatch alarms on step failure events or custom metrics.</p>
+
+              <h2 class="h4 mt-5">Cost and performance levers</h2>
+              <ul>
+                <li><strong>Right-size masters</strong> — Oversized masters rarely speed up Spark; undersized masters break HiveServer2 and NameNode heap.</li>
+                <li><strong>Spot task nodes</strong> — Excellent for fault-tolerant batch; avoid Spot-only for stateful HBase masters.</li>
+                <li><strong>Graviton instances</strong> — Often better price/performance when your AMIs and native deps support ARM.</li>
+                <li><strong>Partitioning &amp; file sizing</strong> — Millions of tiny objects hurt S3 LIST and job planning; target hundreds of MB per file for analytics.</li>
+                <li><strong>Columnar formats</strong> — Parquet with Snappy/Zstd compression reduces scan cost versus raw JSON/CSV.</li>
+                <li><strong>Transient clusters</strong> — Eliminate idle EC2 on nights and weekends.</li>
+              </ul>
+              <p>For FinOps culture around cloud spend—not EMR-specific math—see the <a href="finops-greenops-3-finops-plain-english.html">FinOps in plain English</a> essay in this blog series.</p>
+
+              <h2 class="h4 mt-5">Troubleshooting playbook</h2>
+              <table class="table table-sm">
+                <thead><tr><th>Symptom</th><th>Likely layer</th><th>What to check</th></tr></thead>
+                <tbody>
+                  <tr><td>App stuck in ACCEPTED</td><td>YARN</td><td>Queue capacity, max resources, ACLs; RM UI or <code>yarn application -list</code></td></tr>
+                  <tr><td>Executor OOM / container killed</td><td>Spark + YARN</td><td>Memory overhead, partition skew, shuffle size; increase memory or fix hot keys</td></tr>
+                  <tr><td>S3 403 / AccessDenied</td><td>IAM</td><td>Instance profile policy, bucket policy, KMS key policy, VPC endpoint policy</td></tr>
+                  <tr><td>Slow commits / duplicate outputs</td><td>S3 committer</td><td>EMR/Spark committer settings for your release; avoid deprecated patterns</td></tr>
+                  <tr><td>HDFS under-replicated blocks</td><td>HDFS</td><td>Lost core nodes; decommission before terminate; rebalance</td></tr>
+                  <tr><td>Hive metadata errors</td><td>Metastore</td><td>Glue/RDS connectivity, schema mismatch after upgrade</td></tr>
+                </tbody>
+              </table>
+              <p>Use the <strong>Spark History Server</strong> and <strong>YARN ResourceManager UI</strong> (with SSH tunnel or EMR Studio) for stage-level timelines. For platform debugging habits on Linux hosts, see <a href="linux-in-depth.html">Linux in depth</a>.</p>
+
+              <h2 class="h4 mt-5">EMR vs Glue vs Athena (when to use what)</h2>
+              <ul>
+                <li><strong>Athena</strong> — Serverless SQL on S3 via Presto/Trino engine; best for ad hoc queries and light ETL without managing clusters.</li>
+                <li><strong>Glue</strong> — Serverless Spark jobs, crawlers, and scheduling; good for steady ETL with minimal cluster ops.</li>
+                <li><strong>EMR</strong> — Full control of frameworks, versions, and custom JARs; heavy Spark/Hive/Flink/HBase; hybrid with on-prem Hadoop skills.</li>
+              </ul>
+              <p>Many architectures use all three: Glue catalog + Athena for exploration + EMR for heavy transform or ML feature engineering.</p>
+
+              <h2 class="h4 mt-5">Reference architecture: S3 data lake batch pipeline</h2>
+              <pre class="bg-light p-3 rounded small"><code>Ingest (Kinesis Firehose / DMS / app uploads)
+  → s3://data-lake/raw/…
+EMR transient cluster (Spark + Glue Catalog)
+  → validate, dedupe, partition (event_date=…)
+  → s3://data-lake/curated/… (Parquet)
+Athena / Redshift Spectrum / OpenSearch export
+  → dashboards, ML training, operational metrics</code></pre>
+              <p>Run the EMR cluster only for the transform window; store scripts in Git; parameterize dates via Step Arguments; emit CloudWatch metrics on records written and data quality checks failed.</p>
+
+              <h2 class="h4 mt-5">Architect checklist</h2>
+              <ul>
+                <li>Pin <strong>EMR release</strong> and document application versions in runbooks.</li>
+                <li>Store durable data in <strong>S3</strong> with encryption and lifecycle rules.</li>
+                <li>Use <strong>task fleets + Spot</strong> for elastic compute; keep masters stable.</li>
+                <li>Externalize <strong>metastore</strong> (Glue or RDS), not derby on master.</li>
+                <li>Configure <strong>logs to S3</strong> and alarms on failed steps.</li>
+                <li>Define <strong>YARN queues</strong> per team/SLA before sharing a long-lived cluster.</li>
+                <li>Test <strong>failure modes</strong>—Spot loss, S3 throttling, skewed joins—before production SLAs.</li>
+              </ul>
+
+              <h2 class="h4 mt-5">Further reading</h2>
+              <ul>
+                <li>AWS documentation — Amazon EMR Management Guide, EMR release versions, best practices for Spark tuning</li>
+                <li>Apache Hadoop — HDFS architecture, YARN capacity scheduler</li>
+                <li>Apache Spark — tuning guide, structured streaming, shuffle behavior</li>
+                <li>Delta Lake / Apache Iceberg — table format specs for S3 lakes</li>
+              </ul>
+
+              <p class="small text-muted mt-4 mb-2"><a href="../index.html#blog">Blog index</a> · <a href="aws-data-engineering.html">Data Engineering</a> · <a href="aws-s3-in-depth.html">Amazon S3 in depth</a> · <a href="aws-ebs-s3-efs-storage-deep-dive.html">EBS, S3, and EFS</a> · <a href="sql-course-relational-databases.html">SQL course</a></p>
+              <p class="mb-0"><a href="../index.html#blog" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left" aria-hidden="true"></i> Back to blog list</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+  </main>
+  <footer id="footer">
+    <div class="container">
+      <div class="copyright">&copy; Copyright <strong><span>babulal.com.np</span></strong></div>
+      <div class="credits">Designed by <a href="https://babulal.com.np/">Babulal Tamang</a></div>
+    </div>
+  </footer>
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+  <script src="../assets/vendor/purecounter/purecounter_vanilla.js"></script>
+  <script src="../assets/vendor/aos/aos.js"></script>
+  <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="../assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="../assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="../assets/vendor/typed.js/typed.min.js"></script>
+  <script src="../assets/vendor/waypoints/noframework.waypoints.js"></script>
+  <script src="../assets/js/main.js"></script>
+</body>
+</html>

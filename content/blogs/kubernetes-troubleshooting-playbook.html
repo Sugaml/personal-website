@@ -1,0 +1,248 @@
+<article class="inner-page blog-article pb-5">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-9 col-xl-8">
+            <header class="mb-4 pb-3 border-bottom" data-aos="fade-up">
+              <div class="blog-article-meta mb-3">
+                <p class="text-muted small mb-2">Kubernetes · <time datetime="2026-05-20">20 May 2026</time> · <span class="blog-meta-label">Playbook</span> · By <a href="../index.html#about" class="blog-author text-reset fw-semibold" rel="author">Babulal Tamang</a></p>
+              <ul class="blog-tags list-unstyled d-flex flex-wrap gap-1 mb-0" aria-label="Tags">
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Kubernetes</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Troubleshooting</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">kubectl</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">SRE</span></li>
+              </ul>
+              </div>
+              <h1 class="h2 mb-3">The Kubernetes Troubleshooting Playbook</h1>
+              <p class="lead mb-3">Most production incidents fall into a dozen familiar buckets—scheduling, images, crashes, config, networking, storage, RBAC, rollouts. This playbook gives you a <strong>repeatable order of operations</strong>, symptom-by-symptom fixes, and the commands operators reach for daily.</p>
+              <div class="border-start border-primary border-4 ps-3 py-3 bg-light rounded mb-0" role="note">
+                <p class="small text-uppercase text-muted mb-1 fw-semibold">In short</p>
+                <p class="mb-0">Observe (get → describe → logs → events) → classify the failure layer → apply the matching fix → verify with endpoints, probes, and a second user’s eyes. Bookmark this page for on-call.</p>
+              </div>
+            </header>
+            <div class="blog-prose" data-aos="fade-up" data-aos-delay="50">
+
+              <h2 class="h4 mt-4">How to use this playbook</h2>
+              <p>Each section follows the same shape: <strong>symptom</strong> → <strong>what it usually means</strong> → <strong>commands</strong> → <strong>fix</strong> → <strong>prevent recurrence</strong>. Start with the universal workflow below; jump to the section that matches what you see in <code>kubectl get pods</code> or your alert.</p>
+              <p>New to Kubernetes debugging? Read <a href="kubernetes-hands-on-5-debug-next-steps.html">Hands-On Part 5: Debug and next steps</a> first, then return here for production-scale failure modes.</p>
+
+              <h2 class="h4 mt-5">Universal workflow (every incident)</h2>
+              <ol>
+                <li><strong>Scope:</strong> namespace, workload name, when it started (deploy? node drain? cert expiry?).</li>
+                <li><strong>Observe:</strong> <code>kubectl get pods,deploy,svc,ingress -n &lt;ns&gt;</code></li>
+                <li><strong>Explain:</strong> <code>kubectl describe pod &lt;pod&gt; -n &lt;ns&gt;</code> — read <em>Events</em> at the bottom.</li>
+                <li><strong>Logs:</strong> <code>kubectl logs &lt;pod&gt; -n &lt;ns&gt; [-c container] [--previous]</code></li>
+                <li><strong>Timeline:</strong> <code>kubectl get events -n &lt;ns&gt; --sort-by='.lastTimestamp'</code></li>
+                <li><strong>Verify fix:</strong> readiness, endpoints, curl from a debug pod, synthetic check.</li>
+              </ol>
+              <pre class="bg-light p-3 rounded small"><code># One-liner context (replace NS and labels)
+export NS=production APP=my-api
+kubectl get pods -n $NS -l app.kubernetes.io/name=$APP -o wide
+kubectl describe pod -n $NS -l app.kubernetes.io/name=$APP | tail -40
+kubectl logs -n $NS -l app.kubernetes.io/name=$APP --tail=100 --all-containers=true</code></pre>
+
+              <h2 class="h4 mt-5">Failure layers (where to look first)</h2>
+              <div class="table-responsive">
+                <table class="table table-sm table-bordered">
+                  <thead><tr><th>Layer</th><th>Typical symptoms</th><th>First commands</th></tr></thead>
+                  <tbody>
+                    <tr><td>Cluster / control plane</td><td>API timeouts, nothing schedules</td><td><code>kubectl get --raw /healthz</code>, control-plane logs</td></tr>
+                    <tr><td>Node</td><td><code>NotReady</code>, widespread <code>Pending</code></td><td><code>kubectl describe node</code>, kubelet logs</td></tr>
+                    <tr><td>Scheduler</td><td>Pod <code>Pending</code>, taint/toleration messages</td><td><code>describe pod</code> Events</td></tr>
+                    <tr><td>Workload</td><td><code>CrashLoopBackOff</code>, probe failures</td><td><code>logs --previous</code>, <code>describe</code></td></tr>
+                    <tr><td>Config</td><td><code>CreateContainerConfigError</code></td><td>Secrets, ConfigMaps, env refs</td></tr>
+                    <tr><td>Network</td><td>timeouts, 502/503</td><td><code>get endpoints</code>, DNS, NetworkPolicy</td></tr>
+                    <tr><td>Storage</td><td>PVC <code>Pending</code>, mount errors</td><td><code>get pvc,pv</code>, CSI driver pods</td></tr>
+                    <tr><td>RBAC</td><td><code>Forbidden</code> from app or CI</td><td><code>kubectl auth can-i</code></td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <h2 class="h4 mt-5">Playbook: Pod stuck in Pending</h2>
+              <p><strong>Symptom:</strong> Pod never reaches <code>Running</code>; Events mention scheduling, volumes, or quotas.</p>
+              <p><strong>Common causes:</strong></p>
+              <ul>
+                <li>Insufficient CPU/memory on nodes (requests too high).</li>
+                <li>Node selector, affinity, or taints without matching tolerations.</li>
+                <li>PVC not bound (<code>unbound immediate PersistentVolumeClaims</code>).</li>
+                <li>ResourceQuota or LimitRange exceeded in namespace.</li>
+                <li>PodSecurity / admission webhook rejection (check Events).</li>
+              </ul>
+              <pre class="bg-light p-3 rounded small"><code>kubectl describe pod &lt;pod&gt; -n &lt;ns&gt;
+kubectl describe nodes | grep -A5 "Allocated resources"
+kubectl get pvc -n &lt;ns&gt;
+kubectl describe resourcequota -n &lt;ns&gt;</code></pre>
+              <p><strong>Fix:</strong> Right-size requests, add nodes (cluster autoscaler), fix PVC/StorageClass, add tolerations only when justified, or raise quota. <strong>Prevent:</strong> Set realistic requests/limits; monitor allocatable vs requested; test PVC provisioning in staging.</p>
+
+              <h2 class="h4 mt-5">Playbook: ImagePullBackOff / ErrImagePull</h2>
+              <p><strong>Symptom:</strong> <code>Failed to pull image</code> in Events.</p>
+              <p><strong>Common causes:</strong> Wrong image name or tag; image deleted from registry; private registry without <code>imagePullSecrets</code>; registry rate limits; architecture mismatch (arm vs amd).</p>
+              <pre class="bg-light p-3 rounded small"><code>kubectl describe pod &lt;pod&gt; -n &lt;ns&gt; | grep -i image
+# Private registry
+kubectl create secret docker-registry regcred \
+  --docker-server=&lt;registry&gt; --docker-username=&lt;u&gt; --docker-password=&lt;p&gt; -n &lt;ns&gt;
+# Reference in pod spec: imagePullSecrets: [{ name: regcred }]</code></pre>
+              <p><strong>Fix:</strong> Correct image digest/tag; attach pull secret to ServiceAccount or Pod; use immutable tags in prod. <strong>Prevent:</strong> CI verifies image exists before deploy; pin digests for critical services.</p>
+
+              <h2 class="h4 mt-5">Playbook: CrashLoopBackOff</h2>
+              <p><strong>Symptom:</strong> Container starts, exits, backoff increases; restart count climbs.</p>
+              <p><strong>Common causes:</strong> Application panic on boot; wrong <code>command</code>/<code>args</code>; missing env or config file; listening on wrong port; migration job logic in long-running container; liveness probe killing app too aggressively.</p>
+              <pre class="bg-light p-3 rounded small"><code>kubectl logs &lt;pod&gt; -n &lt;ns&gt; --previous
+kubectl logs &lt;pod&gt; -n &lt;ns&gt; -c &lt;container&gt; --previous
+# Run same image locally with same command/env
+docker run --rm -it &lt;image&gt; &lt;same-entrypoint&gt;</code></pre>
+              <p><strong>Fix:</strong> Fix app startup; mount ConfigMap/Secret; align probe <code>initialDelaySeconds</code> with real boot time; split init logic into <code>initContainers</code>. <strong>Prevent:</strong> Staging deploy with identical env; startup probes for slow apps.</p>
+
+              <h2 class="h4 mt-5">Playbook: OOMKilled (exit 137)</h2>
+              <p><strong>Symptom:</strong> <code>Last State: Terminated, Reason: OOMKilled</code>; sudden restarts under load.</p>
+              <p><strong>Common causes:</strong> Memory limit too low; memory leak; JVM/Node heap not aligned with container limit; no limits set (node eviction instead).</p>
+              <pre class="bg-light p-3 rounded small"><code>kubectl describe pod &lt;pod&gt; -n &lt;ns&gt; | grep -A2 Limits
+kubectl top pod &lt;pod&gt; -n &lt;ns&gt;   # needs metrics-server</code></pre>
+              <p><strong>Fix:</strong> Raise <code>resources.limits.memory</code> after profiling; set requests ≈ steady state; configure app heap ≤ ~75% of limit. <strong>Prevent:</strong> Load tests; alerts on memory working set vs limit; VPA or rightsizing reviews.</p>
+
+              <h2 class="h4 mt-5">Playbook: CreateContainerConfigError</h2>
+              <p><strong>Symptom:</strong> Pod cannot start; Events reference missing key or secret.</p>
+              <p><strong>Common causes:</strong> Secret/ConfigMap key typo; object in wrong namespace; optional key not optional; projected volume path clash.</p>
+              <pre class="bg-light p-3 rounded small"><code>kubectl get secret,configmap -n &lt;ns&gt;
+kubectl describe pod &lt;pod&gt; -n &lt;ns&gt;
+# Compare envFrom / volumeMount keys to actual data keys</code></pre>
+              <p><strong>Fix:</strong> Create or fix Secret/ConfigMap; sync from External Secrets Operator; fix Helm/Kustomize templates. <strong>Prevent:</strong> Pre-deploy validation in CI; never hand-edit prod Secrets without GitOps trail.</p>
+
+              <h2 class="h4 mt-5">Playbook: Running but not Ready (probe failures)</h2>
+              <p><strong>Symptom:</strong> Pod <code>Running</code>, <code>READY 0/1</code>; Service has no endpoints; Ingress returns 502.</p>
+              <p><strong>Common causes:</strong> Readiness probe wrong path/port/scheme; app listens on 127.0.0.1 only; dependency (DB) down; probe too aggressive during warmup.</p>
+              <pre class="bg-light p-3 rounded small"><code>kubectl describe pod &lt;pod&gt; -n &lt;ns&gt; | grep -A10 "Liveness\|Readiness"
+kubectl exec -it &lt;pod&gt; -n &lt;ns&gt; -- wget -qO- http://127.0.0.1:&lt;port&gt;/health
+# Or curl from debug pod to Service ClusterIP</code></pre>
+              <p><strong>Fix:</strong> Match probe to real health endpoint; use <code>startupProbe</code> for slow boot; fix upstream dependency. <strong>Prevent:</strong> Chart defaults reviewed per app; synthetic checks in staging.</p>
+
+              <h2 class="h4 mt-5">Playbook: Service has no endpoints</h2>
+              <p><strong>Symptom:</strong> <code>kubectl get endpoints &lt;svc&gt;</code> shows empty subsets; in-cluster DNS resolves but connection refused or timeout.</p>
+              <p><strong>Common causes:</strong> Service selector does not match Pod labels; Pods not Ready; wrong port <code>targetPort</code> (name vs number); headless Service misuse.</p>
+              <pre class="bg-light p-3 rounded small"><code>kubectl get svc &lt;svc&gt; -n &lt;ns&gt; -o yaml | grep -A5 selector
+kubectl get pods -n &lt;ns&gt; --show-labels
+kubectl get endpoints &lt;svc&gt; -n &lt;ns&gt;
+kubectl run debug --rm -it --image=curlimages/curl --restart=Never -- \
+  curl -v http://&lt;svc&gt;.&lt;ns&gt;.svc.cluster.local:&lt;port&gt;/</code></pre>
+              <p><strong>Fix:</strong> Align labels and selectors; fix <code>targetPort</code> to container port; ensure readiness passes. See <a href="kubernetes-hands-on-3-first-workloads.html">first workloads (Service)</a>.</p>
+
+              <h2 class="h4 mt-5">Playbook: DNS failures (NXDOMAIN / timeout)</h2>
+              <p><strong>Symptom:</strong> App logs <code>no such host</code> for <code>*.svc.cluster.local</code>; intermittent resolution.</p>
+              <p><strong>Common causes:</strong> Wrong service name or namespace; CoreDNS pods unhealthy; <code>ndots</code> search path issues; NetworkPolicy blocking UDP 53; custom DNS config in Pod spec.</p>
+              <pre class="bg-light p-3 rounded small"><code>kubectl get pods -n kube-system -l k8s-app=kube-dns
+kubectl logs -n kube-system -l k8s-app=kube-dns
+kubectl run dns-test --rm -it --image=busybox:1.36 --restart=Never -- \
+  nslookup kubernetes.default.svc.cluster.local</code></pre>
+              <p><strong>Fix:</strong> Use FQDN <code>service.namespace.svc.cluster.local</code>; repair CoreDNS; adjust NetworkPolicy; fix <code>dnsPolicy</code>/<code>dnsConfig</code>.</p>
+
+              <h2 class="h4 mt-5">Playbook: Ingress returns 404 / 502 / 504</h2>
+              <p><strong>Symptom:</strong> External URL fails; in-cluster Service works via port-forward.</p>
+              <p><strong>Common causes:</strong> No ingress controller installed or running; wrong <code>ingressClassName</code>; TLS secret missing or expired; backend Service has no endpoints; path/rule mismatch; timeout too low for slow upstream.</p>
+              <pre class="bg-light p-3 rounded small"><code>kubectl get ingress -n &lt;ns&gt;
+kubectl describe ingress &lt;name&gt; -n &lt;ns&gt;
+kubectl get pods -n ingress-nginx   # or your controller namespace
+kubectl get certificate -n &lt;ns&gt;    # cert-manager</code></pre>
+              <p><strong>Fix:</strong> Install/fix controller; align host/path rules; renew certs; increase proxy timeouts. <strong>Prevent:</strong> cert-manager with alerts 30 days before expiry.</p>
+
+              <h2 class="h4 mt-5">Playbook: NetworkPolicy blocked traffic</h2>
+              <p><strong>Symptom:</strong> Worked until policy applied; works from some namespaces only; timeouts with no app error.</p>
+              <p><strong>Common causes:</strong> Egress denied to DNS, API, or database; ingress only from wrong namespace label; CNI does not enforce NetworkPolicy.</p>
+              <pre class="bg-light p-3 rounded small"><code>kubectl get networkpolicy -n &lt;ns&gt;
+# Temporarily test: clone policy in staging with broader rules, narrow down
+# Many teams use policy visualization tools or eBPF flow logs</code></pre>
+              <p><strong>Fix:</strong> Add allow rules for required labels/ports (including kube-dns); document expected flows. <strong>Prevent:</strong> Default-deny only after mapping dependencies.</p>
+
+              <h2 class="h4 mt-5">Playbook: PVC Pending / volume mount failures</h2>
+              <p><strong>Symptom:</strong> PVC <code>Pending</code>; Pod Events: <code>failed to mount volume</code> or <code>Multi-Attach error</code>.</p>
+              <p><strong>Common causes:</strong> No StorageClass or provisioner down; zone mismatch; RWO volume attached to second node; CSI driver crash; fsGroup permission issues.</p>
+              <pre class="bg-light p-3 rounded small"><code>kubectl get pvc,pv,storageclass
+kubectl describe pvc &lt;claim&gt; -n &lt;ns&gt;
+kubectl get pods -n kube-system | grep -i csi</code></pre>
+              <p><strong>Fix:</strong> Correct StorageClass; ensure single writer for RWO; restart CSI node plugin if stuck; use RWX or shared storage when multiple replicas need disk. Deep dive: <a href="kubernetes-storage-pv-pvc-storageclass.html">PV, PVC, and StorageClass</a>.</p>
+
+              <h2 class="h4 mt-5">Playbook: Deployment rollout stuck</h2>
+              <p><strong>Symptom:</strong> <code>kubectl rollout status</code> hangs; old ReplicaSet still serves traffic; <code>ProgressDeadlineExceeded</code>.</p>
+              <p><strong>Common causes:</strong> New Pods never become Ready; <code>maxUnavailable</code> / <code>maxSurge</code> with too few replicas; PDB blocking drain; image pull failure on new version only.</p>
+              <pre class="bg-light p-3 rounded small"><code>kubectl rollout status deployment/&lt;name&gt; -n &lt;ns&gt;
+kubectl describe deployment &lt;name&gt; -n &lt;ns&gt;
+kubectl get rs -n &lt;ns&gt; -l app=&lt;app&gt;
+kubectl rollout undo deployment/&lt;name&gt; -n &lt;ns&gt;   # emergency</code></pre>
+              <p><strong>Fix:</strong> Fix new Pod template; pause rollout (<code>kubectl rollout pause</code>), fix, resume; undo if bad release. <strong>Prevent:</strong> Canary or blue-green; automated smoke tests in pipeline.</p>
+
+              <h2 class="h4 mt-5">Playbook: Forbidden (RBAC)</h2>
+              <p><strong>Symptom:</strong> CI, operator, or in-cluster app gets <code>403 Forbidden</code> from API.</p>
+              <pre class="bg-light p-3 rounded small"><code>kubectl auth can-i create pods --as=system:serviceaccount:&lt;ns&gt;:&lt;sa&gt; -n &lt;ns&gt;
+kubectl describe rolebinding,clusterrolebinding -n &lt;ns&gt; | grep -A3 Subjects</code></pre>
+              <p><strong>Fix:</strong> Grant least-privilege Role/RoleBinding; fix wrong ServiceAccount on Pod. Guide: <a href="kubernetes-cluster-rbac.html">Kubernetes cluster RBAC</a>.</p>
+
+              <h2 class="h4 mt-5">Playbook: Node NotReady / eviction storm</h2>
+              <p><strong>Symptom:</strong> Many Pods rescheduling; node <code>NotReady</code>; disk pressure or memory pressure taints.</p>
+              <pre class="bg-light p-3 rounded small"><code>kubectl describe node &lt;node&gt;
+kubectl get pods -A --field-selector spec.nodeName=&lt;node&gt;
+# On node (if SSH allowed): journalctl -u kubelet -f</code></pre>
+              <p><strong>Fix:</strong> Free disk (<code>image gc</code>, log rotation); fix kubelet/CNI; cordon/drain bad node; replace hardware. <strong>Prevent:</strong> Node problem detector alerts; PDBs so one node loss does not take the service down.</p>
+
+              <h2 class="h4 mt-5">Playbook: API server slow or failing</h2>
+              <p><strong>Symptom:</strong> <code>kubectl</code> timeouts; controllers lag; etcd alarms.</p>
+              <p><strong>Common causes:</strong> etcd latency or full disk; excessive objects (thousands of Secrets); admission webhook timeout; audit log volume.</p>
+              <p><strong>Fix:</strong> Scale control plane; defragment/compaction per runbook; fix webhook; reduce list-watch churn. Escalate to platform/SRE—this is rarely fixed from a single namespace.</p>
+
+              <h2 class="h4 mt-5">Playbook: Certificate and TLS errors</h2>
+              <p><strong>Symptom:</strong> Browser or client <code>certificate expired</code>; Ingress TLS handshake fail; mesh mTLS reject.</p>
+              <pre class="bg-light p-3 rounded small"><code>kubectl get certificate,certificaterequest -n &lt;ns&gt;
+kubectl describe certificate &lt;name&gt; -n &lt;ns&gt;
+openssl s_client -connect &lt;host&gt;:443 -servername &lt;host&gt;</code></pre>
+              <p><strong>Fix:</strong> Renew via cert-manager ClusterIssuer; fix DNS-01/HTTP-01 challenge; rotate Istio/mesh certs. <strong>Prevent:</strong> Alert on cert expiry &lt; 14 days.</p>
+
+              <h2 class="h4 mt-5">Playbook: HPA not scaling</h2>
+              <p><strong>Symptom:</strong> Load high but replica count unchanged; <code>FailedGetScale</code> or metrics unavailable.</p>
+              <pre class="bg-light p-3 rounded small"><code>kubectl describe hpa &lt;name&gt; -n &lt;ns&gt;
+kubectl top pods -n &lt;ns&gt;
+kubectl get apiservice | grep metrics</code></pre>
+              <p><strong>Fix:</strong> Install metrics-server or Prometheus adapter; set correct <code>scaleTargetRef</code>; define requests so CPU utilization is meaningful; check min/max replicas.</p>
+
+              <h2 class="h4 mt-5">Quick reference: status → action</h2>
+              <div class="table-responsive">
+                <table class="table table-sm table-bordered">
+                  <thead><tr><th>What you see</th><th>First action</th></tr></thead>
+                  <tbody>
+                    <tr><td><code>Pending</code></td><td><code>describe pod</code> → scheduler / PVC / quota</td></tr>
+                    <tr><td><code>ImagePullBackOff</code></td><td>Verify image + <code>imagePullSecrets</code></td></tr>
+                    <tr><td><code>CrashLoopBackOff</code></td><td><code>logs --previous</code></td></tr>
+                    <tr><td><code>OOMKilled</code></td><td>Raise memory limit; profile heap</td></tr>
+                    <tr><td><code>CreateContainerConfigError</code></td><td>Secret/ConfigMap keys</td></tr>
+                    <tr><td>Running, not Ready</td><td>Readiness probe + <code>exec</code> curl</td></tr>
+                    <tr><td>Service works via port-forward only</td><td>Ingress / endpoints / selector</td></tr>
+                    <tr><td>PVC <code>Pending</code></td><td>StorageClass + CSI</td></tr>
+                    <tr><td><code>Forbidden</code></td><td><code>auth can-i</code> + bindings</td></tr>
+                    <tr><td>Rollout stuck</td><td><code>describe deploy</code> + <code>rollout undo</code></td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <h2 class="h4 mt-5">Tools worth adding (after kubectl)</h2>
+              <ul>
+                <li><strong><code>kubectl debug</code></strong> — ephemeral debug containers (copy target namespace/kubeconfig).</li>
+                <li><strong><code>stern</code></strong> — multi-pod log tail by label.</li>
+                <li><strong><code>k9s</code></strong> — fast cluster navigation.</li>
+                <li><strong>Prometheus/Grafana</strong> — correlate restarts with memory and latency.</li>
+                <li><strong>Network flow</strong> — Cilium Hubble, Calico flow logs when policies are suspect.</li>
+              </ul>
+
+              <h2 class="h4 mt-5">Related posts</h2>
+              <ul>
+                <li><a href="kubernetes-hands-on-5-debug-next-steps.html">K8s hands-on Part 5 — debug basics</a></li>
+                <li><a href="kubernetes-architecture-simple.html">Kubernetes architecture (simple)</a></li>
+                <li><a href="kubernetes-storage-pv-pvc-storageclass.html">Storage: PV, PVC, StorageClass</a></li>
+                <li><a href="kubernetes-cluster-rbac.html">Cluster RBAC</a></li>
+                <li><a href="incident-disaster-response-calm.html">Incident response — staying calm</a></li>
+                <li><a href="gitops-principles.html">GitOps principles</a></li>
+              </ul>
+
+              <p class="small text-muted mt-4 mb-2"><a href="kubernetes-hands-on-5-debug-next-steps.html">← K8s debug (hands-on)</a> · <a href="../index.html#blog">Blog index</a></p>
+              <p class="mb-0"><a href="kubernetes-hands-on-5-debug-next-steps.html" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left" aria-hidden="true"></i> Hands-on debug</a>
+              <a href="../index.html#blog" class="btn btn-primary btn-sm ms-2">All posts <i class="bi bi-journal-text" aria-hidden="true"></i></a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>

@@ -1,0 +1,306 @@
+<article class="inner-page blog-article pb-5">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-9 col-xl-8">
+            <header class="mb-4 pb-3 border-bottom" data-aos="fade-up">
+              <div class="blog-article-meta mb-3">
+                <p class="text-muted small mb-2">AI/ML · <time datetime="2026-05-20">20 May 2026</time> · <span class="blog-meta-label">Guide</span> · By <a href="../index.html#about" class="blog-author text-reset fw-semibold" rel="author">Babulal Tamang</a></p>
+              <ul class="blog-tags list-unstyled d-flex flex-wrap gap-1 mb-0" aria-label="Tags">
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Neural Networks</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Deep Learning</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Backpropagation</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Machine Learning</span></li>
+              </ul>
+              </div>
+              <h1 class="h2 mb-3">Neural Networks in Depth: From Perceptrons to Deep Learning</h1>
+              <p class="lead mb-3">A <strong>neural network</strong> is a stack of simple, differentiable units—artificial neurons—wired together so that raw data flows in one end and useful predictions or generations flow out the other. No hand-crafted rules for every edge case; the network <em>learns</em> patterns from examples by adjusting millions or billions of numeric weights. This guide explains how that works: the math at a practical level, the training loop, the architectures that dominate modern AI, and how neural nets relate to LLMs, classical ML, and production systems.</p>
+              <div class="border-start border-primary border-4 ps-3 py-3 bg-light rounded mb-0" role="note">
+                <p class="small text-uppercase text-muted mb-1 fw-semibold">In short</p>
+                <p class="mb-0">Neural networks are <em>function approximators</em> trained by gradient descent on a loss function. Forward pass computes outputs; backpropagation assigns credit to each weight; optimizers update weights over many epochs. Depth, data, and compute turned them from fragile demos into the engine behind vision, speech, language, and generative AI—everything else is engineering around that core loop.</p>
+              </div>
+            </header>
+
+            <div class="blog-prose" data-aos="fade-up" data-aos-delay="50">
+
+              <h2 class="h4 mt-4">What is a neural network?</h2>
+              <p>Formally, a neural network is a <strong>parametric model</strong>: a function <em>f(x; θ)</em> where <em>x</em> is input (pixels, tokens, sensor readings), <em>θ</em> is a large vector of learnable parameters (weights and biases), and <em>f</em> is built from repeated linear transforms and nonlinear activations. Training finds <em>θ</em> that minimizes error on labeled data or maximizes likelihood on unlabeled data.</p>
+              <p>Informally, it is a <strong>pattern machine</strong>. Show it enough (image, label) pairs and it learns edges, textures, and objects. Show it enough text and it learns grammar, facts, and style—without anyone encoding those rules explicitly.</p>
+              <p>Neural networks sit inside the broader field of <strong>machine learning</strong> and power most of <strong>deep learning</strong> today. For how AI evolved from symbolic systems to transformers, see <a href="ai-historical-paradigms.html">From Symbols to Foundation Models</a>. For text-specific stacks built on neural nets, see <a href="llm-in-depth.html">Large Language Models in Depth</a> and <a href="generative-ai-in-depth.html">Generative AI in Depth</a>.</p>
+
+              <h2 class="h4 mt-5">Biological inspiration—and where the analogy stops</h2>
+              <p>Real brains contain roughly 86 billion neurons connected by synapses whose strengths change with experience—<strong>Hebbian</strong> ideas (“cells that fire together wire together”) influenced early AI. Artificial neurons are far simpler:</p>
+              <ul>
+                <li>They receive a weighted sum of inputs, add a bias, apply a nonlinear function, and pass the result forward.</li>
+                <li>They do not spike in time (except in specialized <strong>spiking neural networks</strong>, rare in industry).</li>
+                <li>They are trained with calculus (backpropagation), not purely local biological rules.</li>
+              </ul>
+              <p>The useful takeaway is not “we simulated a brain” but <strong>distributed representation</strong>: knowledge is spread across weights; damaging one neuron rarely erases one concept. That redundancy helps generalization—and also makes individual decisions hard to interpret.</p>
+
+              <h2 class="h4 mt-5">History in five beats</h2>
+              <ol>
+                <li><strong>1943 — McCulloch &amp; Pitts</strong> — mathematical model of a binary neuron.</li>
+                <li><strong>1958 — Rosenblatt’s perceptron</strong> — learnable linear classifier; optimism and backlash when Minsky &amp; Papert showed a single layer cannot solve XOR.</li>
+                <li><strong>1986 — Backpropagation popularized</strong> — Rumelhart, Hinton, Williams; multi-layer nets become trainable.</li>
+                <li><strong>1990s–2000s — winters and revivals</strong> — SVMs and random forests win many tabular benchmarks; GPUs and ImageNet (2012) reignite deep learning.</li>
+                <li><strong>2017–present — transformers and scale</strong> — attention-based models dominate language and increasingly vision; “neural network” often means “large transformer” in product discourse.</li>
+              </ol>
+
+              <h2 class="h4 mt-5">The artificial neuron (one unit)</h2>
+              <p>For one neuron with inputs <em>x₁…xₙ</em>, weights <em>w₁…wₙ</em>, and bias <em>b</em>:</p>
+              <p class="text-center font-monospace small">z = (w₁x₁ + w₂x₂ + … + wₙxₙ) + b &nbsp;&nbsp; then &nbsp;&nbsp; a = σ(z)</p>
+              <p><em>z</em> is the <strong>pre-activation</strong> (logit for binary classification). <em>σ</em> is an <strong>activation function</strong> introducing nonlinearity. Without σ, stacking layers would collapse to a single linear map—depth would buy nothing.</p>
+              <p>In code (PyTorch-style intuition):</p>
+              <pre class="bg-light p-3 rounded small"><code>z = torch.dot(w, x) + b
+a = torch.relu(z)   # or sigmoid, tanh, etc.</code></pre>
+
+              <h2 class="h4 mt-5">Layers and network topology</h2>
+              <p>Neurons are grouped into <strong>layers</strong>:</p>
+              <ul>
+                <li><strong>Input layer</strong> — holds feature values (not always counted as “neurons” in diagrams).</li>
+                <li><strong>Hidden layers</strong> — learn intermediate representations (edges → parts → objects).</li>
+                <li><strong>Output layer</strong> — matches task shape: one logit (binary), <em>K</em> logits (multi-class), <em>d</em> units (regression), or vocabulary-sized logits (language modeling).</li>
+              </ul>
+              <p>A <strong>fully connected (dense)</strong> layer connects every input unit to every output unit. <strong>Convolutional</strong> layers share weights across spatial positions (images). <strong>Recurrent</strong> layers maintain state across time steps (sequences). <strong>Attention</strong> layers relate every position to every other (transformers). The layer type encodes <strong>inductive bias</strong>—assumptions about what structure in data matters.</p>
+
+              <h2 class="h4 mt-5">Forward propagation</h2>
+              <p><strong>Forward pass</strong> = compute predictions for a batch of inputs, layer by layer, using current weights. For a 3-layer MLP:</p>
+              <ol>
+                <li><em>h₁ = σ(W₁x + b₁)</em></li>
+                <li><em>h₂ = σ(W₂h₁ + b₂)</em></li>
+                <li><em>ŷ = W₃h₂ + b₃</em> (linear output for regression; softmax applied for classification)</li>
+              </ol>
+              <p>Matrix multiplication makes this efficient on GPUs: a batch of 256 images is one tensor operation, not 256 Python loops. Frameworks (PyTorch, TensorFlow, JAX) build a <strong>computational graph</strong> (or trace) so derivatives can be computed automatically.</p>
+
+              <h2 class="h4 mt-5">Activation functions (why nonlinearity matters)</h2>
+              <div class="table-responsive">
+                <table class="table table-sm table-bordered align-middle">
+                  <thead class="table-light">
+                    <tr>
+                      <th scope="col">Function</th>
+                      <th scope="col">Typical use</th>
+                      <th scope="col">Notes</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>ReLU</strong> max(0, z)</td>
+                      <td>Hidden layers (default for many CV/MLP nets)</td>
+                      <td>Fast; can cause “dead neurons” if weights push z always negative</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Leaky ReLU / GELU</strong></td>
+                      <td>Transformers, modern MLP blocks</td>
+                      <td>GELU smooth; common in BERT/GPT-style models</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Sigmoid</strong></td>
+                      <td>Binary output, gates in LSTMs</td>
+                      <td>Saturates → vanishing gradients in deep stacks</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Tanh</strong></td>
+                      <td>Hidden (older RNNs)</td>
+                      <td>Zero-centered; still saturation issues</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Softmax</strong></td>
+                      <td>Multi-class output</td>
+                      <td>Outputs sum to 1; used with cross-entropy loss</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Linear (identity)</strong></td>
+                      <td>Regression output, final projection</td>
+                      <td>No squashing; raw logits before softmax</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <h2 class="h4 mt-5">Loss functions: what “good” means</h2>
+              <p>Training minimizes a <strong>loss</strong> <em>L(ŷ, y)</em> measuring prediction quality:</p>
+              <ul>
+                <li><strong>Mean squared error (MSE)</strong> — regression (house prices, temperature).</li>
+                <li><strong>Binary cross-entropy</strong> — one yes/no label.</li>
+                <li><strong>Categorical cross-entropy</strong> — one correct class among many (with softmax).</li>
+                <li><strong>Negative log-likelihood</strong> — language models: penalize low probability on the true next token.</li>
+              </ul>
+              <p>The loss is a scalar signal. Backpropagation computes <em>∂L/∂θ</em> for every parameter—how much each weight contributed to the error.</p>
+
+              <h2 class="h4 mt-5">Backpropagation and gradient descent</h2>
+              <p><strong>Backpropagation</strong> applies the chain rule from the loss backward through the graph. Each layer passes gradients to the layer below; frameworks implement this via automatic differentiation.</p>
+              <p><strong>Gradient descent</strong> updates weights:</p>
+              <p class="text-center font-monospace small">θ ← θ − η · ∇<sub>θ</sub>L</p>
+              <p><em>η</em> is the <strong>learning rate</strong>—the most sensitive hyperparameter. Too large: loss oscillates or diverges. Too small: training crawls and may stall in poor minima.</p>
+              <p>Variants you will see in practice:</p>
+              <ul>
+                <li><strong>SGD</strong> — stochastic gradient descent on mini-batches; with momentum, nesterov.</li>
+                <li><strong>Adam / AdamW</strong> — adaptive per-parameter learning rates; default for many transformers and fine-tuning jobs.</li>
+                <li><strong>Learning rate schedules</strong> — warmup, cosine decay, step decay—critical at large scale.</li>
+              </ul>
+
+              <h2 class="h4 mt-5">The training loop (what actually runs on a GPU)</h2>
+              <ol>
+                <li><strong>Sample</strong> a mini-batch from the dataset.</li>
+                <li><strong>Forward pass</strong> → predictions and loss.</li>
+                <li><strong>Backward pass</strong> → gradients.</li>
+                <li><strong>Optimizer step</strong> → update weights.</li>
+                <li>Repeat for one <strong>epoch</strong> (full pass over training set); validate on held-out data; stop early if metrics plateau.</li>
+              </ol>
+              <p>Key knobs:</p>
+              <ul>
+                <li><strong>Batch size</strong> — larger batches stabilize gradients but need more memory; effective batch size is often increased via gradient accumulation.</li>
+                <li><strong>Epochs</strong> — too many → overfitting; use validation curves.</li>
+                <li><strong>Initialization</strong> — Xavier/He schemes avoid exploding/vanishing activations at start.</li>
+              </ul>
+
+              <h2 class="h4 mt-5">Regularization: fighting overfitting</h2>
+              <p>Neural nets with millions of parameters can memorize training noise. Mitigations:</p>
+              <ul>
+                <li><strong>More / better data</strong> — augmentation (flips, crops, mixup), cleaning labels.</li>
+                <li><strong>L2 weight decay</strong> — penalize large weights (AdamW decouples this cleanly).</li>
+                <li><strong>Dropout</strong> — randomly zero activations during training; ensemble effect.</li>
+                <li><strong>Early stopping</strong> — halt when validation loss rises.</li>
+                <li><strong>Batch normalization / layer norm</strong> — stabilize internal distributions; norm layers are standard in deep CNNs and transformers.</li>
+              </ul>
+              <p><strong>Underfitting</strong> shows high error on both train and validation—model too small or under-trained. <strong>Overfitting</strong> shows low train error, high validation error—model or training regime too aggressive for data size.</p>
+
+              <h2 class="h4 mt-5">Major architectures (mental map)</h2>
+              <div class="table-responsive">
+                <table class="table table-sm table-bordered align-middle">
+                  <thead class="table-light">
+                    <tr>
+                      <th scope="col">Architecture</th>
+                      <th scope="col">Inductive bias</th>
+                      <th scope="col">Dominant tasks</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>MLP (feedforward)</strong></td>
+                      <td>Tabular / flat features</td>
+                      <td>Simple classification, baseline; limited for images without convolutions</td>
+                    </tr>
+                    <tr>
+                      <td><strong>CNN</strong></td>
+                      <td>Local spatial patterns, translation equivariance</td>
+                      <td>Image classification, detection, medical imaging</td>
+                    </tr>
+                    <tr>
+                      <td><strong>RNN / LSTM / GRU</strong></td>
+                      <td>Sequential state</td>
+                      <td>Legacy speech/NLP; largely superseded by transformers for language</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Transformer</strong></td>
+                      <td>Global pairwise relationships via attention</td>
+                      <td>LLMs, code models, vision transformers (ViT), multimodal</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Autoencoder / VAE</strong></td>
+                      <td>Compress and reconstruct</td>
+                      <td>Anomaly detection, representation learning, generative latents</td>
+                    </tr>
+                    <tr>
+                      <td><strong>GAN / diffusion</strong></td>
+                      <td>Learn data distribution for sampling</td>
+                      <td>Image/video/audio generation—see <a href="generative-ai-in-depth.html">Generative AI in Depth</a></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <p><strong>Depth</strong> matters because each layer can compose features from the previous one—hierarchy from pixels to “wheel” to “car.” Very deep nets required better initialization, skip connections (<strong>ResNet</strong>), and normalization to train reliably.</p>
+
+              <h2 class="h4 mt-5">Deep learning vs classical machine learning</h2>
+              <div class="table-responsive">
+                <table class="table table-sm table-bordered align-middle">
+                  <thead class="table-light">
+                    <tr>
+                      <th scope="col">Situation</th>
+                      <th scope="col">Often prefer</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Small tabular dataset, need interpretability</td>
+                      <td>Logistic regression, trees, gradient boosting (XGBoost, LightGBM)</td>
+                    </tr>
+                    <tr>
+                      <td>Images, audio, long text, unstructured data at scale</td>
+                      <td>Neural networks (CNN, transformer, etc.)</td>
+                    </tr>
+                    <tr>
+                      <td>Hand-engineered features already excellent</td>
+                      <td>Classical ML on those features may win on cost/latency</td>
+                    </tr>
+                    <tr>
+                      <td>Need calibrated probabilities with little data</td>
+                      <td>Classical models + careful validation; don’t assume bigger net helps</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <p>Neural networks shine when <strong>representation learning</strong> is hard to hand-code and data/compute are available. They are not automatically better—benchmark against a simple baseline before celebrating a 0.5% gain.</p>
+
+              <h2 class="h4 mt-5">Parameters, compute, and memory</h2>
+              <p>Model size is often quoted in <strong>parameters</strong> (weights + biases). A 7B-parameter model stored in FP16 needs on the order of 14 GB just for weights—before optimizer states, activations, and KV cache at inference. Training cost scales with parameters, sequence length, and dataset size; see <a href="computing-in-depth.html">Computing in Depth</a> for CPU/GPU/memory hierarchy context.</p>
+              <ul>
+                <li><strong>FLOPs</strong> — floating-point operations per forward/backward step; rough proxy for training time.</li>
+                <li><strong>VRAM</strong> — limits batch size and model size on one GPU; multi-GPU uses data/tensor/pipeline parallelism.</li>
+                <li><strong>Mixed precision (FP16/BF16)</strong> — faster training with loss scaling where needed.</li>
+              </ul>
+
+              <h2 class="h4 mt-5">From training to production</h2>
+              <p>A research notebook trains a model; production ships a <strong>system</strong>:</p>
+              <ul>
+                <li><strong>Data pipelines</strong> — versioning, drift detection, PII handling.</li>
+                <li><strong>Export formats</strong> — ONNX, TorchScript, TensorRT, Core ML for edge.</li>
+                <li><strong>Serving</strong> — batch vs real-time APIs, autoscaling GPU pools, latency SLOs.</li>
+                <li><strong>Monitoring</strong> — accuracy proxies, latency, error rates, input distribution shift.</li>
+                <li><strong>Governance</strong> — model cards, bias testing, access control—especially for user-facing AI; see <a href="iso-42001-lead-auditor-ai-management.html">ISO/IEC 42001</a> for management-system framing.</li>
+              </ul>
+              <p>AWS-oriented vocabulary: <a href="aws-machine-learning-foundations.html">Machine Learning Foundations</a> and <a href="aws-generative-ai-foundations.html">Generative AI Foundations</a>. For foundation-model-specific production patterns: <a href="ai-foundation-models-deep-dive.html">AI Foundation Models in Depth</a>.</p>
+
+              <h2 class="h4 mt-5">Common failure modes (debugging checklist)</h2>
+              <ul>
+                <li><strong>Loss not decreasing</strong> — learning rate, broken labels, wrong loss for task, gradient clipping needed.</li>
+                <li><strong>NaN loss</strong> — exploding gradients; lower LR, check normalization, inspect bad batches.</li>
+                <li><strong>Train great, test poor</strong> — leakage between splits, overfitting, distribution shift.</li>
+                <li><strong>Slow convergence</strong> — under-capacity, poor initialization, need better optimizer schedule.</li>
+                <li><strong>Class imbalance ignored</strong> — weighted loss, resampling, or appropriate metrics (F1, AUROC).</li>
+              </ul>
+
+              <h2 class="h4 mt-5">How neural nets connect to LLMs and generative AI</h2>
+              <p>Large language models are <strong>deep neural networks</strong>—typically decoder-only transformers—trained with next-token prediction. “Attention” is a differentiable module; “parameters” are still weights updated by gradient descent. The leap from a classroom MLP to GPT-scale is mostly <strong>scale, data, architecture, and engineering</strong>, not a different fundamental law.</p>
+              <p>Read next for specialization:</p>
+              <ul>
+                <li><a href="llm-in-depth.html">Large Language Models in Depth</a> — tokens, KV cache, decoding, RAG.</li>
+                <li><a href="ai-foundation-models-deep-dive.html">AI Foundation Models in Depth</a> — pre-training, alignment, fine-tuning.</li>
+                <li><a href="rag-retrieval-augmented-generation-deep-dive.html">RAG in Depth</a> — grounding without retraining the whole net.</li>
+                <li><a href="how-to-become-ai-developer.html">How to Become an AI Developer</a> — learning path and stack.</li>
+              </ul>
+
+              <h2 class="h4 mt-5">Learning path (practical order)</h2>
+              <ol>
+                <li>Linear algebra intuition (vectors, matrices) and basic calculus (derivatives, chain rule).</li>
+                <li>Implement a tiny MLP in NumPy or PyTorch on MNIST—feel forward/backward yourself once.</li>
+                <li>Train a CNN on CIFAR or a public image dataset; plot learning curves.</li>
+                <li>Study the transformer at a high level, then fine-tune a small open model (Hugging Face ecosystem).</li>
+                <li>Read about MLOps and evaluation before claiming production readiness.</li>
+              </ol>
+
+              <h2 class="h4 mt-5">Further reading</h2>
+              <ul>
+                <li>Michael Nielsen — <em>Neural Networks and Deep Learning</em> (free online)</li>
+                <li>Ian Goodfellow, Yoshua Bengio, Aaron Courville — <em>Deep Learning</em></li>
+                <li>fast.ai — practical courses (PyTorch-first)</li>
+                <li>Andrej Karpathy — “Neural Networks: Zero to Hero” (video series)</li>
+                <li>Stanford CS231n (vision), CS224n (NLP)</li>
+              </ul>
+
+              <p class="small text-muted mt-4 mb-2"><a href="../index.html#blog">Blog index</a> · <a href="ai-historical-paradigms.html">AI historical paradigms</a> · <a href="llm-in-depth.html">LLMs in depth</a> · <a href="generative-ai-in-depth.html">Generative AI in depth</a> · <a href="ai-foundation-models-deep-dive.html">Foundation models</a> · <a href="how-to-become-ai-developer.html">AI developer guide</a> · <a href="aws-machine-learning-foundations.html">ML Foundations</a></p>
+              <p class="mb-0"><a href="../index.html#blog" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left" aria-hidden="true"></i> Back to blog list</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>

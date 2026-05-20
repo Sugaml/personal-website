@@ -226,7 +226,7 @@
                 <li><strong>Application SDK</strong> — Best for new code; explicit object semantics.</li>
                 <li><strong>Mountpoint for Amazon S3</strong> — AWS-supported FUSE-style mount; read-heavy, sequential access; not a database data directory.</li>
                 <li><strong>Third-party adapters (s3fs, goofys)</strong> — Understand caching, consistency, and failure modes before production.</li>
-                <li><strong>Amazon EMR / Spark</strong> — Native <code>s3a://</code> with Hadoop-compatible semantics.</li>
+                <li><strong>Amazon EMR / Spark</strong> — Native <code>s3a://</code> with Hadoop-compatible semantics; see <a href="aws-emr-hadoop-components-deep-dive.html">EMR and Hadoop in depth</a>.</li>
               </ul>
               <p>If you need shared POSIX files across EC2 instances, use <strong>EFS</strong> or FSx—not S3 pretending to be NFS.</p>
 

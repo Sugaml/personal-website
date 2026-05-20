@@ -10,6 +10,15 @@
       "content_file": "ai-historical-paradigms.html"
     },
     {
+      "slug": "ai-ml-terminology-glossary",
+      "file": "ai-ml-terminology-glossary.html",
+      "title": "AI and ML Terminology: A Practical Glossary \u2014 Babulal Tamang",
+      "description": "A practical glossary of AI and ML terms for builders: scope (AI, ML, deep learning, Gen AI), often-confused pairs, learning paradigms, training vs inference, LLMs, RAG, evals, MLOps, and governance.",
+      "keywords": "AI terminology, ML glossary, LLM, RAG, machine learning definitions, Babulal Tamang",
+      "breadcrumb": "AI and ML terminology",
+      "content_file": "ai-ml-terminology-glossary.html"
+    },
+    {
       "slug": "ai-foundation-models-deep-dive",
       "file": "ai-foundation-models-deep-dive.html",
       "title": "AI Foundation Models in Depth \u2014 Babulal Tamang",
@@ -17,6 +26,24 @@
       "keywords": "foundation models, LLM, transformers, RAG, fine-tuning, generative AI, Babulal Tamang",
       "breadcrumb": "AI foundation models",
       "content_file": "ai-foundation-models-deep-dive.html"
+    },
+    {
+      "slug": "neural-networks-in-depth",
+      "file": "neural-networks-in-depth.html",
+      "title": "Neural Networks in Depth \u2014 Babulal Tamang",
+      "description": "A comprehensive guide to neural networks: perceptrons, forward and backward propagation, activation functions, loss and optimizers, regularization, CNN/RNN/transformer architectures, deep learning vs classical ML, and production.",
+      "keywords": "neural networks, deep learning, backpropagation, gradient descent, machine learning, Babulal Tamang",
+      "breadcrumb": "Neural networks in depth",
+      "content_file": "neural-networks-in-depth.html"
+    },
+    {
+      "slug": "supervised-unsupervised-reinforcement-learning",
+      "file": "supervised-unsupervised-reinforcement-learning.html",
+      "title": "Supervised, Unsupervised, and Reinforcement Learning \u2014 Babulal Tamang",
+      "description": "A practical guide to the three core machine learning paradigms: how supervised, unsupervised, and reinforcement learning differ, when to use each, common algorithms, metrics, and how they connect to modern foundation models.",
+      "keywords": "supervised learning, unsupervised learning, reinforcement learning, machine learning, RLHF, Babulal Tamang",
+      "breadcrumb": "Supervised, unsupervised, and RL",
+      "content_file": "supervised-unsupervised-reinforcement-learning.html"
     },
     {
       "slug": "rag-retrieval-augmented-generation-deep-dive",
@@ -62,6 +89,15 @@
       "keywords": "AWS Academy, data engineering, ETL, data quality, Credly, Babulal Tamang",
       "breadcrumb": "Data Engineering",
       "content_file": "aws-data-engineering.html"
+    },
+    {
+      "slug": "aws-emr-hadoop-components-deep-dive",
+      "file": "aws-emr-hadoop-components-deep-dive.html",
+      "title": "Amazon EMR & Hadoop Components in Depth \u2014 Babulal Tamang",
+      "description": "Deep dive into Amazon EMR clusters and Hadoop: HDFS, YARN, MapReduce, master/core/task nodes, Spark on EMR, Hive and lake formats, security, cost, troubleshooting, and when to use EMR vs Glue vs Athena.",
+      "keywords": "Amazon EMR, Hadoop, HDFS, YARN, Spark, data lake, AWS, Babulal Tamang",
+      "breadcrumb": "EMR & Hadoop in depth",
+      "content_file": "aws-emr-hadoop-components-deep-dive.html"
     },
     {
       "slug": "aws-ebs-s3-efs-storage-deep-dive",
@@ -386,6 +422,15 @@
       "keywords": "Kubernetes debugging, kubectl, troubleshooting, hands-on, Babulal Tamang",
       "breadcrumb": "K8s hands-on (5/5)",
       "content_file": "kubernetes-hands-on-5-debug-next-steps.html"
+    },
+    {
+      "slug": "kubernetes-troubleshooting-playbook",
+      "file": "kubernetes-troubleshooting-playbook.html",
+      "title": "Kubernetes Troubleshooting Playbook \u2014 Babulal Tamang",
+      "description": "A production operator playbook for the most common Kubernetes errors: Pending, ImagePullBackOff, CrashLoopBackOff, OOMKilled, probes, networking, storage, RBAC, rollouts, and quick-reference fixes.",
+      "keywords": "Kubernetes troubleshooting, CrashLoopBackOff, ImagePullBackOff, kubectl, SRE, on-call, Babulal Tamang",
+      "breadcrumb": "K8s troubleshooting playbook",
+      "content_file": "kubernetes-troubleshooting-playbook.html"
     },
     {
       "slug": "kubernetes-storage-pv-pvc-storageclass",

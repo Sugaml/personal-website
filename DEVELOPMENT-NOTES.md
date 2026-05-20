@@ -2,6 +2,24 @@
 
 Short log of design decisions and content changes.
 
+## 2026-05-20 — MLA-C01 practice question bank (study)
+
+- **Intent:** 334 unique practice questions with detailed “why correct / why distractors wrong” for AWS Certified Machine Learning Engineer – Associate (MLA-C01), aligned to official domain weights (28/26/22/24).
+- **Files:** `study/aws-mla-c01-practice-questions.md`, generators `scripts/generate_mla_practice_questions.py`, `scripts/mla_question_bank.py`.
+- **Note:** AWS does not list a separate “MLOps Associate”; MLA-C01 is the associate MLOps/ML engineering cert.
+
+## 2026-05-20 — EMR and Hadoop components in depth (guide)
+
+- **Title:** “Amazon EMR and Hadoop Components in Depth: Clusters, Storage, and the Distributed Runtime” (article); index card “EMR & Hadoop in depth”.
+- **Intent:** Technical guide for data/platform engineers—Hadoop three-layer model (HDFS/S3, YARN, MapReduce/Spark), EMR master/core/task and fleets, releases/applications, Hive/lake formats, security, ops (bootstrap/steps/scaling), cost, troubleshooting table, EMR vs Glue vs Athena, reference pipeline. Cross-links to Data Engineering, S3, network, SQL, Linux, FinOps.
+- **Files:** `content/blogs/aws-emr-hadoop-components-deep-dive.html`, `data/blog-posts.json`, `blogs/aws-emr-hadoop-components-deep-dive.html` (via build), `index.html` (AWS section after EBS/S3/EFS card), `scripts/update-blog-meta.py`, cross-link in `aws-data-engineering.html`.
+
+## 2026-05-20 — Kubernetes troubleshooting playbook
+
+- **Title:** “The Kubernetes Troubleshooting Playbook” (article); index card “K8s troubleshooting playbook”.
+- **Intent:** Production operator reference—universal debug workflow, failure layers, playbooks for Pending, ImagePullBackOff, CrashLoopBackOff, OOMKilled, config errors, probes, Service/DNS/Ingress/NetworkPolicy, PVC/CSI, rollouts, RBAC, nodes, API/etcd, certs, HPA; quick-reference table and tools. Cross-links from hands-on Part 5.
+- **Files:** `content/blogs/kubernetes-troubleshooting-playbook.html`, `data/blog-posts.json`, `blogs/kubernetes-troubleshooting-playbook.html` (via build), `index.html`, `scripts/update-blog-meta.py`, cross-link in `kubernetes-hands-on-5-debug-next-steps.html`.
+
 ## 2026-05-20 — What happens when you run ls (deep dive)
 
 - **Title:** “What Happens When You Type ls and Press Enter” (article); index card “What happens when you run ls”.

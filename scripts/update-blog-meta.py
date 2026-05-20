@@ -38,6 +38,11 @@ POSTS = {
         "tags": ["AWS", "Data Engineering", "Pipelines", "Credly"],
         "keywords": "AWS Academy, data engineering, ETL, data quality, Credly, Babulal Tamang",
     },
+    "aws-emr-hadoop-components-deep-dive.html": {
+        "label": "Guide",
+        "tags": ["AWS", "EMR", "Hadoop", "Spark"],
+        "keywords": "Amazon EMR, Hadoop, HDFS, YARN, Spark, data lake, AWS, Babulal Tamang",
+    },
     "aws-machine-learning-foundations.html": {
         "label": "Academy",
         "tags": ["AWS", "Machine Learning", "ML", "Credly"],
@@ -72,6 +77,16 @@ POSTS = {
         "label": "Essay",
         "tags": ["AI", "History", "Deep Learning", "Transformers"],
         "keywords": "AI history, symbolic AI, neural networks, transformers, Babulal Tamang",
+    },
+    "ai-ml-terminology-glossary.html": {
+        "label": "Reference",
+        "tags": ["AI", "ML", "Glossary", "LLM"],
+        "keywords": "AI terminology, ML glossary, LLM, RAG, machine learning definitions, Babulal Tamang",
+    },
+    "supervised-unsupervised-reinforcement-learning.html": {
+        "label": "Guide",
+        "tags": ["Machine Learning", "Supervised", "Unsupervised", "Reinforcement Learning"],
+        "keywords": "supervised learning, unsupervised learning, reinforcement learning, machine learning, RLHF, Babulal Tamang",
     },
     "docker-containerization-hidden-side.html": {
         "label": "Essay",
@@ -123,6 +138,11 @@ POSTS = {
         "tags": ["Kubernetes", "Debugging", "kubectl", "Hands-on"],
         "keywords": "Kubernetes debugging, kubectl, troubleshooting, hands-on, Babulal Tamang",
     },
+    "kubernetes-troubleshooting-playbook.html": {
+        "label": "Playbook",
+        "tags": ["Kubernetes", "Troubleshooting", "kubectl", "SRE"],
+        "keywords": "Kubernetes troubleshooting, CrashLoopBackOff, ImagePullBackOff, kubectl, SRE, on-call, Babulal Tamang",
+    },
     "devops-historical-foundations.html": {
         "label": "Essay",
         "tags": ["DevOps", "History", "CI/CD", "Platform Engineering"],
@@ -137,6 +157,11 @@ POSTS = {
         "label": "Guide",
         "tags": ["Generative AI", "LLM", "Diffusion", "Responsible AI"],
         "keywords": "generative AI, LLM, diffusion models, GAN, responsible AI, RAG, Babulal Tamang",
+    },
+    "neural-networks-in-depth.html": {
+        "label": "Guide",
+        "tags": ["Neural Networks", "Deep Learning", "Machine Learning", "Backpropagation"],
+        "keywords": "neural networks, deep learning, backpropagation, gradient descent, perceptron, Babulal Tamang",
     },
     "ai-foundation-models-deep-dive.html": {
         "label": "Guide",
