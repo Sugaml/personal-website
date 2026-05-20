@@ -19,6 +19,15 @@
       "content_file": "ai-foundation-models-deep-dive.html"
     },
     {
+      "slug": "rag-retrieval-augmented-generation-deep-dive",
+      "file": "rag-retrieval-augmented-generation-deep-dive.html",
+      "title": "RAG in Depth: Retrieval-Augmented Generation \u2014 Babulal Tamang",
+      "description": "An in-depth guide to retrieval-augmented generation (RAG): pipeline, chunking, embeddings, hybrid search, reranking, evaluation, production ops, advanced patterns, and governance.",
+      "keywords": "RAG, retrieval-augmented generation, embeddings, vector search, LLM, Babulal Tamang",
+      "breadcrumb": "RAG in depth",
+      "content_file": "rag-retrieval-augmented-generation-deep-dive.html"
+    },
+    {
       "slug": "aws-cloud-architecting",
       "file": "aws-cloud-architecting.html",
       "title": "Cloud Architecting (AWS Academy) \u2014 Babulal Tamang",
@@ -377,6 +386,15 @@
       "keywords": "Kubernetes storage, PersistentVolume, PVC, StorageClass, CSI, dynamic provisioning, Babulal Tamang",
       "breadcrumb": "Kubernetes storage (PV, PVC, StorageClass)",
       "content_file": "kubernetes-storage-pv-pvc-storageclass.html"
+    },
+    {
+      "slug": "linux-in-depth",
+      "file": "linux-in-depth.html",
+      "title": "Linux in Depth \u2014 Practical Handbook for Developers & Operators \u2014 Babulal Tamang",
+      "description": "A practical Linux handbook: filesystem layout, essential CLI commands, permissions, processes, networking, systemd, logs, SSH, troubleshooting, and how Linux underpins Docker and Kubernetes.",
+      "keywords": "Linux, shell, bash, systemd, DevOps, command line, Babulal Tamang",
+      "breadcrumb": "Linux in depth",
+      "content_file": "linux-in-depth.html"
     },
     {
       "slug": "kubernetes-when-how-why-where",

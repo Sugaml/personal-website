@@ -2,6 +2,12 @@
 
 Short log of design decisions and content changes.
 
+## 2026-05-20 — Git & GitHub in depth (course notes)
+
+- **Title:** “Git & GitHub in Depth: Theory, Practice, and the Commands Power Users Reach For” (article); index card “Git & GitHub in depth”.
+- **Intent:** Course-style guide—Git vs GitHub, object model (blob/tree/commit/tag), three trees, branching/merge/rebase, remotes, hidden commands (reflog, bisect, worktree, stash, cherry-pick, plumbing), GitHub PRs/Actions/security/gh CLI, labs and pitfalls. Cross-links to GitOps, Terraform, incidents.
+- **Files:** `content/blogs/git-github-course-in-depth.html`, `data/blog-posts.json`, `blogs/git-github-course-in-depth.html` (via `make build`), `index.html` (Platform section before GitOps card), cross-link from `gitops-principles.html`.
+
 ## 2026-05-20 — Generative AI in depth (guide)
 
 - **Title:** “Generative AI in Depth: Models, Modalities, Training, and Shipping Real Products” (article); index card “Generative AI in depth”.
