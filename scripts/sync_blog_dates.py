@@ -74,6 +74,7 @@ def patch_content_file(post: dict) -> bool:
 def patch_index_card(article_open: str, body: str, filename: str, post: dict) -> str:
     pub = post["published"]
     meta = article_meta_line(post)
+    body = re.sub(r'\s*·\s*<span class="blog-meta-updated">[^<]*</span>', "", body)
     new_body, count = TIME_RE.subn(meta, body, count=1)
     if count == 0:
         return article_open + body + f'href="blogs/{filename}"'

@@ -2,6 +2,13 @@
 
 Short log of design decisions and content changes.
 
+## 2026-05-20 — Blog publication dates (sequential + index UX)
+
+- **Problem:** Dozens of posts shared `19 May 2026` / `20 May 2026` on the index and in article headers after bulk updates.
+- **Approach:** Single source of truth in `data/blog-posts.json` (`published` per slug). Credential posts keep real cert dates (Mar 2025–Apr 2026); guides get one date per day in narrative order from `scripts/lib/blog_dates.py` (`KNOWN_PUBLISHED` + `SEQUENTIAL_ORDER`, May 2026 → Jun 2026).
+- **Sync:** `make sync-dates` → `scripts/sync_blog_dates.py` updates registry, `content/blogs/`, `index.html` (`data-published` on cards), then `make build`.
+- **UX:** Blog toolbar (Newest / Oldest first) + `assets/js/blog-index.js` sorts cards within each row; tabular date numerals in `theme-v2.css`. Removed duplicate `linux-in-depth` registry entry.
+
 ## 2026-05-20 — MCP servers in depth (guide)
 
 - **Title:** “MCP Servers in Depth: The Model Context Protocol for Tools, Data, and Agents” (article); index card “MCP servers in depth”.
