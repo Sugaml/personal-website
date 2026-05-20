@@ -2,6 +2,12 @@
 
 Short log of design decisions and content changes.
 
+## 2026-05-20 — AWS network architecture design (guide)
+
+- **Title:** “Designing AWS Network Architecture: What a Cloud Architect Actually Decides” (article); index card uses shorter “AWS network architecture”.
+- **Intent:** Architect-focused guide on requirements-first VPC design, layered subnets, IPAM/CIDR planning, connectivity patterns (endpoints, NAT, TGW, hybrid), security on the wire, multi-account landing zones, DR, operability, cost levers, pitfalls, and ARB checklist. Cross-links to Cloud Architecting, Cloud Security Foundations, cloud platform evolution, GitOps, and FinOps/GreenOps Part 5.
+- **Files:** `blogs/aws-network-architecture-design.html`, `index.html` (AWS section after Cloud Architecting), cross-link from `aws-cloud-architecting.html`.
+
 ## 2026-05-19 — Kubernetes hands-on course (5 parts)
 
 - **Series:** Beginner path with practice on local clusters (kind, k3s, minikube): lab setup → YAML anatomy → Pod/Deployment/Service → day-one best practices → debugging and next steps.

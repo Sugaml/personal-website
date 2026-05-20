@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Designing AWS Network Architecture — A Cloud Architect's Guide — Babulal Tamang</title>
+  <meta content="How to design AWS network architecture as a cloud architect: requirements, VPC layering, routing, connectivity, security, multi-account hub-spoke, hybrid, and Well-Architected trade-offs." name="description">
+  <link href="../assets/img/favicon.png" rel="icon">
+  <link href="../assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="../assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="../assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="../assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="../assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <link href="../assets/css/style.css" rel="stylesheet">
+  <link href="../assets/css/theme-v2.css" rel="stylesheet">
+</head>
+<body class="theme-v2">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <button class="mobile-nav-toggle d-xl-none" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navbar"><i class="bi bi-list" aria-hidden="true"></i></button>
+  <header id="header">
+    <div class="d-flex flex-column">
+      <div class="profile sidebar-profile">
+        <div class="profile-avatar-wrap">
+          <img src="../assets/img/profile-img.jpg" class="profile-avatar img-fluid" width="132" height="132" alt="Portrait of Babulal Tamang">
+        </div>
+        <h1 class="text-light profile-name"><a href="../index.html">Babulal Tamang</a></h1>
+        <p class="profile-tagline">Platform · DevOps · Software · Cloud Architect · AI/ML Enthusiast</p>
+        <p class="profile-location"><i class="bi bi-geo-alt-fill" aria-hidden="true"></i><span>Kathmandu, Nepal</span></p>
+        <div class="social-links profile-social mt-3 text-center">
+          <a href="https://twitter.com/SugamLa20062317" class="twitter" aria-label="Twitter"><i class="bx bxl-twitter" aria-hidden="true"></i></a>
+          <a href="https://github.com/sugaml/" class="github" aria-label="GitHub"><i class="bx bxl-github" aria-hidden="true"></i></a>
+          <a href="https://www.linkedin.com/in/babulal-tamang-b6507121b/" class="linkedin" aria-label="LinkedIn"><i class="bx bxl-linkedin" aria-hidden="true"></i></a>
+        </div>
+      </div>
+      <nav id="navbar" class="nav-menu navbar" aria-label="Main navigation">
+        <ul>
+          <li><a href="../index.html#hero" class="nav-link scrollto"><i class="bx bx-home" aria-hidden="true"></i> <span>Home</span></a></li>
+          <li><a href="../index.html#about" class="nav-link scrollto"><i class="bx bx-user" aria-hidden="true"></i> <span>About</span></a></li>
+          <li><a href="../index.html#skills" class="nav-link scrollto"><i class="bx bx-code-block" aria-hidden="true"></i> <span>Skills</span></a></li>
+          <li><a href="../index.html#resume" class="nav-link scrollto"><i class="bx bx-file-blank" aria-hidden="true"></i> <span>Resume</span></a></li>
+          <li><a href="../index.html#certifications" class="nav-link scrollto"><i class="bx bx-award" aria-hidden="true"></i> <span>Certifications</span></a></li>
+          <li><a href="../index.html#blog" class="nav-link scrollto active"><i class="bx bx-book-content" aria-hidden="true"></i> <span>Blog</span></a></li>
+          <li><a href="../index.html#survey" class="nav-link scrollto"><i class="bx bx-shield-quarter" aria-hidden="true"></i> <span>Cybersecurity Survey</span></a></li>
+          <li><a href="../index.html#what-i-use" class="nav-link scrollto"><i class="bx bx-wrench" aria-hidden="true"></i> <span>What I Use</span></a></li>
+          <li><a href="../index.html#contact" class="nav-link scrollto"><i class="bx bx-envelope" aria-hidden="true"></i> <span>Contact</span></a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <main id="main">
+    <section class="breadcrumbs">
+      <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+          <h2>Blog</h2>
+          <ol>
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../index.html#blog">Blog</a></li>
+            <li>AWS network architecture</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+    <article class="inner-page blog-article pb-5">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-9 col-xl-8">
+            <header class="mb-4 pb-3 border-bottom" data-aos="fade-up">
+              <p class="text-muted small mb-2">AWS · Architecture · <time datetime="2026-05-20">20 May 2026</time></p>
+              <h1 class="h2 mb-3">Designing AWS Network Architecture: What a Cloud Architect Actually Decides</h1>
+              <p class="lead mb-3">Network design on AWS is not a diagram exercise. It is how you bound blast radius, route trust, meet compliance, and keep workloads reachable at the cost and operability your organization can sustain. This post walks through the decisions architects make before anyone provisions a subnet.</p>
+              <div class="border-start border-primary border-4 ps-3 py-3 bg-light rounded mb-0" role="note">
+                <p class="small text-uppercase text-muted mb-1 fw-semibold">In short</p>
+                <p class="mb-0">Start from traffic flows and non-functional requirements, choose account and VPC boundaries, layer subnets by role (not by habit), plan IP space for hybrid growth, connect with the smallest pattern that works (endpoints before NAT where possible), and bake observability and governance into the landing zone from day one.</p>
+              </div>
+            </header>
+
+            <div class="blog-prose" data-aos="fade-up" data-aos-delay="50">
+
+              <h2 class="h4 mt-4">Why networking is an architect problem</h2>
+              <p>Application teams feel networks when deploys fail, latency spikes, or a security review blocks a launch. Architects own the <strong>contracts</strong> those teams inherit: which CIDR blocks exist, how environments are isolated, how on-premises systems reach the cloud, and what “private” means in practice.</p>
+              <p>A good AWS network design aligns with the <strong>AWS Well-Architected Framework</strong>—especially the Security, Reliability, and Operational Excellence pillars—without turning every workload into a bespoke snowflake. The goal is a <strong>repeatable landing zone</strong> with clear extension points for product teams.</p>
+
+              <h2 class="h4 mt-5">1. Gather requirements before drawing boxes</h2>
+              <p>Resist opening the VPC wizard first. Document:</p>
+              <ul>
+                <li><strong>Traffic flows</strong> — user → internet → ALB → app → database; batch jobs; east-west between microservices; admin access; SaaS integrations.</li>
+                <li><strong>Residency and compliance</strong> — data must stay in-region; regulated subnets; logging retention; encryption in transit mandates.</li>
+                <li><strong>Availability targets</strong> — multi-AZ minimum for production; active-active across regions only when RTO/RPO justify the complexity.</li>
+                <li><strong>Connectivity</strong> — hybrid (VPN, Direct Connect), partner networks, multi-cloud, or cloud-only.</li>
+                <li><strong>Tenancy model</strong> — one account per environment, per team, or per application; affects IP planning and Transit Gateway design.</li>
+                <li><strong>Operational ownership</strong> — who approves CIDR changes, who runs NOC for TGW, who pays for NAT hours.</li>
+              </ul>
+              <p>These inputs become your <strong>architecture decision records (ADRs)</strong>. When someone asks for a /16 in every account “just in case,” you can point to the IP registry and hybrid overlap rules.</p>
+
+              <h2 class="h4 mt-5">2. Know the AWS networking building blocks</h2>
+              <p>Architects do not memorize every feature launch, but they should fluently map problems to primitives:</p>
+              <div class="table-responsive">
+                <table class="table table-sm table-bordered align-middle">
+                  <thead class="table-light">
+                    <tr><th scope="col">Layer</th><th scope="col">AWS construct</th><th scope="col">Architect use</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>Global</td><td>Region, Availability Zone, Local Zone, Wavelength</td><td>Place workloads close to users and dependencies; design for AZ failure, not only instance failure.</td></tr>
+                    <tr><td>Isolation</td><td>VPC, subnet, route table</td><td>Hard boundary for routing and broadcast domains; subnets are AZ-scoped.</td></tr>
+                    <tr><td>Edge</td><td>Internet Gateway, NAT Gateway, egress-only IGW</td><td>Controlled inbound/outbound internet; NAT is a cost and availability choke point—size and AZ-span deliberately.</td></tr>
+                    <tr><td>Private AWS access</td><td>VPC interface/gateway endpoints, PrivateLink</td><td>Keep S3, DynamoDB, and API traffic off the public internet and often reduce NAT spend.</td></tr>
+                    <tr><td>Hybrid &amp; multi-VPC</td><td>Site-to-Site VPN, Direct Connect, Transit Gateway, VPC peering</td><td>Connect on-premises and many VPCs; prefer TGW hub-spoke at scale over mesh peering.</td></tr>
+                    <tr><td>Policy</td><td>Security groups, NACLs, Network Firewall, WAF, Shield</td><td>Stateful instance-level rules (SG) vs subnet-level NACLs; edge vs east-west inspection.</td></tr>
+                    <tr><td>DNS</td><td>Route 53 public/private zones, Resolver endpoints</td><td>Service discovery, hybrid DNS forwarding, split-horizon patterns.</td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <h2 class="h4 mt-5">3. Layered VPC pattern (the default worth knowing)</h2>
+              <p>Most production VPCs use <strong>tiers by function</strong>, stretched across at least two AZs:</p>
+              <ul>
+                <li><strong>Public subnets</strong> — load balancers, NAT gateways, bastion hosts (if you still use them). Route to an Internet Gateway for inbound/outbound internet paths you intend to expose.</li>
+                <li><strong>Private application subnets</strong> — EC2, ECS, EKS nodes, Lambda with VPC attachment. Default route to NAT for outbound internet when required; prefer endpoints for AWS APIs.</li>
+                <li><strong>Private data subnets</strong> — RDS, ElastiCache, OpenSearch. No direct internet route; security groups allow only from app tiers.</li>
+                <li><strong>Isolated subnets</strong> (optional) — no NAT, no IGW; internal-only or endpoint-only workloads.</li>
+              </ul>
+              <pre class="bg-light p-3 rounded small overflow-auto" aria-label="VPC tier diagram"><code>Internet
+    │
+    ▼
+┌─────────────┐     ┌──────────────────┐     ┌─────────────────┐
+│ Public tier │────▶│ Private app tier │────▶│ Private data    │
+│ ALB, NAT    │     │ ECS/EKS/EC2      │     │ RDS, cache      │
+└─────────────┘     └──────────────────┘     └─────────────────┘
+       │                     │                        │
+       └─────────────────────┴────────────────────────┘
+                    VPC endpoints (S3, STS, ECR, …)
+                    optional: TGW / VPN / DX to on-prem</code></pre>
+              <p>Subnet count grows with AZs: three AZs × three tiers = nine subnets before specialized slices (DMZ, analytics, etc.). That is fine if automation creates them; painful if hand-clicked.</p>
+
+              <h2 class="h4 mt-5">4. IP addressing and future-proofing</h2>
+              <p><strong>CIDR planning</strong> is one of the few irreversible early mistakes.</p>
+              <ul>
+                <li>Reserve ranges per environment, region, and account in a central <strong>IP address management (IPAM)</strong> registry—AWS IPAM or your CMDB.</li>
+                <li>Avoid overlapping RFC1918 space with on-premises, other clouds, and acquisitions; overlaps break VPN and TGW routing.</li>
+                <li>Size for <strong>pod density</strong>: EKS can consume many IPs per node; Lambda in VPC scales ENIs; leave headroom in private subnets.</li>
+                <li>Document whether you will use <strong>IPv6</strong> (dual-stack ALB, egress-only IGW) for compliance or mobile clients.</li>
+              </ul>
+              <p>Rule of thumb: a single-region application VPC often starts with a <code>/16</code> split into <code>/24</code> or <code>/20</code> subnets per tier per AZ—but the right answer is the smallest plan that satisfies growth tables you have written down.</p>
+
+              <h2 class="h4 mt-5">5. Connectivity patterns and when to use them</h2>
+              <ul>
+                <li><strong>VPC endpoints</strong> — First choice for AWS service access (S3 gateway endpoint is free; interface endpoints bill hourly). Reduces data exfiltration surface and NAT costs.</li>
+                <li><strong>NAT Gateway</strong> — When private resources must reach arbitrary internet destinations. Deploy per AZ for resilience; accept the cost or use NAT instances only with eyes open on ops burden.</li>
+                <li><strong>VPC peering</strong> — Simple, non-transitive VPC-to-VPC links. Good for a few peers; becomes operational debt as a full mesh.</li>
+                <li><strong>Transit Gateway</strong> — Hub for many VPCs, VPN, and Direct Connect attachments; route domains and appliance modes for inspection VPCs.</li>
+                <li><strong>AWS PrivateLink</strong> — Consumer access to a service without VPC peering; common for SaaS and shared platform services.</li>
+                <li><strong>Site-to-Site VPN / Direct Connect</strong> — Hybrid: VPN for speed-to-value; DX for predictable bandwidth and lower latency to on-premises.</li>
+              </ul>
+              <p>Architects choose the <strong>minimum coupling</strong> that meets the flow. If two systems only talk through an internal ALB, they may not need full VPC peering—PrivateLink or a shared services VPC might suffice.</p>
+
+              <h2 class="h4 mt-5">6. Security architecture on the wire</h2>
+              <p>Defense in depth for networks means overlapping controls, not duplicate firewalls everywhere:</p>
+              <ul>
+                <li><strong>Security groups</strong> — Default deny between tiers; reference other SGs, not CIDR sprawl. Document standard “web tier,” “app tier,” “data tier” SG templates.</li>
+                <li><strong>NACLs</strong> — Coarse subnet guards; useful for explicit deny lists, not day-to-day micro-segmentation.</li>
+                <li><strong>AWS Network Firewall or third-party NVAs</strong> — East-west or egress inspection when regulations require IDS/IPS on traffic between VPCs.</li>
+                <li><strong>WAF + Shield</strong> — At CloudFront or ALB for HTTP threats; network design must route user traffic through those edges intentionally.</li>
+                <li><strong>IAM and resource policies</strong> — Remember S3 and API access is not only network path; “private subnet” does not alone secure data.</li>
+                <li><strong>VPC Flow Logs, DNS query logs, Traffic Mirroring</strong> — Evidence for IR and capacity planning; decide retention and who can read logs (separate security account).</li>
+              </ul>
+              <p>Pair network controls with <a href="aws-cloud-security-foundations.html">identity and logging discipline</a>—architects who only draw subnets leave half the attack surface unowned.</p>
+
+              <h2 class="h4 mt-5">7. Multi-account and landing zones</h2>
+              <p>At organizational scale, the network is a <strong>platform product</strong>:</p>
+              <ul>
+                <li><strong>AWS Organizations</strong> with Service Control Policies (SCPs) guardrails—e.g. no internet gateways in data accounts.</li>
+                <li><strong>Shared networking account</strong> hosts Transit Gateway, centralized egress, or firewall VPCs.</li>
+                <li><strong>AWS Resource Access Manager (RAM)</strong> shares subnets for “VPC factory” patterns where app accounts launch into centrally managed networks.</li>
+                <li><strong>Separate security / log archive accounts</strong> receive flow logs and firewall logs without application-team delete rights.</li>
+              </ul>
+              <p>Hub-spoke via Transit Gateway is the common enterprise pattern: spokes are workload VPCs; the hub carries shared services, inspection, and hybrid attachments. Document <strong>route propagation</strong>—asymmetric routing causes subtle outages.</p>
+
+              <h2 class="h4 mt-5">8. Multi-region and disaster recovery</h2>
+              <p>Networks follow DR strategy, not the reverse:</p>
+              <ul>
+                <li><strong>Backup and restore</strong> — Second region VPC can be smaller until failover; DNS and AMIs must be ready.</li>
+                <li><strong>Pilot light / warm standby</strong> — Partial capacity in DR region; replicate data and security group templates as code.</li>
+                <li><strong>Active-active</strong> — Global load balancing, health checks, and often complex data-layer networking; justify with business RTO.</li>
+              </ul>
+              <p>Route 53 health checks and failover routing are part of the design. Cross-region VPC peering or TGW inter-region peering adds cost and complexity—use when traffic volume warrants it.</p>
+
+              <h2 class="h4 mt-5">9. Operability: what you inherit after launch</h2>
+              <p>Architects who “throw designs over the wall” create 3 a.m. pages. Bake in:</p>
+              <ul>
+                <li><strong>Infrastructure as code</strong> — VPC, subnets, routes, and endpoints in Terraform, CloudFormation, or CDK; peer review like application code.</li>
+                <li><strong>Tagging standards</strong> — <code>Environment</code>, <code>CostCenter</code>, <code>NetworkTier</code> for chargeback and automation.</li>
+                <li><strong>Runbooks</strong> — NAT exhaustion, TGW route limits, endpoint DNS failures, certificate expiry on PrivateLink services.</li>
+                <li><strong>Capacity alarms</strong> — Available IPs per subnet, NAT Gateway port allocation, TGW attachment throughput.</li>
+              </ul>
+              <p>This is the same operational mindset as <a href="gitops-principles.html">GitOps</a>: declared state, reviewed changes, observable drift—applied to the network layer.</p>
+
+              <h2 class="h4 mt-5">10. Cost and sustainability levers architects control</h2>
+              <p>Network line items surprise finance teams: NAT Gateway hours and data processing, cross-AZ traffic, TGW attachments, interface endpoints, and DX ports. Design choices matter:</p>
+              <ul>
+                <li>Endpoint-heavy designs vs NAT-heavy outbound internet.</li>
+                <li>AZ-local traffic for tiered apps (same-AZ where consistency allows).</li>
+                <li>Consolidated egress through a shared services VPC vs NAT per spoke.</li>
+              </ul>
+              <p>See also <a href="finops-greenops-5-smarter-lighter.html">designing for cost and sustainability</a> when ARB reviews include FinOps and GreenOps criteria.</p>
+
+              <h2 class="h4 mt-5">Common pitfalls</h2>
+              <ul>
+                <li><strong>Flat VPC</strong> — Everything in one subnet “because it is simpler”; blast radius and compliance reviews suffer.</li>
+                <li><strong>Over-peering</strong> — Full mesh between dozens of VPCs; routing tables become undebuggable.</li>
+                <li><strong>Single NAT in one AZ</strong> — AZ outage takes all private outbound traffic with it.</li>
+                <li><strong>Hard-coded CIDRs in security groups</strong> — Breaks when IP plans change; prefer SG references.</li>
+                <li><strong>Console-only drift</strong> — Manual route table edits not reflected in IaC; GitOps for networks fixes this.</li>
+                <li><strong>Ignoring DNS</strong> — Hybrid failures are often Resolver forwarding, not “the VPC is down.”</li>
+              </ul>
+
+              <h2 class="h4 mt-5">Architect review checklist</h2>
+              <p>Use these questions in design reviews before build:</p>
+              <ol>
+                <li>What are the north-south and east-west flows, and who owns each hop?</li>
+                <li>Which accounts and VPCs bound blast radius for this workload?</li>
+                <li>Is the IP plan registered and non-overlapping with hybrid and future regions?</li>
+                <li>How do private workloads reach AWS APIs and the internet—endpoints, NAT, or both?</li>
+                <li>How does traffic reach on-premises and partner networks—and what fails if one AZ drops?</li>
+                <li>Where are logs stored, who can delete them, and what is the retention?</li>
+                <li>What is automated, tagged, and documented for the on-call engineer?</li>
+              </ol>
+
+              <h2 class="h4 mt-5">How this connects to the rest of cloud architecting</h2>
+              <p>Networking is the skeleton; compute, data, and identity are the organs. My notes on <a href="aws-cloud-architecting.html">Cloud Architecting</a> and <a href="cloud-platform-evolution.html">cloud platform evolution</a> cover the wider landing-zone story—network design is where multi-AZ reliability and segmentation become concrete.</p>
+              <p>Start small: one well-structured VPC with endpoints, layered subnets, flow logs, and IaC. Grow into Organizations, Transit Gateway, and inspection VPCs when traffic and governance demand it—not because a reference diagram looked impressive on slide one.</p>
+
+              <h2 class="h4 mt-5">Further reading</h2>
+              <ul>
+                <li>AWS — <em>VPC User Guide</em>, <em>Transit Gateway</em>, and <em>AWS Well-Architected Framework</em> (Security &amp; Reliability pillars)</li>
+                <li>AWS — <em>Building a Scalable and Secure Multi-VPC AWS Network Infrastructure</em> (whitepaper-style guidance)</li>
+                <li>AWS — <em>AWS Security Reference Architecture</em> for opinionated account and network layouts</li>
+                <li>HashiCorp / community patterns — Terraform modules for VPC and TGW (study for structure, not blind copy-paste)</li>
+              </ul>
+
+              <p class="small text-muted mt-4 mb-2"><a href="../index.html#blog">Blog index</a> · <a href="aws-cloud-architecting.html">Cloud Architecting</a> · <a href="aws-cloud-security-foundations.html">Cloud Security Foundations</a> · <a href="cloud-platform-evolution.html">Cloud platform evolution</a></p>
+              <p class="mb-0"><a href="../index.html#blog" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left" aria-hidden="true"></i> Back to blog list</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+  </main>
+  <footer id="footer">
+    <div class="container">
+      <div class="copyright">&copy; Copyright <strong><span>babulal.com.np</span></strong></div>
+      <div class="credits">Designed by <a href="https://babulal.com.np/">Babulal Tamang</a></div>
+    </div>
+  </footer>
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+  <script src="../assets/vendor/purecounter/purecounter_vanilla.js"></script>
+  <script src="../assets/vendor/aos/aos.js"></script>
+  <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="../assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="../assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="../assets/vendor/typed.js/typed.min.js"></script>
+  <script src="../assets/vendor/waypoints/noframework.waypoints.js"></script>
+  <script src="../assets/js/main.js"></script>
+</body>
+</html>
