@@ -2,6 +2,18 @@
 
 Short log of design decisions and content changes.
 
+## 2026-05-20 — Neural networks in depth (guide)
+
+- **Title:** “Neural Networks in Depth: From Perceptrons to Deep Learning” (article); index card “Neural networks in depth”.
+- **Intent:** Foundational ML companion before LLM/foundation-model guides: history, neuron math, forward/backward pass, activations, loss, optimizers, regularization, architecture table, deep vs classical ML, compute, production sketch, debugging checklist, learning path.
+- **Files:** `content/blogs/neural-networks-in-depth.html`, `data/blog-posts.json`, `blogs/neural-networks-in-depth.html` (via build), `index.html`, `scripts/update-blog-meta.py`, cross-links in `ai-historical-paradigms.html`, `how-to-become-ai-developer.html`, `aws-machine-learning-foundations.html`.
+
+## 2026-05-20 — AI and ML terminology glossary
+
+- **Title:** “AI and ML Terminology: A Practical Glossary for Builders” (article); index card “AI and ML terminology”.
+- **Intent:** Standalone reference—scope nesting, often-confused pairs, themed glossary (paradigms, data, models, training, inference, Gen AI, RAG, evals, MLOps, governance), acronyms. Complements `how-to-become-ai-developer.html`.
+- **Files:** `content/blogs/ai-ml-terminology-glossary.html`, `data/blog-posts.json`, `blogs/ai-ml-terminology-glossary.html` (via build), `index.html` (AI & ML sections), `scripts/update-blog-meta.py`, cross-link from `how-to-become-ai-developer.html`.
+
 ## 2026-05-20 — MLA-C01 practice question bank (study)
 
 - **Intent:** 334 unique practice questions with detailed “why correct / why distractors wrong” for AWS Certified Machine Learning Engineer – Associate (MLA-C01), aligned to official domain weights (28/26/22/24).

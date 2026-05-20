@@ -1,0 +1,268 @@
+<article class="inner-page blog-article pb-5">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-9 col-xl-8">
+            <header class="mb-4 pb-3 border-bottom" data-aos="fade-up">
+              <div class="blog-article-meta mb-3">
+                <p class="text-muted small mb-2">Platform &amp; AI · <time datetime="2026-05-20">20 May 2026</time> · <span class="blog-meta-label">Guide</span> · By <a href="../index.html#about" class="blog-author text-reset fw-semibold" rel="author">Babulal Tamang</a></p>
+              <ul class="blog-tags list-unstyled d-flex flex-wrap gap-1 mb-0" aria-label="Tags">
+                <li><span class="badge rounded-pill text-bg-light border text-muted">MCP</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Model Context Protocol</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">AI agents</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Cursor</span></li>
+              </ul>
+              </div>
+              <h1 class="h2 mb-3">MCP Servers in Depth: The Model Context Protocol for Tools, Data, and Agents</h1>
+              <p class="lead mb-3">Before every chat app reinvented its own plugin format, teams hit the same wall: an LLM in the IDE needed databases, browsers, Git, and cloud APIs—but each integration was bespoke, brittle, and impossible to reuse. The <strong>Model Context Protocol (MCP)</strong> is an open standard that treats those integrations like microservices: a <strong>host</strong> (Cursor, Claude Desktop, an SDK agent) speaks to <strong>MCP servers</strong> over a small JSON-RPC protocol, discovering <strong>tools</strong>, <strong>resources</strong>, and <strong>prompts</strong> with explicit schemas. This guide explains the architecture, message lifecycle, transports, security, and how to build and operate MCP servers in production-minded environments.</p>
+              <div class="border-start border-primary border-4 ps-3 py-3 bg-light rounded mb-0" role="note">
+                <p class="small text-uppercase text-muted mb-1 fw-semibold">In short</p>
+                <p class="mb-0">MCP separates the <em>model host</em> from <em>capability providers</em>. Servers expose typed tools and readable resources; clients negotiate capabilities once, then call tools through JSON-RPC. Success means treating MCP like any other service boundary: least privilege, schema discipline, observability, and clear trust boundaries—not piping root credentials into a demo server.</p>
+              </div>
+            </header>
+
+            <div class="blog-prose" data-aos="fade-up" data-aos-delay="50">
+
+              <h2 class="h4 mt-4">What problem MCP solves</h2>
+              <p>Large language models are general reasoners; they are not, by themselves, connected to your systems. Product teams historically built <strong>N custom bridges</strong> for <strong>M hosts</strong>: a VS Code extension that shells out to <code>kubectl</code>, a Slack bot with its own Jira client, a notebook that pastes CSV exports into context. Each bridge duplicated auth, error handling, and schema design. MCP collapses that pattern into <strong>N servers × 1 protocol</strong> that any compliant host can reuse.</p>
+              <p>Think of MCP as <strong>USB-C for AI tools</strong>: a standard plug shape (messages and capability types), not a mandate about what you plug in. A filesystem server, a Postgres server, and a browser automation server all look the same to the host—they advertise capabilities; the model chooses among them under your policies.</p>
+
+              <h2 class="h4 mt-5">Core vocabulary: host, client, and server</h2>
+              <ul>
+                <li><strong>Host</strong> — The application the human uses: Cursor, Claude Desktop, an internal agent built on the Cursor SDK or another runtime. The host owns the UI, model API keys, and policy (which tools may run, approval flows).</li>
+                <li><strong>Client</strong> — Code inside the host that maintains one JSON-RPC session per MCP server. A host with five configured servers runs five clients (often five child processes or HTTP connections).</li>
+                <li><strong>Server</strong> — A program that implements MCP and exposes capabilities: list files, query a database, fetch docs from Confluence, drive a headless browser. Servers are small, focused, and replaceable.</li>
+              </ul>
+              <p>The model never talks to the server socket directly. The flow is: <strong>user → host → model proposes tool use → host/client executes MCP call → result returned to model → user sees outcome</strong>. That indirection is what makes auditing, consent prompts, and rate limits possible.</p>
+
+              <h2 class="h4 mt-5">Architecture at a glance</h2>
+              <pre class="bg-light p-3 rounded small overflow-auto"><code>┌─────────────────────────────────────────────────────────────┐
+│  MCP Host (e.g. Cursor IDE, Claude Desktop, SDK agent)      │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐          │
+│  │ MCP Client  │  │ MCP Client  │  │ MCP Client  │  ...     │
+│  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘          │
+└─────────┼────────────────┼────────────────┼────────────────┘
+          │ stdio / HTTP   │                │
+          ▼                ▼                ▼
+   ┌──────────────┐ ┌──────────────┐ ┌──────────────┐
+   │ MCP Server   │ │ MCP Server   │ │ MCP Server   │
+   │ (filesystem) │ │ (postgres)   │ │ (browser)    │
+   └──────┬───────┘ └──────┬───────┘ └──────┬───────┘
+          │                │                │
+          ▼                ▼                ▼
+      Local FS          Database         Chromium</code></pre>
+
+              <h2 class="h4 mt-5">Protocol foundation: JSON-RPC 2.0</h2>
+              <p>MCP messages ride on <strong>JSON-RPC 2.0</strong>: requests with <code>method</code> and <code>params</code>, responses with <code>result</code> or <code>error</code>, and optional notifications (no response expected). The spec defines a versioned capability handshake so hosts and servers agree on supported features before heavy traffic.</p>
+              <p>Typical lifecycle:</p>
+              <ol>
+                <li><strong>Initialize</strong> — Client sends protocol version and client info; server returns its version and capabilities (tools? resources? prompts? logging?).</li>
+                <li><strong>Initialized notification</strong> — Client acknowledges; session is ready.</li>
+                <li><strong>Discovery</strong> — <code>tools/list</code>, <code>resources/list</code>, <code>prompts/list</code> (as supported).</li>
+                <li><strong>Execution</strong> — <code>tools/call</code> with a tool name and JSON arguments matching the advertised input schema.</li>
+                <li><strong>Shutdown</strong> — Graceful close of stdio pipe or HTTP stream.</li>
+              </ol>
+              <p>Schemas matter: each tool publishes an <strong>input JSON Schema</strong> so hosts can validate arguments before execution and surface structured errors when the model hallucinates parameter names.</p>
+
+              <h2 class="h4 mt-5">The three capability primitives</h2>
+
+              <h3 class="h5 mt-4">1. Tools (model-initiated actions)</h3>
+              <p><strong>Tools</strong> are functions the model may invoke: run a SQL query, create a Git branch, post to Slack, restart a deployment. Each tool has a name, description (shown to the model), and input schema. Tool results are structured content—often text, sometimes images or embedded resources.</p>
+              <p>Tools are the highest-risk surface: they mutate state. Hosts should implement <strong>human-in-the-loop approval</strong> for destructive operations, per-tool allowlists, and environment separation (read-only prod vs write sandbox).</p>
+
+              <h3 class="h5 mt-4">2. Resources (context the model can read)</h3>
+              <p><strong>Resources</strong> address data by URI-like identifiers (<code>file:///README.md</code>, <code>postgres://schema/users</code>). The host or model can <strong>read</strong> resource contents into context—configuration files, ticket descriptions, API specs—without treating every read as a bespoke tool call. Resources support listing, subscriptions (change notifications), and MIME types so hosts know how to render them.</p>
+              <p>Use resources when data is <em>reference material</em>; use tools when the operation has side effects or complex inputs.</p>
+
+              <h3 class="h5 mt-4">3. Prompts (reusable prompt templates)</h3>
+              <p><strong>Prompts</strong> are parameterized templates packaged by the server: “summarize this repo,” “generate migration from schema diff.” They standardize expert prompts and can ship with domain-specific servers (e.g. a Kubernetes server that knows how to phrase <code>kubectl</code> output requests).</p>
+
+              <h2 class="h4 mt-5">Transports: how bytes move</h2>
+              <div class="table-responsive">
+                <table class="table table-sm table-bordered align-middle">
+                  <thead class="table-light">
+                    <tr>
+                      <th scope="col">Transport</th>
+                      <th scope="col">How it works</th>
+                      <th scope="col">Best for</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>stdio</strong></td>
+                      <td>Host spawns server as child process; JSON-RPC lines on stdin/stdout</td>
+                      <td>Local dev, Cursor/Claude Desktop, CLI agents; simplest auth boundary (OS user)</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Streamable HTTP</strong></td>
+                      <td>HTTP POST + optional SSE for server→client streaming</td>
+                      <td>Remote shared servers, team-hosted capability gateways, SDK cloud agents</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <p>stdio servers are configured with a command and args—e.g. <code>npx -y @modelcontextprotocol/server-filesystem /path</code>. The host inherits the user’s environment variables (which is why secrets in <code>.env</code> are dangerous unless scoped). HTTP servers add TLS, API keys, and network policies—closer to how you’d expose any internal microservice.</p>
+
+              <h2 class="h4 mt-5">What a tool call looks like (conceptually)</h2>
+              <p>After discovery, the model emits a structured intent; the host validates and forwards:</p>
+              <ol>
+                <li>Model: “Call <code>query_database</code> with <code>{\"sql\": \"SELECT count(*) FROM orders\"}</code>.”</li>
+                <li>Host: checks tool is enabled, arguments match schema, optional user approval.</li>
+                <li>Client → Server: JSON-RPC <code>tools/call</code>.</li>
+                <li>Server: executes against Postgres, returns rows as text/JSON.</li>
+                <li>Host: attaches result to conversation; model continues reasoning.</li>
+              </ol>
+              <p>Failures should be <strong>actionable</strong>: schema validation errors, timeout messages, and policy denials belong in the tool result so the model can retry with corrected input—not opaque 500 pages dumped into context.</p>
+
+              <h2 class="h4 mt-5">Configuring MCP servers in Cursor</h2>
+              <p>Cursor reads MCP config from project or user settings (e.g. <code>.cursor/mcp.json</code> or the MCP panel). A minimal stdio server entry resembles:</p>
+              <pre class="bg-light p-3 rounded small overflow-auto"><code>{
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/path/to/allowed/root"]
+    }
+  }
+}</code></pre>
+              <p>Design choices when adding servers:</p>
+              <ul>
+                <li><strong>Scope paths narrowly</strong> — filesystem servers should not mount <code>/</code> or your home directory unless you accept exfiltration risk.</li>
+                <li><strong>Prefer read-only credentials</strong> for analytics DBs; separate write tools behind approval.</li>
+                <li><strong>Document each server</strong> in README so teammates know which processes spawn and which env vars are required.</li>
+                <li><strong>Version-pin</strong> <code>npx</code> packages or use locally installed binaries for reproducibility.</li>
+              </ul>
+
+              <h2 class="h4 mt-5">Building an MCP server</h2>
+              <p>Official SDKs exist for <strong>TypeScript</strong> and <strong>Python</strong> (<code>@modelcontextprotocol/sdk</code>, <code>mcp</code> on PyPI). A minimal server:</p>
+              <ol>
+                <li>Creates a <code>Server</code> instance with name and version.</li>
+                <li>Registers handlers for <code>list_tools</code> and <code>call_tool</code> (and optionally resources/prompts).</li>
+                <li>Connects a <code>StdioServerTransport</code> (or HTTP transport) and runs the event loop.</li>
+              </ol>
+              <p>Example shape (Python, abbreviated):</p>
+              <pre class="bg-light p-3 rounded small overflow-auto"><code>from mcp.server import Server
+from mcp.server.stdio import stdio_server
+
+app = Server("demo-weather")
+
+@app.list_tools()
+async def list_tools():
+    return [{
+        "name": "get_forecast",
+        "description": "City weather summary",
+        "inputSchema": {
+            "type": "object",
+            "properties": {"city": {"type": "string"}},
+            "required": ["city"]
+        }
+    }]
+
+@app.call_tool()
+async def call_tool(name: str, arguments: dict):
+    if name == "get_forecast":
+        city = arguments["city"]
+        # call external API with timeouts and structured errors
+        return [{"type": "text", "text": f"Forecast for {city}: ..."}]
+    raise ValueError(f"Unknown tool: {name}")
+
+async def main():
+    async with stdio_server() as (read, write):
+        await app.run(read, write, app.create_initialization_options())</code></pre>
+              <p>Production servers add: structured logging, request timeouts, circuit breakers on downstream APIs, input sanitization, metrics (latency, error rate per tool), and graceful degradation when dependencies are down.</p>
+
+              <h2 class="h4 mt-5">Security: treat MCP as remote code execution</h2>
+              <p>Any tool the model can call is effectively <strong>RCE with natural-language triggers</strong>. Assume prompts will be attacked.</p>
+              <ul>
+                <li><strong>Prompt injection</strong> — Malicious content in a file or webpage instructs the model to exfiltrate secrets via a tool. Mitigate with scoped filesystem roots, secret scanners, and disallowing arbitrary outbound network from sensitive servers.</li>
+                <li><strong>Over-privileged tokens</strong> — A GitHub MCP server with org-admin PAT is one bad prompt away from disaster. Use fine-scoped tokens, short TTL, and GitHub Apps where possible.</li>
+                <li><strong>Supply chain</strong> — Pin server packages; audit what <code>npx -y</code> pulls on every launch.</li>
+                <li><strong>Data residency</strong> — Tool results land in model context and often vendor logs. Do not pipe PHI/PCI through third-party models without review.</li>
+                <li><strong>Multi-tenant HTTP servers</strong> — Authenticate clients, isolate tenants, rate-limit tool calls.</li>
+              </ul>
+              <p>Platform engineers should map MCP servers into the same risk tier as <strong>CI jobs with secrets</strong>: identity, network policy, audit logs, and break-glass procedures.</p>
+
+              <h2 class="h4 mt-5">MCP vs native function calling vs ad-hoc plugins</h2>
+              <div class="table-responsive">
+                <table class="table table-sm table-bordered align-middle">
+                  <thead class="table-light">
+                    <tr>
+                      <th scope="col">Approach</th>
+                      <th scope="col">Strength</th>
+                      <th scope="col">Limitation</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>OpenAI-style functions / tools API</strong></td>
+                      <td>First-class in a single vendor API; low latency</td>
+                      <td>Host-specific; no standard for sharing across IDEs and agents</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Custom plugins per product</strong></td>
+                      <td>Tailored UX</td>
+                      <td>M×N integrations; brittle maintenance</td>
+                    </tr>
+                    <tr>
+                      <td><strong>MCP</strong></td>
+                      <td>Portable servers; discovery; resources + prompts; growing ecosystem</td>
+                      <td>Extra process/HTTP hop; host must implement policy layer</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <p>Many products will support <em>both</em>: vendor-native tools for hosted-only features, MCP for everything you want portable across Cursor, Claude, and internal agents. For LLM fundamentals and tool loops inside applications, see <a href="llm-in-depth.html">LLMs in depth</a> and <a href="rag-retrieval-augmented-generation-deep-dive.html">RAG in depth</a>.</p>
+
+              <h2 class="h4 mt-5">Ecosystem: what ships today</h2>
+              <p>Reference and community servers cover common needs (exact names change—check the official MCP servers repository):</p>
+              <ul>
+                <li><strong>Filesystem</strong> — read/write within a configured root</li>
+                <li><strong>Git</strong> — status, diff, commit operations</li>
+                <li><strong>Postgres / SQLite</strong> — schema-aware querying</li>
+                <li><strong>Fetch / Brave search</strong> — web retrieval with policy hooks</li>
+                <li><strong>Puppeteer / browser</strong> — automated browsing (high risk; sandbox hard)</li>
+                <li><strong>Slack, Google Drive, Sentry</strong> — SaaS integrations via vendor templates</li>
+              </ul>
+              <p>Enterprises increasingly wrap internal platforms (Kubernetes, Terraform Cloud, internal feature flags) as MCP servers so the same capability surfaces in IDE assistants and on-call bots—provided SRE and security sign off on scopes.</p>
+
+              <h2 class="h4 mt-5">Operating MCP in platform teams</h2>
+              <ul>
+                <li><strong>Golden paths</strong> — Curate an approved server list; avoid “every engineer runs random GitHub gists.”</li>
+                <li><strong>Observability</strong> — Log tool name, latency, success/failure (not always full arguments if sensitive).</li>
+                <li><strong>Cost</strong> — Tools that dump huge JSON into context burn tokens; paginate and summarize server-side.</li>
+                <li><strong>Testing</strong> — Contract-test tool schemas; simulate hostile inputs (injection strings, path traversal).</li>
+                <li><strong>CI/CD agents</strong> — The Cursor SDK and similar runtimes can attach MCP in pipelines; same security rules as production shells.</li>
+              </ul>
+              <p>If you operate Kubernetes and Git-backed delivery, MCP complements rather than replaces them: GitOps declares cluster state; MCP helps engineers <em>interrogate</em> that state during incidents. See <a href="gitops-principles.html">GitOps principles</a> and <a href="kubernetes-troubleshooting-playbook.html">Kubernetes troubleshooting playbook</a>.</p>
+
+              <h2 class="h4 mt-5">Troubleshooting checklist</h2>
+              <ul>
+                <li>Server never appears in host — wrong command path, missing <code>node</code>/<code>python</code>, or JSON syntax error in config.</li>
+                <li>Initialize fails — protocol version mismatch; upgrade host or server SDK.</li>
+                <li>Tool not found — server restarted without re-listing; host cache stale; typo in tool name.</li>
+                <li>Silent hang — blocking stdio without newline framing; deadlocks when server logs to stdout (use stderr for logs).</li>
+                <li>Permission denied — OS permissions on paths; cloud IAM on HTTP servers.</li>
+              </ul>
+
+              <h2 class="h4 mt-5">Learning path</h2>
+              <ol>
+                <li>Read the official MCP specification (architecture + lifecycle).</li>
+                <li>Run a reference filesystem server locally in Cursor; inspect tool list.</li>
+                <li>Build a tiny custom server wrapping one internal read-only API.</li>
+                <li>Add schema validation, timeouts, and structured errors.</li>
+                <li>Pair with <a href="how-to-become-ai-developer.html">How to become an AI developer</a> for agent architecture and eval discipline.</li>
+              </ol>
+
+              <h2 class="h4 mt-5">Further reading</h2>
+              <ul>
+                <li>modelcontextprotocol.io — specification, SDK docs, and server registry</li>
+                <li>Anthropic — MCP announcement and design rationale</li>
+                <li>Cursor documentation — MCP configuration, approval modes, and SDK agent integration</li>
+                <li>OWASP — LLM Top 10 (prompt injection, excessive agency) for threat modeling</li>
+              </ul>
+
+              <p class="small text-muted mt-4 mb-2"><a href="../index.html#blog">Blog index</a> · <a href="llm-in-depth.html">LLMs in depth</a> · <a href="how-to-become-ai-developer.html">How to become an AI developer</a> · <a href="git-github-course-in-depth.html">Git &amp; GitHub in depth</a></p>
+              <p class="mb-0"><a href="../index.html#blog" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left" aria-hidden="true"></i> Back to blog list</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>

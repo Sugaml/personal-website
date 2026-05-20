@@ -478,6 +478,15 @@
       "content_file": "llm-in-depth.html"
     },
     {
+      "slug": "mcp-server-in-depth",
+      "file": "mcp-server-in-depth.html",
+      "title": "MCP Servers in Depth: Model Context Protocol \u2014 Babulal Tamang",
+      "description": "A technical deep dive into MCP (Model Context Protocol): host, client, and server architecture, JSON-RPC lifecycle, tools, resources, prompts, stdio and HTTP transports, security, building servers, and operating MCP in platform teams.",
+      "keywords": "MCP, Model Context Protocol, AI agents, Cursor, JSON-RPC, tools, Babulal Tamang",
+      "breadcrumb": "MCP servers in depth",
+      "content_file": "mcp-server-in-depth.html"
+    },
+    {
       "slug": "opswat-icip-critical-infrastructure",
       "file": "opswat-icip-critical-infrastructure.html",
       "title": "OPSWAT ICIP \u2014 Critical infrastructure protection \u2014 Babulal Tamang",
