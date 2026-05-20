@@ -152,8 +152,8 @@ def ensure_index_toolbar(html: str) -> str:
           <span class="text-muted small mb-0"><i class="bi bi-sort-down" aria-hidden="true"></i> Sort</span>
           <button type="button" class="btn btn-sm btn-outline-secondary active" data-blog-sort="newest" aria-pressed="true">Newest first</button>
           <button type="button" class="btn btn-sm btn-outline-secondary" data-blog-sort="oldest" aria-pressed="false">Oldest first</button>
-        </motion>
-""".replace("</motion>", "</div>")
+        </div>
+"""
     if "blog-index-toolbar" in html:
         return html
     marker = '        <h3 class="h5 text-center mb-3 mt-2">AWS — certification'

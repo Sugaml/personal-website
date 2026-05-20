@@ -2,6 +2,12 @@
 
 Short log of design decisions and content changes.
 
+## 2026-05-20 — MCP servers in depth (guide)
+
+- **Title:** “MCP Servers in Depth: The Model Context Protocol for Tools, Data, and Agents” (article); index card “MCP servers in depth”.
+- **Intent:** Technical guide for platform and AI developers—problem MCP solves, host/client/server roles, JSON-RPC lifecycle, tools/resources/prompts, stdio vs HTTP transports, Cursor config, building servers (Python SDK sketch), security, comparison to native function calling, ecosystem, ops checklist, troubleshooting, learning path.
+- **Files:** `content/blogs/mcp-server-in-depth.html`, `data/blog-posts.json`, `blogs/mcp-server-in-depth.html` (via build), `index.html` (Platform & culture, first card), cross-link in `how-to-become-ai-developer.html`.
+
 ## 2026-05-20 — Neural networks in depth (guide)
 
 - **Title:** “Neural Networks in Depth: From Perceptrons to Deep Learning” (article); index card “Neural networks in depth”.
