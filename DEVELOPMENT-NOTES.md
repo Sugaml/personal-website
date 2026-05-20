@@ -10,6 +10,12 @@ Short log of design decisions and content changes.
 - **Generators / maintenance:** `gen-*.py` and `update-blog-meta.py` target `content/` + registry, then run the build.
 - **Docs:** `README.md`. Unused `inner-page.html` → `templates/legacy/`.
 
+## 2026-05-20 — AI foundation models deep dive (guide)
+
+- **Title:** “AI Foundation Models in Depth: Architecture, Training, Adaptation, and Production Reality” (article); index card “AI foundation models in depth”.
+- **Intent:** Technical companion to `ai-historical-paradigms.html` and `how-to-become-ai-developer.html`: CRFM definition, FM vs traditional ML table, transformer anatomy, pre-training/alignment/adaptation, modalities, inference economics, RAG/fine-tuning/agents, limits and evals, production stack, decision guide. Cross-links to AWS ML/GenAI, ISO 42001, hyperscaler mapping.
+- **Files:** `content/blogs/ai-foundation-models-deep-dive.html`, `data/blog-posts.json`, `blogs/ai-foundation-models-deep-dive.html` (via build), `index.html` (AI & ML sections).
+
 ## 2026-05-20 — Terraform & IaC for everyone (guide)
 
 - **Title:** “Anyone Can Terraform: Why IaC Exists, How It Works, and the Anatomy of `.tf` and State” (article); index card “Terraform & IaC for everyone”.
