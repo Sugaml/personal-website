@@ -13,12 +13,7 @@ SCRIPTS = Path(__file__).resolve().parent
 ROOT = SCRIPTS.parent
 sys.path.insert(0, str(SCRIPTS))
 
-from lib.blog_dates import (  # noqa: E402
-    build_published_map,
-    format_display,
-    parse_git_date,
-    time_element,
-)
+from lib.blog_dates import build_published_map, time_element  # noqa: E402
 from lib.paths import BLOG_POSTS_JSON, BLOGS_OUT, CONTENT_BLOGS  # noqa: E402
 
 INDEX = ROOT / "index.html"
@@ -29,20 +24,6 @@ CARD_HREF_RE = re.compile(
     r'href="blogs/([^"]+)"',
     re.IGNORECASE,
 )
-
-
-def git_last_modified(content_file: str) -> str | None:
-    path = CONTENT_BLOGS / content_file
-    if not path.exists():
-        return None
-    result = subprocess.run(
-        ["git", "log", "-1", "--format=%ci", "--", str(path)],
-        cwd=ROOT,
-        capture_output=True,
-        text=True,
-    )
-    line = result.stdout.strip()
-    return parse_git_date(line) if line else None
 
 
 def load_registry() -> dict:
@@ -63,14 +44,8 @@ def dedupe_posts(posts: list[dict]) -> list[dict]:
 
 def sync_registry_dates(posts: list[dict], published_map: dict[str, str]) -> list[dict]:
     for post in posts:
-        slug = post["slug"]
-        pub = published_map[slug]
-        post["published"] = pub
-        updated = git_last_modified(post["content_file"])
-        if updated and updated > pub:
-            post["updated"] = updated
-        elif "updated" in post:
-            del post["updated"]
+        post["published"] = published_map[post["slug"]]
+        post.pop("updated", None)
     return posts
 
 
@@ -79,14 +54,7 @@ def replace_time_tags(html: str, iso: str) -> str:
 
 
 def article_meta_line(post: dict) -> str:
-    pub = post["published"]
-    parts = [time_element(pub)]
-    updated = post.get("updated")
-    if updated and updated > pub:
-        parts.append(
-            f'<span class="blog-meta-updated">Updated {format_display(updated)}</span>'
-        )
-    return " · ".join(parts)
+    return time_element(post["published"])
 
 
 def patch_content_file(post: dict) -> bool:
@@ -95,18 +63,8 @@ def patch_content_file(post: dict) -> bool:
         print(f"  SKIP missing content: {path.name}")
         return False
     text = path.read_text(encoding="utf-8")
-    pub = post["published"]
-    new = replace_time_tags(text, pub)
-    if post.get("updated") and post["updated"] > pub:
-        updated_bit = (
-            f' · <span class="blog-meta-updated">Updated {format_display(post["updated"])}</span>'
-        )
-        if "blog-meta-updated" not in new:
-            new = new.replace(
-                time_element(pub) + " ·",
-                time_element(pub) + updated_bit + " ·",
-                1,
-            )
+    new = replace_time_tags(text, post["published"])
+    new = re.sub(r'\s*·\s*<span class="blog-meta-updated">[^<]*</span>', "", new)
     if new == text:
         return False
     path.write_text(new, encoding="utf-8")

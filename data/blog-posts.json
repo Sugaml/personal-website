@@ -8,8 +8,7 @@
       "keywords": "AI history, symbolic AI, neural networks, transformers, Babulal Tamang",
       "breadcrumb": "AI historical paradigms",
       "content_file": "ai-historical-paradigms.html",
-      "published": "2026-05-19",
-      "updated": "2026-05-20"
+      "published": "2026-05-19"
     },
     {
       "slug": "ai-ml-terminology-glossary",
@@ -69,8 +68,7 @@
       "keywords": "AWS Academy, cloud architecting, availability, security, Credly, Babulal Tamang",
       "breadcrumb": "Cloud Architecting",
       "content_file": "aws-cloud-architecting.html",
-      "published": "2026-02-21",
-      "updated": "2026-05-20"
+      "published": "2026-02-21"
     },
     {
       "slug": "aws-cloud-practitioner",
@@ -80,8 +78,7 @@
       "keywords": "AWS, Cloud Practitioner, certification, Credly, cloud basics, Babulal Tamang",
       "breadcrumb": "AWS Cloud Practitioner",
       "content_file": "aws-cloud-practitioner.html",
-      "published": "2025-12-16",
-      "updated": "2026-05-20"
+      "published": "2025-12-16"
     },
     {
       "slug": "aws-cloud-security-foundations",
@@ -91,8 +88,7 @@
       "keywords": "AWS Academy, cloud security, IAM, shared responsibility, Credly, Babulal Tamang",
       "breadcrumb": "Cloud Security Foundations",
       "content_file": "aws-cloud-security-foundations.html",
-      "published": "2025-12-20",
-      "updated": "2026-05-20"
+      "published": "2025-12-20"
     },
     {
       "slug": "aws-data-engineering",
@@ -102,8 +98,7 @@
       "keywords": "AWS Academy, data engineering, ETL, data quality, Credly, Babulal Tamang",
       "breadcrumb": "Data Engineering",
       "content_file": "aws-data-engineering.html",
-      "published": "2025-03-05",
-      "updated": "2026-05-20"
+      "published": "2025-03-05"
     },
     {
       "slug": "aws-emr-hadoop-components-deep-dive",
@@ -153,8 +148,7 @@
       "keywords": "Babulal Tamang",
       "breadcrumb": "Generative AI Foundations",
       "content_file": "aws-generative-ai-foundations.html",
-      "published": "2026-04-25",
-      "updated": "2026-05-20"
+      "published": "2026-04-25"
     },
     {
       "slug": "aws-iam-policy-json-anatomy",
@@ -174,8 +168,7 @@
       "keywords": "AWS Academy, machine learning, SageMaker, ML foundations, Credly, Babulal Tamang",
       "breadcrumb": "Machine Learning Foundations",
       "content_file": "aws-machine-learning-foundations.html",
-      "published": "2026-04-25",
-      "updated": "2026-05-20"
+      "published": "2026-04-25"
     },
     {
       "slug": "aws-network-architecture-design",
@@ -195,8 +188,7 @@
       "keywords": "AWS Partner, sales accreditation, technical accredited, Credly, Babulal Tamang",
       "breadcrumb": "AWS Partner enablement",
       "content_file": "aws-partner-enablement.html",
-      "published": "2025-12-03",
-      "updated": "2026-05-20"
+      "published": "2025-12-03"
     },
     {
       "slug": "aws-s3-in-depth",
@@ -216,8 +208,7 @@
       "keywords": "cloud platform, landing zone, migration, platform engineering, Babulal Tamang",
       "breadcrumb": "Cloud platform evolution",
       "content_file": "cloud-platform-evolution.html",
-      "published": "2026-05-04",
-      "updated": "2026-05-20"
+      "published": "2026-05-04"
     },
     {
       "slug": "computing-in-depth",
@@ -237,8 +228,7 @@
       "keywords": "Credly, digital badges, AWS, ISO, certifications, Babulal Tamang",
       "breadcrumb": "Credly overview",
       "content_file": "credly-digital-badges.html",
-      "published": "2026-05-12",
-      "updated": "2026-05-20"
+      "published": "2026-05-12"
     },
     {
       "slug": "devops-historical-foundations",
@@ -248,8 +238,7 @@
       "keywords": "DevOps history, CI/CD, SRE, platform engineering, Babulal Tamang",
       "breadcrumb": "DevOps history",
       "content_file": "devops-historical-foundations.html",
-      "published": "2026-05-01",
-      "updated": "2026-05-20"
+      "published": "2026-05-01"
     },
     {
       "slug": "devops-life-business-value",
@@ -259,8 +248,7 @@
       "keywords": "DevOps business value, DORA, platform engineering, Babulal Tamang",
       "breadcrumb": "DevOps life &amp; business value",
       "content_file": "devops-life-business-value.html",
-      "published": "2026-05-03",
-      "updated": "2026-05-20"
+      "published": "2026-05-03"
     },
     {
       "slug": "devops-professional-nature",
@@ -290,8 +278,7 @@
       "keywords": "Docker, containers, cgroups, namespaces, container security, Babulal Tamang",
       "breadcrumb": "Docker hidden side",
       "content_file": "docker-containerization-hidden-side.html",
-      "published": "2026-05-05",
-      "updated": "2026-05-20"
+      "published": "2026-05-05"
     },
     {
       "slug": "finops-greenops-1-invisible-bill",
@@ -301,8 +288,7 @@
       "keywords": "sustainability, digital footprint, FinOps, GreenOps, series, Babulal Tamang",
       "breadcrumb": "Invisible bill (1/5)",
       "content_file": "finops-greenops-1-invisible-bill.html",
-      "published": "2026-05-08",
-      "updated": "2026-05-20"
+      "published": "2026-05-08"
     },
     {
       "slug": "finops-greenops-2-conservation-matters",
@@ -312,8 +298,7 @@
       "keywords": "conservation, sustainability, responsible technology, series, Babulal Tamang",
       "breadcrumb": "Conservation matters (2/5)",
       "content_file": "finops-greenops-2-conservation-matters.html",
-      "published": "2026-05-09",
-      "updated": "2026-05-20"
+      "published": "2026-05-09"
     },
     {
       "slug": "finops-greenops-3-finops-plain-english",
@@ -323,8 +308,7 @@
       "keywords": "FinOps, cloud cost, Inform Optimize Operate, series, Babulal Tamang",
       "breadcrumb": "FinOps (3/5)",
       "content_file": "finops-greenops-3-finops-plain-english.html",
-      "published": "2026-05-10",
-      "updated": "2026-05-20"
+      "published": "2026-05-10"
     },
     {
       "slug": "finops-greenops-4-greenops-plain-english",
@@ -334,8 +318,7 @@
       "keywords": "GreenOps, sustainable IT, carbon, efficiency, series, Babulal Tamang",
       "breadcrumb": "GreenOps (4/5)",
       "content_file": "finops-greenops-4-greenops-plain-english.html",
-      "published": "2026-05-11",
-      "updated": "2026-05-20"
+      "published": "2026-05-11"
     },
     {
       "slug": "finops-greenops-5-smarter-lighter",
@@ -345,8 +328,7 @@
       "keywords": "FinOps, GreenOps, landing zone, Well-Architected, cloud architect, Babulal Tamang",
       "breadcrumb": "FinOps + GreenOps (5/5)",
       "content_file": "finops-greenops-5-smarter-lighter.html",
-      "published": "2026-05-13",
-      "updated": "2026-05-20"
+      "published": "2026-05-13"
     },
     {
       "slug": "gitops-principles",
@@ -356,8 +338,7 @@
       "keywords": "GitOps, declarative, reconciliation, Argo CD, Flux, Babulal Tamang",
       "breadcrumb": "GitOps principles",
       "content_file": "gitops-principles.html",
-      "published": "2026-05-02",
-      "updated": "2026-05-20"
+      "published": "2026-05-02"
     },
     {
       "slug": "generative-ai-in-depth",
@@ -397,8 +378,7 @@
       "keywords": "ISO 27001, lead auditor, ISMS, information security, Credly, Babulal Tamang",
       "breadcrumb": "ISO 27001 Lead Auditor",
       "content_file": "iso-27001-lead-auditor-information-security.html",
-      "published": "2026-01-13",
-      "updated": "2026-05-20"
+      "published": "2026-01-13"
     },
     {
       "slug": "iso-42001-lead-auditor-ai-management",
@@ -408,8 +388,7 @@
       "keywords": "ISO 42001, AI management, lead auditor, AIMS, Credly, Babulal Tamang",
       "breadcrumb": "ISO 42001 Lead Auditor",
       "content_file": "iso-42001-lead-auditor-ai-management.html",
-      "published": "2026-04-26",
-      "updated": "2026-05-20"
+      "published": "2026-04-26"
     },
     {
       "slug": "kubernetes-architecture-simple",
@@ -419,8 +398,7 @@
       "keywords": "Kubernetes architecture, control plane, pods, deployments, Babulal Tamang",
       "breadcrumb": "Kubernetes architecture",
       "content_file": "kubernetes-architecture-simple.html",
-      "published": "2026-05-06",
-      "updated": "2026-05-20"
+      "published": "2026-05-06"
     },
     {
       "slug": "kubernetes-cluster-rbac",
@@ -450,8 +428,7 @@
       "keywords": "Kubernetes hands-on, kind, k3s, minikube, local lab, Babulal Tamang",
       "breadcrumb": "K8s hands-on (1/5)",
       "content_file": "kubernetes-hands-on-1-local-lab.html",
-      "published": "2026-05-14",
-      "updated": "2026-05-20"
+      "published": "2026-05-14"
     },
     {
       "slug": "kubernetes-hands-on-2-yaml-anatomy",
@@ -461,8 +438,7 @@
       "keywords": "Kubernetes YAML, manifests, apiVersion, kubectl explain, Babulal Tamang",
       "breadcrumb": "K8s hands-on (2/5)",
       "content_file": "kubernetes-hands-on-2-yaml-anatomy.html",
-      "published": "2026-05-15",
-      "updated": "2026-05-20"
+      "published": "2026-05-15"
     },
     {
       "slug": "kubernetes-hands-on-3-first-workloads",
@@ -472,8 +448,7 @@
       "keywords": "Kubernetes workloads, Pod, Deployment, Service, hands-on, Babulal Tamang",
       "breadcrumb": "K8s hands-on (3/5)",
       "content_file": "kubernetes-hands-on-3-first-workloads.html",
-      "published": "2026-05-16",
-      "updated": "2026-05-20"
+      "published": "2026-05-16"
     },
     {
       "slug": "kubernetes-hands-on-4-day-one-practices",
@@ -483,8 +458,7 @@
       "keywords": "Kubernetes best practices, probes, resources, day-one, Babulal Tamang",
       "breadcrumb": "K8s hands-on (4/5)",
       "content_file": "kubernetes-hands-on-4-day-one-practices.html",
-      "published": "2026-05-17",
-      "updated": "2026-05-20"
+      "published": "2026-05-17"
     },
     {
       "slug": "kubernetes-hands-on-5-debug-next-steps",
@@ -494,8 +468,7 @@
       "keywords": "Kubernetes debugging, kubectl, troubleshooting, hands-on, Babulal Tamang",
       "breadcrumb": "K8s hands-on (5/5)",
       "content_file": "kubernetes-hands-on-5-debug-next-steps.html",
-      "published": "2026-05-18",
-      "updated": "2026-05-20"
+      "published": "2026-05-18"
     },
     {
       "slug": "kubernetes-troubleshooting-playbook",
@@ -545,8 +518,7 @@
       "keywords": "Kubernetes, business value, when to use K8s, platform, Babulal Tamang",
       "breadcrumb": "Kubernetes for business",
       "content_file": "kubernetes-when-how-why-where.html",
-      "published": "2026-05-07",
-      "updated": "2026-05-20"
+      "published": "2026-05-07"
     },
     {
       "slug": "llm-in-depth",
@@ -576,8 +548,7 @@
       "keywords": "OPSWAT, ICIP, critical infrastructure, CIP, Credly, Babulal Tamang",
       "breadcrumb": "OPSWAT ICIP",
       "content_file": "opswat-icip-critical-infrastructure.html",
-      "published": "2026-01-10",
-      "updated": "2026-05-20"
+      "published": "2026-01-10"
     },
     {
       "slug": "redis-and-cli-deep-dive",
