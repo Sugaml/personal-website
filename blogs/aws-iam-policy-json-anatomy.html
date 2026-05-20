@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>IAM Policy JSON Anatomy — Babulal Tamang</title>
+  <meta content="Line-by-line guide to AWS IAM policy JSON: Version, Statement, Effect, Action, Resource, Principal, Condition keys, evaluation logic, ARNs, and least-privilege patterns." name="description">
+  <link href="../assets/img/favicon.png" rel="icon">
+  <link href="../assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600;1,700&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="../assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="../assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+  <link href="../assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="../assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <link href="../assets/css/style.css" rel="stylesheet">
+  <link href="../assets/css/theme-v2.css" rel="stylesheet">
+</head>
+<body class="theme-v2">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <button class="mobile-nav-toggle d-xl-none" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navbar"><i class="bi bi-list" aria-hidden="true"></i></button>
+  <header id="header">
+    <div class="d-flex flex-column">
+      <div class="profile sidebar-profile">
+        <div class="profile-avatar-wrap">
+          <img src="../assets/img/profile-img.jpg" class="profile-avatar img-fluid" width="132" height="132" alt="Portrait of Babulal Tamang">
+        </div>
+        <h1 class="text-light profile-name"><a href="../index.html">Babulal Tamang</a></h1>
+        <p class="profile-tagline">Platform · DevOps · Software · Cloud Architect · AI/ML Enthusiast</p>
+        <p class="profile-location"><i class="bi bi-geo-alt-fill" aria-hidden="true"></i><span>Kathmandu, Nepal</span></p>
+        <div class="social-links profile-social mt-3 text-center">
+          <a href="https://twitter.com/SugamLa20062317" class="twitter" aria-label="Twitter"><i class="bx bxl-twitter" aria-hidden="true"></i></a>
+          <a href="https://github.com/sugaml/" class="github" aria-label="GitHub"><i class="bx bxl-github" aria-hidden="true"></i></a>
+          <a href="https://www.linkedin.com/in/babulal-tamang-b6507121b/" class="linkedin" aria-label="LinkedIn"><i class="bx bxl-linkedin" aria-hidden="true"></i></a>
+        </div>
+      </div>
+      <nav id="navbar" class="nav-menu navbar" aria-label="Main navigation">
+        <ul>
+          <li><a href="../index.html#hero" class="nav-link scrollto"><i class="bx bx-home" aria-hidden="true"></i> <span>Home</span></a></li>
+          <li><a href="../index.html#about" class="nav-link scrollto"><i class="bx bx-user" aria-hidden="true"></i> <span>About</span></a></li>
+          <li><a href="../index.html#skills" class="nav-link scrollto"><i class="bx bx-code-block" aria-hidden="true"></i> <span>Skills</span></a></li>
+          <li><a href="../index.html#resume" class="nav-link scrollto"><i class="bx bx-file-blank" aria-hidden="true"></i> <span>Resume</span></a></li>
+          <li><a href="../index.html#certifications" class="nav-link scrollto"><i class="bx bx-award" aria-hidden="true"></i> <span>Certifications</span></a></li>
+          <li><a href="../index.html#blog" class="nav-link scrollto active"><i class="bx bx-book-content" aria-hidden="true"></i> <span>Blog</span></a></li>
+          <li><a href="../index.html#survey" class="nav-link scrollto"><i class="bx bx-shield-quarter" aria-hidden="true"></i> <span>Cybersecurity Survey</span></a></li>
+          <li><a href="../index.html#what-i-use" class="nav-link scrollto"><i class="bx bx-wrench" aria-hidden="true"></i> <span>What I Use</span></a></li>
+          <li><a href="../index.html#contact" class="nav-link scrollto"><i class="bx bx-envelope" aria-hidden="true"></i> <span>Contact</span></a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <main id="main">
+    <section class="breadcrumbs">
+      <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+          <h2>Blog</h2>
+          <ol>
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../index.html#blog">Blog</a></li>
+            <li>IAM policy JSON anatomy</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+    <article class="inner-page blog-article pb-5">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-9 col-xl-8">
+            <header class="mb-4 pb-3 border-bottom" data-aos="fade-up">
+              <p class="text-muted small mb-2">AWS · Security · <time datetime="2026-05-20">20 May 2026</time></p>
+              <h1 class="h2 mb-3">IAM Policy JSON Anatomy: Read Every Field Before You Click Allow</h1>
+              <p class="lead mb-3">An IAM policy is a small JSON document that answers one question: <strong>may this principal perform this action on this resource, under these conditions?</strong> Once you know the skeleton—<code>Version</code>, <code>Statement</code>, and the fields inside each statement—you can review policies in pull requests, debug <code>AccessDenied</code> errors, and design least privilege instead of copying console defaults.</p>
+              <div class="border-start border-primary border-4 ps-3 py-3 bg-light rounded mb-0" role="note">
+                <p class="small text-uppercase text-muted mb-1 fw-semibold">In short</p>
+                <p class="mb-0">Every policy is a list of statements. Each statement has an <code>Effect</code> (Allow or Deny), optional <code>Principal</code> (resource policies only), <code>Action</code>/<code>Resource</code> (or their negated forms), and optional <code>Condition</code>. AWS starts from implicit deny; explicit Allow grants access unless something else Denies.</p>
+              </div>
+            </header>
+
+            <div class="blog-prose" data-aos="fade-up" data-aos-delay="50">
+
+              <h2 class="h4 mt-4">Where policies live (and what they attach to)</h2>
+              <p>Before parsing JSON, know <em>which</em> policy type you are holding:</p>
+              <div class="table-responsive">
+                <table class="table table-sm table-bordered align-middle">
+                  <thead class="table-light">
+                    <tr><th>Type</th><th>Attached to</th><th>Typical use</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td><strong>Identity-based</strong></td><td>IAM user, group, or role</td><td>“What can this engineer or Lambda role do?”</td></tr>
+                    <tr><td><strong>Resource-based</strong></td><td>S3 bucket, KMS key, SNS topic, etc.</td><td>“Who may access <em>this</em> bucket from another account?”</td></tr>
+                    <tr><td><strong>Permission boundary</strong></td><td>User or role (max permissions cap)</td><td>Delegate policy writing without exceeding a ceiling</td></tr>
+                    <tr><td><strong>SCP</strong> (Organizations)</td><td>AWS account or OU</td><td>Guardrails that apply to every principal in the account</td></tr>
+                    <tr><td><strong>Session policy</strong></td><td>Assumed role session</td><td>Temporary narrowing when assuming a role</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p>Identity policies omit <code>Principal</code> (the identity is implicit). Resource policies <em>require</em> <code>Principal</code> because the resource does not know who is knocking until you say so. The JSON shape is the same; which fields are valid depends on the policy type.</p>
+
+              <h2 class="h4 mt-5">The document skeleton</h2>
+              <p>Every IAM policy document has exactly two top-level keys:</p>
+              <pre class="bg-light p-3 rounded small"><code>{
+  "Version": "2012-10-17",
+  "Statement": [
+    { /* one or more statement objects */ }
+  ]
+}</code></pre>
+              <p>There is no third secret field. Tools, CloudFormation, and Terraform all emit this shape. If you see extra keys at the root, they are invalid for IAM (though some services wrap policies in larger configs).</p>
+
+              <h3 class="h5 mt-4"><code>Version</code></h3>
+              <p>Always use <code>"2012-10-17"</code> for new policies. Older <code>2008-10-17</code> documents lack features such as <code>NotAction</code>, <code>NotResource</code>, and many condition keys. AWS still accepts the old version for legacy policies, but you should not author new ones with it.</p>
+
+              <h3 class="h5 mt-4"><code>Statement</code></h3>
+              <p>An array of objects. IAM evaluates <strong>every</strong> applicable statement from <strong>every</strong> policy attached to the request path (identity policies, resource policy, SCPs, boundaries, session policies). Think of <code>Statement</code> as a list of rules, not a single rule.</p>
+
+              <h2 class="h4 mt-5">One statement, field by field</h2>
+              <p>Here is a annotated identity-based Allow with a condition—read it once, then we unpack each key:</p>
+              <pre class="bg-light p-3 rounded small"><code>{
+  "Sid": "ListAndReadOwnPrefix",
+  "Effect": "Allow",
+  "Action": [
+    "s3:ListBucket",
+    "s3:GetObject"
+  ],
+  "Resource": [
+    "arn:aws:s3:::company-data-prod",
+    "arn:aws:s3:::company-data-prod/reports/*"
+  ],
+  "Condition": {
+    "StringEquals": {
+      "aws:PrincipalTag/Team": "analytics"
+    }
+  }
+}</code></pre>
+
+              <h3 class="h5 mt-4"><code>Sid</code> (optional but recommended)</h3>
+              <p><strong>Statement ID</strong>—a label for humans and diffs. It does not affect evaluation. Use short, unique names in shared repos (<code>DenyUnencryptedPut</code>, <code>AllowEksDescribe</code>) so reviewers can refer to a statement in comments.</p>
+
+              <h3 class="h5 mt-4"><code>Effect</code> (required)</h3>
+              <p>Either <code>Allow</code> or <code>Deny</code>. There is no “neutral.”</p>
+              <ul>
+                <li><strong>Allow</strong> — grants permission if nothing else denies it.</li>
+                <li><strong>Deny</strong> — always wins over Allow in the same evaluation pass (explicit deny is trump card).</li>
+              </ul>
+              <p>AWS applies <strong>implicit deny</strong> by default: if no statement Allows the request, access fails. You never write <code>"Effect": "ImplicitDeny"</code>; it is the baseline.</p>
+
+              <h3 class="h5 mt-4"><code>Principal</code> (resource-based policies only)</h3>
+              <p>Who the rule applies to. Formats:</p>
+              <ul>
+                <li><code>"AWS": "arn:aws:iam::123456789012:root"</code> — entire account (use carefully).</li>
+                <li><code>"AWS": "arn:aws:iam::123456789012:role/AppRole"</code> — a specific role.</li>
+                <li><code>"Service": "lambda.amazonaws.com"</code> — an AWS service principal.</li>
+                <li><code>"Federated": "arn:aws:iam::123456789012:saml-provider/CorpIdP"</code> — web identity / SAML.</li>
+              </ul>
+              <p><code>NotPrincipal</code> is the negated form (rare; use when you want “everyone except X”). For identity policies, omit <code>Principal</code> entirely—the attached user or role is the principal.</p>
+
+              <h3 class="h5 mt-4"><code>Action</code> and <code>NotAction</code></h3>
+              <p>API operations, in the form <code>service:Operation</code>:</p>
+              <ul>
+                <li><code>s3:GetObject</code>, <code>ec2:DescribeInstances</code>, <code>iam:PassRole</code></li>
+                <li>Wildcards: <code>s3:Get*</code>, <code>ec2:Describe*</code>, <code>*</code> (avoid <code>*</code> on production roles)</li>
+              </ul>
+              <p><code>NotAction</code> means “all actions <em>except</em> these.” Example pattern: Allow everything except IAM and billing:</p>
+              <pre class="bg-light p-3 rounded small"><code>"Effect": "Allow",
+"NotAction": [
+  "iam:*",
+  "aws-portal:*",
+  "account:*"
+],
+"Resource": "*"</code></pre>
+              <p>You cannot mix <code>Action</code> and <code>NotAction</code> in the same statement. Pick one style per statement.</p>
+
+              <h3 class="h5 mt-4"><code>Resource</code> and <code>NotResource</code></h3>
+              <p>Amazon Resource Names (ARNs) identify what the action targets. Examples:</p>
+              <pre class="bg-light p-3 rounded small"><code>arn:aws:s3:::my-bucket/path/*
+arn:aws:ec2:us-east-1:123456789012:instance/i-0abc123
+arn:aws:iam::123456789012:role/AppRole
+arn:aws:kms:us-east-1:123456789012:key/abcd-ef01-2345-6789</code></pre>
+              <p>Patterns:</p>
+              <ul>
+                <li><code>*</code> — all resources (common for <code>Describe*</code> actions that do not take a resource ARN in the API).</li>
+                <li>Region or account placeholders in some services; always check the service’s IAM reference for which resources an action supports.</li>
+                <li><strong>ListBucket vs GetObject:</strong> <code>s3:ListBucket</code> applies to the <em>bucket</em> ARN; <code>s3:GetObject</code> applies to <em>object</em> ARNs (<code>bucket/*</code>). Mixing them up is a top exam and production mistake.</li>
+              </ul>
+              <p><code>NotResource</code> excludes specific ARNs while allowing the rest (useful in large Allow statements with a small deny list—though explicit Deny statements are often clearer).</p>
+
+              <h3 class="h5 mt-4"><code>Condition</code> (optional, powerful)</h3>
+              <p>Conditions refine <em>when</em> a statement applies. Structure:</p>
+              <pre class="bg-light p-3 rounded small"><code>"Condition": {
+  "&lt;operator&gt;": {
+    "&lt;condition-key&gt;": &lt;value&gt;
+  }
+}</code></pre>
+              <p>Multiple operators in one <code>Condition</code> block are <strong>AND</strong>ed. Multiple keys under one operator are also ANDed unless the operator documentation says otherwise.</p>
+              <p>Common operators:</p>
+              <div class="table-responsive">
+                <table class="table table-sm table-bordered align-middle">
+                  <thead class="table-light">
+                    <tr><th>Operator</th><th>Meaning</th><th>Example key</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr><td><code>StringEquals</code></td><td>Exact string match</td><td><code>aws:SourceVpc</code></td></tr>
+                    <tr><td><code>StringLike</code></td><td>Wildcard match</td><td><code>s3:prefix</code> → <code>reports/*</code></td></tr>
+                    <tr><td><code>ArnEquals</code> / <code>ArnLike</code></td><td>ARN comparison</td><td><code>aws:SourceArn</code></td></tr>
+                    <tr><td><code>Bool</code></td><td>true / false</td><td><code>aws:SecureTransport</code></td></tr>
+                    <tr><td><code>IpAddress</code> / <code>NotIpAddress</code></td><td>CIDR check</td><td><code>aws:SourceIp</code></td></tr>
+                    <tr><td><code>DateGreaterThan</code>, etc.</td><td>Time windows</td><td><code>aws:CurrentTime</code></td></tr>
+                    <tr><td><code>ForAllValues:StringEquals</code></td><td>Multi-value tag keys</td><td><code>aws:TagKeys</code></td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p>High-value condition keys:</p>
+              <ul>
+                <li><code>aws:MultiFactorAuthPresent</code> — require MFA for sensitive operations.</li>
+                <li><code>aws:SecureTransport</code> — deny if not HTTPS (<code>Bool</code> → <code>false</code> in a Deny statement).</li>
+                <li><code>aws:PrincipalArn</code>, <code>aws:userid</code> — tie access to a specific role session.</li>
+                <li><code>aws:PrincipalTag/Key</code> — ABAC: permissions follow resource or principal tags.</li>
+                <li><code>aws:SourceVpc</code>, <code>aws:SourceVpce</code> — restrict to private network paths.</li>
+                <li><code>s3:x-amz-server-side-encryption</code> — enforce KMS or AES256 on uploads.</li>
+              </ul>
+              <p>Example: deny S3 puts without encryption:</p>
+              <pre class="bg-light p-3 rounded small"><code>{
+  "Sid": "DenyInsecureObjectUploads",
+  "Effect": "Deny",
+  "Action": "s3:PutObject",
+  "Resource": "arn:aws:s3:::company-data-prod/*",
+  "Condition": {
+    "StringNotEquals": {
+      "s3:x-amz-server-side-encryption": "aws:kms"
+    }
+  }
+}</code></pre>
+
+              <h2 class="h4 mt-5">How AWS decides yes or no (evaluation order)</h2>
+              <p>When a request hits AWS, the policy engine roughly follows this mental model:</p>
+              <ol>
+                <li><strong>Organizations SCP</strong> — can only deny or limit maximum permissions; never grants access by itself.</li>
+                <li><strong>Resource-based policy</strong> — if present, can Allow cross-account access early.</li>
+                <li><strong>Identity-based policies</strong> — all attached managed and inline policies for the user/role.</li>
+                <li><strong>Permission boundary</strong> — intersects with identity policies (caps what identity policies can grant).</li>
+                <li><strong>Session policy</strong> — further narrows assumed-role sessions.</li>
+              </ol>
+              <p>Rules of thumb:</p>
+              <ul>
+                <li><strong>Explicit Deny</strong> anywhere applicable → request fails.</li>
+                <li><strong>No Allow</strong> that matches → implicit deny (fail).</li>
+                <li><strong>Allow</strong> that matches, and no Deny → success (for that part of the request).</li>
+              </ul>
+              <p>Some APIs need multiple actions and resources (e.g. <code>kms:Decrypt</code> plus key policy Allow). If you fix the identity policy but still see <code>AccessDenied</code>, check the <strong>resource policy</strong> and <strong>VPC endpoint policy</strong> too.</p>
+
+              <h2 class="h4 mt-5">Managed, inline, and JSON in the wild</h2>
+              <ul>
+                <li><strong>AWS managed policies</strong> — curated ARNs like <code>arn:aws:iam::aws:policy/ReadOnlyAccess</code>. Good starting points; rarely least privilege for production workloads.</li>
+                <li><strong>Customer managed policies</strong> — your JSON, versioned, attachable to many identities. Prefer these for reusable teams and CI review.</li>
+                <li><strong>Inline policies</strong> — embedded on one user/role/group. Harder to reuse; use sparingly for one-off exceptions.</li>
+              </ul>
+              <p>In Terraform or CloudFormation, the policy document is often built from a <code>data "aws_iam_policy_document"</code> or intrinsic functions—the <strong>evaluated JSON</strong> is what IAM stores. Always inspect the final JSON in the console or with <code>aws iam get-role-policy</code> when debugging.</p>
+
+              <h2 class="h4 mt-5">Trust policies are policies too (roles)</h2>
+              <p>An IAM role has two documents: permissions policies (what the role can do) and a <strong>trust policy</strong> (who can assume the role). Trust policies use the same JSON grammar but only allow <code>sts:AssumeRole</code>, <code>sts:AssumeRoleWithWebIdentity</code>, etc., with a <code>Principal</code>:</p>
+              <pre class="bg-light p-3 rounded small"><code>{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "ec2.amazonaws.com"
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}</code></pre>
+              <p>Confusing trust policy with permissions policy is a common source of “the role exists but nothing can assume it” tickets.</p>
+
+              <h2 class="h4 mt-5">Least privilege patterns that stay readable</h2>
+              <ul>
+                <li><strong>Split statements by intent</strong> — one Sid for read, one for write; easier review than one mega-statement.</li>
+                <li><strong>Prefer actions over <code>*</code></strong> — start from AWS managed job-function policies, then trim with IAM Access Analyzer or last-accessed data.</li>
+                <li><strong>Scope resources tightly</strong> — account-level ARNs for IAM roles; bucket + prefix for data plane.</li>
+                <li><strong>Use conditions for guardrails</strong> — MFA, source VPC, encryption headers, tag-based ABAC.</li>
+                <li><strong>Deny lists for non-negotiables</strong> — disabling regions, denying <code>iam:*</code> except break-glass roles, enforcing TLS.</li>
+              </ul>
+
+              <h2 class="h4 mt-5">Worked example: CI role for ECR and EKS</h2>
+              <pre class="bg-light p-3 rounded small"><code>{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AuthToEcr",
+      "Effect": "Allow",
+      "Action": [
+        "ecr:GetAuthorizationToken"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "PushPullOneRepo",
+      "Effect": "Allow",
+      "Action": [
+        "ecr:BatchCheckLayerAvailability",
+        "ecr:GetDownloadUrlForLayer",
+        "ecr:BatchGetImage",
+        "ecr:PutImage",
+        "ecr:InitiateLayerUpload",
+        "ecr:UploadLayerPart",
+        "ecr:CompleteLayerUpload"
+      ],
+      "Resource": "arn:aws:ecr:ap-south-1:123456789012:repository/my-app"
+    },
+    {
+      "Sid": "EksDescribeForDeploy",
+      "Effect": "Allow",
+      "Action": [
+        "eks:DescribeCluster"
+      ],
+      "Resource": "arn:aws:eks:ap-south-1:123456789012:cluster/prod"
+    }
+  ]
+}</code></pre>
+              <p>Note <code>ecr:GetAuthorizationToken</code> requires <code>Resource": "*"</code> per AWS’s IAM model—that is normal, not a sign of laziness. The push/pull statement is scoped to one repository ARN.</p>
+
+              <h2 class="h4 mt-5">Common mistakes (and what error messages hint)</h2>
+              <ul>
+                <li><strong>Wrong ARN partition or region</strong> — copy/paste from us-east-1 into ap-south-1 policies.</li>
+                <li><strong>Missing <code>iam:PassRole</code></strong> — CloudFormation, ECS, and Lambda need PassRole on the execution role ARN, not just service APIs.</li>
+                <li><strong>Action/resource mismatch</strong> — <code>logs:CreateLogGroup</code> on a log <em>stream</em> ARN; <code>kms:Decrypt</code> without key policy Allow.</li>
+                <li><strong>SCP deny looks like identity deny</strong> — check Organizations before rewriting role policies.</li>
+                <li><strong>Overly broad <code>NotAction</code> Allow</strong> — “allow everything except IAM” still allows data exfiltration APIs unless boundary + SCP back it up.</li>
+              </ul>
+
+              <h2 class="h4 mt-5">Validate before production</h2>
+              <ul>
+                <li><strong>IAM policy simulator</strong> — test Allow/Deny for a principal against sample actions and resources.</li>
+                <li><strong>Access Analyzer</strong> — flags unused actions and external access in resource policies.</li>
+                <li><strong>CloudTrail</strong> — <code>errorCode</code> and <code>errorMessage</code> on failed API calls show which statement class failed (sometimes with policy type).</li>
+                <li><strong>JSON lint</strong> — trailing commas and duplicate keys break console saves; CI should validate JSON schema where possible.</li>
+              </ul>
+
+              <h2 class="h4 mt-5">How this fits your AWS security study path</h2>
+              <p>Policy JSON is the language behind everything in <a href="aws-cloud-security-foundations.html">Cloud Security Foundations</a> and landing-zone guardrails in <a href="aws-cloud-architecting.html">Cloud Architecting</a>. Pair this post with <a href="aws-network-architecture-design.html">network architecture</a> when you use <code>aws:SourceVpc</code> conditions, and with <a href="gitops-principles.html">GitOps</a> when IAM policies live in Git beside Terraform modules.</p>
+
+              <h2 class="h4 mt-5">Further reading</h2>
+              <ul>
+                <li>AWS IAM documentation — policy reference, condition keys, and evaluation logic</li>
+                <li>AWS Well-Architected Security pillar — identity and access management best practices</li>
+                <li>IAM Access Analyzer — external access and unused permission findings</li>
+              </ul>
+
+              <p class="small text-muted mt-4 mb-2"><a href="../index.html#blog">Blog index</a> · <a href="aws-cloud-security-foundations.html">Cloud Security Foundations</a> · <a href="aws-cloud-architecting.html">Cloud Architecting</a></p>
+              <p class="mb-0"><a href="../index.html#blog" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left" aria-hidden="true"></i> Back to blog list</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+  </main>
+  <footer id="footer">
+    <div class="container">
+      <div class="copyright">&copy; Copyright <strong><span>babulal.com.np</span></strong></div>
+      <div class="credits">Designed by <a href="https://babulal.com.np/">Babulal Tamang</a></div>
+    </div>
+  </footer>
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+  <script src="../assets/vendor/purecounter/purecounter_vanilla.js"></script>
+  <script src="../assets/vendor/aos/aos.js"></script>
+  <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="../assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="../assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="../assets/vendor/typed.js/typed.min.js"></script>
+  <script src="../assets/vendor/waypoints/noframework.waypoints.js"></script>
+  <script src="../assets/js/main.js"></script>
+</body>
+</html>
