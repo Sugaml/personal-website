@@ -1019,3 +1019,60 @@ body.theme-v2 .blog-article .blog-author:hover,
 body.theme-v2 .blog-article .blog-author:focus {
   color: var(--v2-accent, #0d6efd) !important;
 }
+
+body.theme-v2 .ml-question-bank .ml-q {
+  background: #fff;
+}
+
+body.theme-v2 .ml-question-bank .ml-q summary {
+  cursor: pointer;
+  list-style: none;
+}
+
+body.theme-v2 .ml-question-bank .ml-q summary::-webkit-details-marker {
+  display: none;
+}
+
+body.theme-v2 .ml-question-bank .ml-q[open] summary {
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+  background: rgba(13, 110, 253, 0.04);
+}
+
+body.theme-v2 .ml-question-bank .ml-q summary::before {
+  content: "▸ ";
+  color: var(--v2-accent, #0d6efd);
+  font-weight: 600;
+}
+
+body.theme-v2 .ml-question-bank .ml-q[open] summary::before {
+  content: "▾ ";
+}
+
+body.theme-v2 .aptitude-bank .aptitude-accordion .accordion-button {
+  font-size: 0.95rem;
+  line-height: 1.45;
+  padding: 0.85rem 1rem;
+}
+
+body.theme-v2 .aptitude-bank .aptitude-accordion .accordion-button:not(.collapsed) {
+  background: rgba(13, 110, 253, 0.06);
+  color: inherit;
+  box-shadow: none;
+}
+
+body.theme-v2 .aptitude-bank .aptitude-qnum {
+  font-variant-numeric: tabular-nums;
+  min-width: 2rem;
+}
+
+body.theme-v2 .aptitude-bank .aptitude-stem {
+  text-align: left;
+}
+
+body.theme-v2 .aptitude-bank .aptitude-category {
+  scroll-margin-top: 5rem;
+}
+
+body.theme-v2 .aptitude-bank .aptitude-toolbar {
+  margin-top: 0.5rem;
+}

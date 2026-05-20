@@ -171,6 +171,16 @@
       "published": "2026-04-25"
     },
     {
+      "slug": "aws-mla-c01-practice-questions",
+      "file": "aws-mla-c01-practice-questions.html",
+      "title": "AWS MLA-C01 Practice Question Bank \u2014 Babulal Tamang",
+      "description": "334 unique MLA-C01 practice questions with detailed explanations: data preparation, model development, deployment, monitoring, and security on SageMaker and AWS ML services.",
+      "keywords": "AWS MLA-C01, machine learning engineer, SageMaker, MLOps, practice exam, Babulal Tamang",
+      "breadcrumb": "MLA-C01 practice questions",
+      "content_file": "aws-mla-c01-practice-questions.html",
+      "published": "2026-06-18"
+    },
+    {
       "slug": "aws-network-architecture-design",
       "file": "aws-network-architecture-design.html",
       "title": "Designing AWS Network Architecture \u2014 A Cloud Architect's Guide \u2014 Babulal Tamang",
@@ -589,6 +599,16 @@
       "breadcrumb": "Git &amp; GitHub course",
       "content_file": "git-github-course-in-depth.html",
       "published": "2026-05-31"
+    },
+    {
+      "slug": "interview-aptitude-logical-questions",
+      "file": "interview-aptitude-logical-questions.html",
+      "title": "Interview Aptitude: Logical Reasoning Question Bank \u2014 Babulal Tamang",
+      "description": "89 expandable multiple-choice logical and aptitude questions for technical interview prep: number series, analogies, syllogisms, puzzles, and tech-flavored reasoning with answers.",
+      "keywords": "interview aptitude, logical reasoning, practice questions, technical interview, Babulal Tamang",
+      "breadcrumb": "Interview aptitude bank",
+      "content_file": "interview-aptitude-logical-questions.html",
+      "published": "2026-05-20"
     }
   ]
 }

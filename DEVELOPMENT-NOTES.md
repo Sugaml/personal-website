@@ -2,6 +2,12 @@
 
 Short log of design decisions and content changes.
 
+## 2026-05-20 — MLA-C01 practice question bank (blog)
+
+- **Intent:** Publish the 334-question MLA-C01 bank as an interactive HTML blog post (expandable `<details>` per question) and list it in the AI & ML section on the index.
+- **Files:** `content/blogs/aws-mla-c01-practice-questions.html` (generated), `blogs/aws-mla-c01-practice-questions.html` (via `make build`), `data/blog-posts.json`, `index.html`, `scripts/generate_mla_practice_questions.py` (`render_blog_html`), `assets/css/theme-v2.css` (`.ml-question-bank`).
+- **Regenerate:** `cd scripts && python3 generate_mla_practice_questions.py` then `make build`.
+
 ## 2026-05-20 — Blog publication dates (sequential + index UX)
 
 - **Problem:** Dozens of posts shared `19 May 2026` / `20 May 2026` on the index and in article headers after bulk updates.
@@ -27,11 +33,13 @@ Short log of design decisions and content changes.
 - **Intent:** Standalone reference—scope nesting, often-confused pairs, themed glossary (paradigms, data, models, training, inference, Gen AI, RAG, evals, MLOps, governance), acronyms. Complements `how-to-become-ai-developer.html`.
 - **Files:** `content/blogs/ai-ml-terminology-glossary.html`, `data/blog-posts.json`, `blogs/ai-ml-terminology-glossary.html` (via build), `index.html` (AI & ML sections), `scripts/update-blog-meta.py`, cross-link from `how-to-become-ai-developer.html`.
 
-## 2026-05-20 — Interview aptitude / logical reasoning question bank (study)
+## 2026-05-20 — Interview aptitude / logical reasoning question bank (blog + study)
 
-- **Intent:** Expand interview prep with 89 multiple-choice logical and aptitude questions (number series, analogies, syllogisms, puzzles, data interpretation, tech-flavored reasoning), each with worked explanations.
-- **Files:** `study/interview-aptitude-logical-questions.md`, generators `scripts/generate_interview_aptitude_questions.py`, `scripts/interview_aptitude_question_bank.py`.
-- **Regenerate:** `cd scripts && python3 generate_interview_aptitude_questions.py`
+- **Intent:** 89 multiple-choice logical/aptitude questions for interview prep, with expandable answers on the site and a markdown export for offline study.
+- **Blog:** `content/blogs/interview-aptitude-logical-questions.html` (Bootstrap accordion, expand/collapse all), built to `blogs/interview-aptitude-logical-questions.html`; index subsection **Interview prep**.
+- **Study:** `study/interview-aptitude-logical-questions.md`
+- **Generators:** `scripts/interview_aptitude_question_bank.py`, `scripts/generate_interview_aptitude_questions.py`, `scripts/gen_interview_aptitude_blog.py`
+- **Regenerate:** `cd scripts && python3 gen_interview_aptitude_blog.py && python3 generate_interview_aptitude_questions.py && cd .. && make build`
 
 ## 2026-05-20 — MLA-C01 practice question bank (study)
 

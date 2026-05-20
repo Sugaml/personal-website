@@ -3,11 +3,15 @@
 
 from __future__ import annotations
 
+import html
 from pathlib import Path
 
 from mla_question_bank import all_questions, q
 
-OUTPUT = Path(__file__).resolve().parents[1] / "study" / "aws-mla-c01-practice-questions.md"
+ROOT = Path(__file__).resolve().parents[1]
+OUTPUT = ROOT / "study" / "aws-mla-c01-practice-questions.md"
+BLOG_CONTENT = ROOT / "content" / "blogs" / "aws-mla-c01-practice-questions.html"
+PUBLISHED = "2026-06-18"
 
 # Curated core questions (high-quality scenarios)
 CORE = [
@@ -505,6 +509,155 @@ def render_markdown(questions: list) -> str:
     return "\n".join(lines)
 
 
+def _domain_bounds(n: int) -> list[tuple[int, int, str, str]]:
+    return [
+        (1, int(n * 0.28) + 1, "Domain 1: Data Preparation for ML", "domain-1"),
+        (int(n * 0.28) + 1, int(n * 0.54) + 1, "Domain 2: ML Model Development", "domain-2"),
+        (int(n * 0.54) + 1, int(n * 0.76) + 1, "Domain 3: Deployment and Orchestration", "domain-3"),
+        (int(n * 0.76) + 1, n + 1, "Domain 4: Monitoring, Maintenance, and Security", "domain-4"),
+    ]
+
+
+def _distractor_reason(distractor: str, key: str) -> str:
+    if "DeepRacer" in distractor or "laptop" in distractor.lower() or "Disable IAM" in distractor:
+        return "Out of exam scope or violates security and governance requirements."
+    if "only" in distractor.lower() and key == "B":
+        return "Too narrow or contradicts the scenario's scale, latency, or compliance needs."
+    return "Does not best satisfy the scenario's primary requirement compared to the correct option."
+
+
+def _render_question_html(num: int, item: dict) -> str:
+    esc = html.escape
+    ans = item["answer"]
+    correct = ans if isinstance(ans, list) else [ans]
+    ans_label = ", ".join(correct) if len(correct) > 1 else correct[0]
+
+    options = "".join(
+        f'<li><strong>{esc(key)})</strong> {esc(item["options"][key])}</li>\n'
+        for key in sorted(item["options"])
+    )
+    distractors = "".join(
+        f'<li><strong>{esc(key)})</strong> {esc(item["options"][key])} — '
+        f'{esc(_distractor_reason(item["options"][key], key))}</li>\n'
+        for key in sorted(item["options"])
+        if key not in correct
+    )
+
+    return f"""<details class="ml-q border rounded mb-2" id="q{num}">
+  <summary class="px-3 py-2"><strong>Question {num}.</strong> {esc(item["stem"])}</summary>
+  <div class="px-3 pb-3">
+    <ul class="mb-3">{options}</ul>
+    <p class="mb-2"><strong>Correct answer:</strong> {esc(ans_label)}</p>
+    <p class="mb-2"><strong>Why this is correct:</strong> {esc(item["why"])}</p>
+    <p class="mb-1"><strong>Why the distractors are incorrect:</strong></p>
+    <ul class="small text-muted mb-0">{distractors}</ul>
+  </div>
+</details>
+"""
+
+
+def render_blog_html(questions: list) -> str:
+    esc = html.escape
+    n = len(questions)
+    bounds = _domain_bounds(n)
+    display_date = "18 Jun 2026"
+
+    domain_nav = "".join(
+        f'<li><a href="#{anchor}">{esc(title)}</a> (Q{bounds[i][0]}–{bounds[i][1] - 1})</li>\n'
+        for i, (start, end, title, anchor) in enumerate(bounds)
+    )
+
+    body_parts: list[str] = []
+    domain_idx = 0
+    for num, item in enumerate(questions, start=1):
+        while domain_idx < len(bounds) - 1 and num >= bounds[domain_idx + 1][0]:
+            domain_idx += 1
+        start, _, title, anchor = bounds[domain_idx]
+        if num == start:
+            body_parts.append(f'<h2 class="h4 mt-5" id="{anchor}">{esc(title)}</h2>\n')
+        body_parts.append(_render_question_html(num, item))
+
+    questions_block = "".join(body_parts)
+
+    return f"""<article class="inner-page blog-article pb-5">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-9 col-xl-8">
+            <header class="mb-4 pb-3 border-bottom" data-aos="fade-up">
+              <div class="blog-article-meta mb-3">
+                <p class="text-muted small mb-2">AI/ML · <time datetime="{PUBLISHED}">{display_date}</time> · <span class="blog-meta-label">Practice</span> · By <a href="../index.html#about" class="blog-author text-reset fw-semibold" rel="author">Babulal Tamang</a></p>
+              <ul class="blog-tags list-unstyled d-flex flex-wrap gap-1 mb-0" aria-label="Tags">
+                <li><span class="badge rounded-pill text-bg-light border text-muted">AWS</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">MLA-C01</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">SageMaker</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">MLOps</span></li>
+              </ul>
+              </div>
+              <h1 class="h2 mb-3">AWS MLA-C01 Practice Question Bank</h1>
+              <p class="lead mb-3">{n} unique multiple-choice questions for the <strong>AWS Certified Machine Learning Engineer – Associate (MLA-C01)</strong> exam—with detailed explanations for every answer and distractor.</p>
+              <div class="border-start border-primary border-4 ps-3 py-3 bg-light rounded mb-0" role="note">
+                <p class="small text-uppercase text-muted mb-1 fw-semibold">In short</p>
+                <p class="mb-0">Unofficial practice aligned to domain weights (28 / 26 / 22 / 24). Expand each question to reveal the answer and rationale. Verify against the latest <a href="https://d1.awsstatic.com/training-and-certification/docs-machine-learning-engineer-associate/AWS-Certified-Machine-Learning-Engineer-Associate_Exam-Guide.pdf" target="_blank" rel="noopener noreferrer">official exam guide</a>.</p>
+              </div>
+            </header>
+
+            <div class="blog-prose ml-question-bank" data-aos="fade-up" data-aos-delay="50">
+
+              <h2 class="h4 mt-4">Exam at a glance</h2>
+              <div class="table-responsive">
+                <table class="table table-sm table-bordered">
+                  <tbody>
+                    <tr><th scope="row">Scored questions</th><td>50</td></tr>
+                    <tr><th scope="row">Total (incl. unscored)</th><td>65</td></tr>
+                    <tr><th scope="row">Time</th><td>130 minutes</td></tr>
+                    <tr><th scope="row">Passing score</th><td>720 / 1000 (scaled)</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="table-responsive mb-4">
+                <table class="table table-sm table-bordered">
+                  <thead><tr><th scope="col">Domain</th><th scope="col">Weight</th></tr></thead>
+                  <tbody>
+                    <tr><td>1 — Data Preparation</td><td>28%</td></tr>
+                    <tr><td>2 — ML Model Development</td><td>26%</td></tr>
+                    <tr><td>3 — Deployment &amp; Orchestration</td><td>22%</td></tr>
+                    <tr><td>4 — Monitoring, Maintenance &amp; Security</td><td>24%</td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <p class="alert alert-secondary small" role="note">AWS markets this as <strong>Machine Learning Engineer – Associate (MLA-C01)</strong>, not a separate “MLOps Associate” badge. It covers building, deploying, orchestrating, monitoring, and securing ML workloads on SageMaker and related services.</p>
+
+              <h2 class="h4 mt-5">Jump to a domain</h2>
+              <ul class="mb-4">
+                {domain_nav}
+              </ul>
+
+              <h2 class="h4 mt-4">Questions</h2>
+              <p class="small text-muted">Click a question to expand the answer and explanations.</p>
+
+              {questions_block}
+
+              <h2 class="h4 mt-5">How to use this bank</h2>
+              <ol>
+                <li>Study by domain weights (28 / 26 / 22 / 24).</li>
+                <li>For each wrong answer, write <em>why</em> the scenario rejects it—exam distractors are plausible.</li>
+                <li>Lab: SageMaker Pipelines, Model Registry, endpoint types, Model Monitor, CodePipeline integration.</li>
+              </ol>
+
+              <h2 class="h4 mt-5">Related posts</h2>
+              <p><a href="aws-machine-learning-foundations.html">Machine Learning Foundations</a> · <a href="aws-generative-ai-foundations.html">Generative AI Foundations</a> · <a href="aws-data-engineering.html">Data Engineering</a> · <a href="ai-ml-terminology-glossary.html">AI and ML terminology</a></p>
+
+              <p class="small text-muted mt-4 mb-2"><a href="../index.html#blog">Blog index</a></p>
+              <p class="mb-0"><a href="../index.html#blog" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left" aria-hidden="true"></i> Back to blog list</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+"""
+
+
 def main() -> None:
     questions = collect_unique()
     if len(questions) < 200:
@@ -514,6 +667,12 @@ def main() -> None:
     OUTPUT.write_text(content, encoding="utf-8")
     print(f"Wrote {len(questions)} unique questions to {OUTPUT}")
     print(f"Size: {OUTPUT.stat().st_size / 1024:.1f} KB")
+
+    BLOG_CONTENT.parent.mkdir(parents=True, exist_ok=True)
+    blog_html = render_blog_html(questions)
+    BLOG_CONTENT.write_text(blog_html, encoding="utf-8")
+    print(f"Wrote blog content to {BLOG_CONTENT}")
+    print(f"Blog size: {BLOG_CONTENT.stat().st_size / 1024:.1f} KB")
 
 
 if __name__ == "__main__":

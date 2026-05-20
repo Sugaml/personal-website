@@ -68,6 +68,7 @@ SEQUENTIAL_ORDER: list[str] = [
     "rag-retrieval-augmented-generation-deep-dive",
     "ai-foundation-models-deep-dive",
     "ai-ml-terminology-glossary",
+    "aws-mla-c01-practice-questions",
 ]
 
 SEQUENTIAL_START = date(2026, 5, 1)

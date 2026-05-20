@@ -48,6 +48,11 @@ POSTS = {
         "tags": ["AWS", "Machine Learning", "ML", "Credly"],
         "keywords": "AWS Academy, machine learning, SageMaker, ML foundations, Credly, Babulal Tamang",
     },
+    "aws-mla-c01-practice-questions.html": {
+        "label": "Practice",
+        "tags": ["AWS", "MLA-C01", "SageMaker", "MLOps"],
+        "keywords": "AWS MLA-C01, machine learning engineer, SageMaker, MLOps, practice exam, Babulal Tamang",
+    },
     "aws-generative-ai-foundations.html": {
         "label": "Academy",
         "tags": ["AWS", "Generative AI", "Gen AI", "Credly"],
