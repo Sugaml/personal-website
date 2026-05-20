@@ -253,6 +253,15 @@
       "content_file": "gitops-principles.html"
     },
     {
+      "slug": "generative-ai-in-depth",
+      "file": "generative-ai-in-depth.html",
+      "title": "Generative AI in Depth \u2014 Babulal Tamang",
+      "description": "A technical deep dive into generative AI: generative vs discriminative models, GANs, VAEs, diffusion, LLMs, multimodal stacks, training and alignment, production architecture, risks, and responsible deployment.",
+      "keywords": "generative AI, LLM, diffusion models, GAN, responsible AI, RAG, Babulal Tamang",
+      "breadcrumb": "Generative AI in depth",
+      "content_file": "generative-ai-in-depth.html"
+    },
+    {
       "slug": "how-to-become-ai-developer",
       "file": "how-to-become-ai-developer.html",
       "title": "How to Become an AI Developer \u2014 Foundations, Terminology, Architecture &amp; Tech Stack \u2014 Babulal Tamang",
@@ -377,6 +386,15 @@
       "keywords": "Kubernetes, business value, when to use K8s, platform, Babulal Tamang",
       "breadcrumb": "Kubernetes for business",
       "content_file": "kubernetes-when-how-why-where.html"
+    },
+    {
+      "slug": "llm-in-depth",
+      "file": "llm-in-depth.html",
+      "title": "Large Language Models in Depth \u2014 Babulal Tamang",
+      "description": "A technical deep dive into large language models (LLMs): tokenization, autoregressive generation, transformer decoders, training and alignment, KV cache and inference, decoding parameters, RAG, evaluation, security, and production architecture.",
+      "keywords": "LLM, large language model, transformers, tokenization, RAG, inference, vLLM, Babulal Tamang",
+      "breadcrumb": "LLMs in depth",
+      "content_file": "llm-in-depth.html"
     },
     {
       "slug": "opswat-icip-critical-infrastructure",

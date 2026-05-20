@@ -6,17 +6,17 @@
               <div class="blog-article-meta mb-3">
                 <p class="text-muted small mb-2">AI/ML · <time datetime="2026-05-20">20 May 2026</time> · <span class="blog-meta-label">Guide</span> · By <a href="../index.html#about" class="blog-author text-reset fw-semibold" rel="author">Babulal Tamang</a></p>
               <ul class="blog-tags list-unstyled d-flex flex-wrap gap-1 mb-0" aria-label="Tags">
-                <li><span class="badge rounded-pill text-bg-light border text-muted">AI</span></li>
-                <li><span class="badge rounded-pill text-bg-light border text-muted">Foundation models</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">RAG</span></li>
                 <li><span class="badge rounded-pill text-bg-light border text-muted">LLM</span></li>
-                <li><span class="badge rounded-pill text-bg-light border text-muted">Transformers</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Embeddings</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Vector search</span></li>
               </ul>
               </div>
-              <h1 class="h2 mb-3">AI Foundation Models in Depth: Architecture, Training, Adaptation, and Production Reality</h1>
-              <p class="lead mb-3">A <strong>foundation model</strong> is not just a bigger neural network. It is a general-purpose capability layer—pre-trained once on broad data, then adapted through prompts, retrieval, or fine-tuning for thousands of downstream tasks. This guide explains what that means technically, how these models are built and operated, where they excel, and where engineering discipline still decides success or failure.</p>
+              <h1 class="h2 mb-3">RAG in Depth: Retrieval-Augmented Generation from First Principles to Production</h1>
+              <p class="lead mb-3"><strong>Retrieval-augmented generation (RAG)</strong> connects a language model to knowledge it was never trained on—or knowledge that changed yesterday—by searching a corpus at query time and injecting the best passages into the prompt. It is the default pattern for enterprise Q&amp;A, support copilots, and internal search because it is cheaper and more auditable than retraining, and more controllable than hoping the model “remembers” your wiki.</p>
               <div class="border-start border-primary border-4 ps-3 py-3 bg-light rounded mb-0" role="note">
                 <p class="small text-uppercase text-muted mb-1 fw-semibold">In short</p>
-                <p class="mb-0">Foundation models are large pre-trained systems (usually transformers) that learn general patterns from massive datasets, then become useful through adaptation—not retraining from scratch every time. Shipping them in production means treating inference cost, context limits, evaluation, grounding, and governance as first-class engineering, alongside the model API itself.</p>
+                <p class="mb-0">RAG = ingest documents → chunk → embed → store vectors → on each user question retrieve top-k relevant chunks → paste them into the LLM context → generate an answer (ideally with citations). Quality lives in chunking, retrieval, access control, and evaluation—not in picking the largest model available.</p>
               </div>
             </header>
 
@@ -30,7 +30,7 @@
                 <li><strong>Adaptation</strong> — downstream use happens via fine-tuning, prompting, retrieval augmentation, or tool use—not always by training a new model from random initialization.</li>
               </ul>
               <p>That is a shift from classical machine learning, where you typically scoped a dataset, chose a model family, trained for one metric, and deployed a specialist. Foundation models invert part of the economics: upfront training is enormous, but marginal new features can be cheap if adaptation works.</p>
-              <p>For generative AI across modalities (diffusion, GANs, LLMs, lifecycle), see <a href="generative-ai-in-depth.html">Generative AI in Depth</a>. For a focused tour of text-generation systems, see <a href="llm-in-depth.html">Large Language Models in Depth</a>. For how this era fits into seventy years of AI history, see <a href="ai-historical-paradigms.html">From Symbols to Foundation Models</a>. For vocabulary and career paths around building with them, see <a href="how-to-become-ai-developer.html">How to Become an AI Developer</a>.</p>
+              <p>For how this era fits into seventy years of AI history, see <a href="ai-historical-paradigms.html">From Symbols to Foundation Models</a>. For vocabulary and career paths around building with them, see <a href="how-to-become-ai-developer.html">How to Become an AI Developer</a>.</p>
 
               <h2 class="h4 mt-5">Foundation models vs traditional ML models</h2>
               <div class="table-responsive">
@@ -127,7 +127,7 @@
 
               <h2 class="h4 mt-5">Modalities and model families you will meet</h2>
               <ul>
-                <li><strong>Large language models (LLMs)</strong> — text and code; GPT, Claude, Llama, Mistral, Gemini families. Default for chat, agents, and document AI. See <a href="llm-in-depth.html">Large Language Models in Depth</a> for tokenization, inference, decoding, and production patterns.</li>
+                <li><strong>Large language models (LLMs)</strong> — text and code; GPT, Claude, Llama, Mistral, Gemini families. Default for chat, agents, and document AI.</li>
                 <li><strong>Vision models</strong> — image classification, detection, segmentation; sometimes bundled into multimodal chat.</li>
                 <li><strong>Speech models</strong> — ASR (speech-to-text), TTS (text-to-speech); increasingly unified with LLM stacks.</li>
                 <li><strong>Code models</strong> — trained heavily on repositories; specialize in completion, refactor, and test generation.</li>
@@ -234,7 +234,7 @@
                 <li>Anthropic, OpenAI, and major cloud provider documentation on RAG, evals, and safety</li>
               </ul>
 
-              <p class="small text-muted mt-4 mb-2"><a href="../index.html#blog">Blog index</a> · <a href="generative-ai-in-depth.html">Generative AI in depth</a> · <a href="llm-in-depth.html">LLMs in depth</a> · <a href="ai-historical-paradigms.html">AI historical paradigms</a> · <a href="how-to-become-ai-developer.html">How to become an AI developer</a> · <a href="aws-generative-ai-foundations.html">Generative AI Foundations</a> · <a href="aws-machine-learning-foundations.html">ML Foundations</a> · <a href="iso-42001-lead-auditor-ai-management.html">ISO 42001</a></p>
+              <p class="small text-muted mt-4 mb-2"><a href="../index.html#blog">Blog index</a> · <a href="ai-historical-paradigms.html">AI historical paradigms</a> · <a href="how-to-become-ai-developer.html">How to become an AI developer</a> · <a href="aws-generative-ai-foundations.html">Generative AI Foundations</a> · <a href="aws-machine-learning-foundations.html">ML Foundations</a> · <a href="iso-42001-lead-auditor-ai-management.html">ISO 42001</a></p>
               <p class="mb-0"><a href="../index.html#blog" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left" aria-hidden="true"></i> Back to blog list</a></p>
             </div>
           </div>

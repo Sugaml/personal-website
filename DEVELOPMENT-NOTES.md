@@ -2,6 +2,12 @@
 
 Short log of design decisions and content changes.
 
+## 2026-05-20 — Generative AI in depth (guide)
+
+- **Title:** “Generative AI in Depth: Models, Modalities, Training, and Shipping Real Products” (article); index card “Generative AI in depth”.
+- **Intent:** Broad technical guide complementing `llm-in-depth.html` and `ai-foundation-models-deep-dive.html`: generative vs discriminative ML, GANs/VAEs/diffusion/autoregressive/multimodal families, modalities table, training lifecycle, production stack, use cases, risks, decision guide, learning path. Cross-links to AWS GenAI/ML, ISO 42001, hyperscaler mapping.
+- **Files:** `content/blogs/generative-ai-in-depth.html`, `data/blog-posts.json`, `blogs/generative-ai-in-depth.html` (via build), `index.html` (AI & ML + AI/ML sections), `scripts/update-blog-meta.py`, cross-links in `aws-generative-ai-foundations.html` and `ai-foundation-models-deep-dive.html`.
+
 ## 2026-05-20 — Blog index opens only via expand icon (new tab)
 
 - **Intent:** Keep visitors on the homepage while reading posts; avoid same-tab navigation from blog cards.
@@ -15,6 +21,12 @@ Short log of design decisions and content changes.
 - **Build:** `make build` (`scripts/build_site.py`) regenerates `blogs/`. `make extract` re-splits built pages into content + data.
 - **Generators / maintenance:** `gen-*.py` and `update-blog-meta.py` target `content/` + registry, then run the build.
 - **Docs:** `README.md`. Unused `inner-page.html` → `templates/legacy/`.
+
+## 2026-05-20 — LLMs in depth (guide)
+
+- **Title:** “Large Language Models in Depth: From Tokens to Production Inference” (article); index card “LLMs in depth”.
+- **Intent:** LLM-focused companion to `ai-foundation-models-deep-dive.html`: autoregressive loop, tokenization/BPE, decoder architecture (RoPE, GQA), training phases, KV cache and serving, decoding table, context/lost-in-the-middle, RAG pitfalls, evals, security, production stack, open vs closed. Cross-links to foundation models, AI developer guide, AWS GenAI, FinOps, ISO 42001.
+- **Files:** `content/blogs/llm-in-depth.html`, `data/blog-posts.json`, `blogs/llm-in-depth.html` (via build), `index.html` (AI sections), cross-links from `ai-foundation-models-deep-dive.html` and `how-to-become-ai-developer.html`.
 
 ## 2026-05-20 — AI foundation models deep dive (guide)
 

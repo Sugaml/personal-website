@@ -128,6 +128,16 @@ POSTS = {
         "tags": ["GitOps", "Kubernetes", "Flux", "Argo CD"],
         "keywords": "GitOps, declarative, reconciliation, Argo CD, Flux, Babulal Tamang",
     },
+    "generative-ai-in-depth.html": {
+        "label": "Guide",
+        "tags": ["Generative AI", "LLM", "Diffusion", "Responsible AI"],
+        "keywords": "generative AI, LLM, diffusion models, GAN, responsible AI, RAG, Babulal Tamang",
+    },
+    "ai-foundation-models-deep-dive.html": {
+        "label": "Guide",
+        "tags": ["AI", "Foundation models", "LLM", "Transformers"],
+        "keywords": "foundation models, LLM, transformers, RAG, fine-tuning, generative AI, Babulal Tamang",
+    },
     "devops-life-business-value.html": {
         "label": "Essay",
         "tags": ["DevOps", "Business Value", "Platform", "Reliability"],

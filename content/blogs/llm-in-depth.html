@@ -1,0 +1,259 @@
+<article class="inner-page blog-article pb-5">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-9 col-xl-8">
+            <header class="mb-4 pb-3 border-bottom" data-aos="fade-up">
+              <div class="blog-article-meta mb-3">
+                <p class="text-muted small mb-2">AI/ML · <time datetime="2026-05-20">20 May 2026</time> · <span class="blog-meta-label">Guide</span> · By <a href="../index.html#about" class="blog-author text-reset fw-semibold" rel="author">Babulal Tamang</a></p>
+              <ul class="blog-tags list-unstyled d-flex flex-wrap gap-1 mb-0" aria-label="Tags">
+                <li><span class="badge rounded-pill text-bg-light border text-muted">LLM</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Transformers</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">Inference</span></li>
+                <li><span class="badge rounded-pill text-bg-light border text-muted">RAG</span></li>
+              </ul>
+              </div>
+              <h1 class="h2 mb-3">Large Language Models in Depth: From Tokens to Production Inference</h1>
+              <p class="lead mb-3">A <strong>large language model (LLM)</strong> is a neural network trained to predict text—one token at a time—at a scale where fluency, reasoning, and tool use emerge from statistics, not hand-written rules. This guide goes inside the LLM stack: how text becomes numbers, how generation actually works, what training and alignment change, and what engineers must own when these models leave the demo and hit production traffic.</p>
+              <div class="border-start border-primary border-4 ps-3 py-3 bg-light rounded mb-0" role="note">
+                <p class="small text-uppercase text-muted mb-1 fw-semibold">In short</p>
+                <p class="mb-0">LLMs are decoder-only transformers that model <em>P(next token | context)</em>. Everything else—chat, RAG, agents, APIs—is engineering around that core loop. Success means mastering token budgets, decoding parameters, grounding, evaluation, and security—not treating the model as an infallible oracle.</p>
+              </div>
+            </header>
+
+            <div class="blog-prose" data-aos="fade-up" data-aos-delay="50">
+
+              <h2 class="h4 mt-4">What counts as an LLM?</h2>
+              <p>An <strong>LLM</strong> is a foundation model specialized for <strong>language</strong> (and usually <strong>code</strong>): GPT-family, Claude, Gemini, Llama, Mistral, Qwen, and dozens of open-weight variants. “Large” refers to parameter count and training compute—billions of weights, terabytes of text—not to a fixed threshold. A 7B open model and a frontier closed API are both LLMs; they differ in capability, cost, and operational burden.</p>
+              <p>LLMs are almost always <strong>decoder-only transformers</strong>: they read context left-to-right and predict the next token. That differs from encoder-only models (BERT) used for classification and embeddings, and from encoder–decoder models (T5) built for explicit input→output pairs. For broader foundation-model context—modalities, CRFM definition, FM vs traditional ML—see <a href="ai-foundation-models-deep-dive.html">AI Foundation Models in Depth</a>. For history, see <a href="ai-historical-paradigms.html">From Symbols to Foundation Models</a>.</p>
+
+              <h2 class="h4 mt-5">The generation loop (the whole product in one idea)</h2>
+              <p>At inference time an LLM repeats:</p>
+              <ol>
+                <li><strong>Encode</strong> the prompt (system + user + optional retrieved documents) into token IDs.</li>
+                <li><strong>Forward pass</strong> — run the transformer; output a probability distribution over the vocabulary for the next token.</li>
+                <li><strong>Sample or select</strong> one token (greedy, temperature, top-<em>p</em>, etc.).</li>
+                <li><strong>Append</strong> the token to the context and repeat until a stop condition (EOS token, max length, or custom stop sequence).</li>
+              </ol>
+              <p>Chat UIs, copilots, and agents are wrappers on this loop. An <strong>agent</strong> adds: model emits a tool call → runtime executes → result appended to context → model continues. The LLM never “runs” your database; it proposes actions your code must validate and execute.</p>
+
+              <h2 class="h4 mt-5">Tokenization: where billing and limits begin</h2>
+              <p>Models do not see characters or words directly. Text is split into <strong>tokens</strong>—subword units learned by algorithms such as <strong>Byte Pair Encoding (BPE)</strong> or <strong>SentencePiece</strong>. Common patterns:</p>
+              <ul>
+                <li>Frequent words may be one token; rare words split into several.</li>
+                <li>Code and JSON often consume more tokens than plain prose for the same character count.</li>
+                <li>Leading spaces, punctuation, and language matter—identical meaning can tokenize differently.</li>
+              </ul>
+              <p>Why this matters for engineers:</p>
+              <ul>
+                <li><strong>API pricing</strong> is per input/output token.</li>
+                <li><strong>Context windows</strong> are token caps, not character caps.</li>
+                <li><strong>Latency</strong> scales with generated tokens and, during prefill, with prompt length.</li>
+                <li><strong>Special tokens</strong> mark roles (<code>&lt;|user|&gt;</code>, <code>&lt;|assistant|&gt;</code>), tool boundaries, or end-of-sequence—each model family has its own <strong>chat template</strong>; sending the wrong format degrades quality.</li>
+              </ul>
+              <p>Use the tokenizer shipped with the model (or the provider’s counting API) when estimating cost or fitting RAG chunks into context.</p>
+
+              <h2 class="h4 mt-5">Inside the decoder: attention, position, and scale</h2>
+              <p>Each layer applies <strong>multi-head self-attention</strong>: every token can attend to prior tokens (causal mask blocks the future). Attention lets the model bind pronouns to entities, follow long dependencies, and copy patterns from context— including patterns you did not intend (e.g. injected instructions in a retrieved document).</p>
+              <p>Modern LLMs add engineering refinements:</p>
+              <ul>
+                <li><strong>Rotary positional embeddings (RoPE)</strong> — encode position in a way that extrapolates to longer sequences better than fixed absolute embeddings.</li>
+                <li><strong>Grouped-query attention (GQA)</strong> — fewer key/value heads than query heads; cuts KV-cache memory with small quality tradeoffs.</li>
+                <li><strong>SwiGLU feed-forward blocks</strong> — standard in Llama-class architectures; most of the parameter count lives here.</li>
+                <li><strong>RMSNorm, pre-norm</strong> — stabilize very deep stacks during training.</li>
+              </ul>
+              <p>Parameter count (7B, 70B, 405B…) is capacity shorthand. Alignment, data quality, and inference stack often matter more than raw size for a given task.</p>
+
+              <h2 class="h4 mt-5">How LLMs are trained (three phases you should recognize)</h2>
+
+              <h3 class="h5 mt-4">1. Pre-training</h3>
+              <p>The model minimizes <strong>next-token prediction</strong> on massive corpora: web text, books, code, forums—filtered, deduplicated, and legally reviewed. It learns grammar, style, coding idioms, and a noisy store of facts. It does <em>not</em> learn to say “I don’t know” politely—that comes later.</p>
+              <p>Pre-training is cluster-scale work (thousands of GPUs, months). <strong>Scale laws</strong> showed loss often improves predictably with more data and compute until infrastructure or data quality limits dominate.</p>
+
+              <h3 class="h5 mt-4">2. Supervised fine-tuning (SFT)</h3>
+              <p>Curated (instruction, ideal reply) pairs teach the model to follow prompts, use formats, and adopt assistant behavior. SFT is how a base model becomes a <strong>chat model</strong>.</p>
+
+              <h3 class="h5 mt-4">3. Preference optimization</h3>
+              <p><strong>RLHF</strong> (reinforcement learning from human feedback) trains a reward model on human rankings, then optimizes the policy. Alternatives—<strong>DPO</strong>, ORPO, KTO—skip full RL loops and are popular in open-source fine-tuning. These steps shape tone, refusals, and helpfulness; they do not guarantee factual accuracy on your private data.</p>
+              <p>Most teams <strong>adapt</strong> a released model (prompt, RAG, LoRA) rather than pre-training. That is the practical path described in <a href="how-to-become-ai-developer.html">How to Become an AI Developer</a>.</p>
+
+              <h2 class="h4 mt-5">Inference mechanics: KV cache, batching, and throughput</h2>
+              <p>Autoregressive generation would be unbearably slow if every new token recomputed attention over the full history from scratch. Serving systems store <strong>key/value (KV) caches</strong> per layer for prior tokens and only compute attention for the new position.</p>
+              <ul>
+                <li><strong>Prefill</strong> — process the prompt in parallel (often compute-bound); dominates latency for long RAG contexts.</li>
+                <li><strong>Decode</strong> — generate one (or a few) tokens per step (often memory-bandwidth-bound).</li>
+                <li><strong>Continuous batching</strong> — schedulers (vLLM, TensorRT-LLM, TGI) pack requests dynamically to raise GPU utilization.</li>
+                <li><strong>Speculative decoding</strong> — a small draft model proposes tokens; the large model verifies in parallel to cut steps.</li>
+                <li><strong>Quantization</strong> — INT8/FP8/INT4 weights shrink memory and raise tokens/sec; watch eval regressions on your tasks.</li>
+              </ul>
+              <p>Self-hosting with <strong>vLLM</strong>, <strong>Ollama</strong>, or <strong>llama.cpp</strong> trades vendor simplicity for GPU ops. Managed APIs (OpenAI, Anthropic, Bedrock, Azure OpenAI, Vertex) trade margin for time-to-market. Hyperscaler service maps: <a href="aws-gcp-azure-services-mapping.html">AWS vs GCP vs Azure</a>.</p>
+
+              <h2 class="h4 mt-5">Decoding parameters (what “creativity” actually means)</h2>
+              <p>The model outputs logits; your runtime turns them into a token choice:</p>
+              <div class="table-responsive">
+                <table class="table table-sm table-bordered align-middle">
+                  <thead class="table-light">
+                    <tr>
+                      <th scope="col">Parameter</th>
+                      <th scope="col">Effect</th>
+                      <th scope="col">Typical use</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>Temperature</strong></td>
+                      <td>Scales logits before softmax; higher = more random</td>
+                      <td>0–0.3 for extraction/JSON; 0.7–1.0 for brainstorming</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Top-<em>p</em> (nucleus)</strong></td>
+                      <td>Sample from smallest set of tokens whose cumulative prob ≥ <em>p</em></td>
+                      <td>0.9–0.95 default for chat</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Top-<em>k</em></strong></td>
+                      <td>Restrict to <em>k</em> highest-probability tokens</td>
+                      <td>Used with or instead of top-<em>p</em></td>
+                    </tr>
+                    <tr>
+                      <td><strong>Max tokens</strong></td>
+                      <td>Hard cap on completion length</td>
+                      <td>Cost and safety guardrail</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Stop sequences</strong></td>
+                      <td>End generation when string appears</td>
+                      <td>Prevent run-on; tool-call delimiters</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Frequency / presence penalty</strong></td>
+                      <td>Discourage repetition</td>
+                      <td>Long-form writing; use carefully on structured tasks</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <p>For <strong>structured output</strong> (JSON matching a schema), prefer constrained decoding or response-format APIs where available; lower temperature alone does not guarantee valid JSON.</p>
+
+              <h2 class="h4 mt-5">Context windows: capacity is not attention quality</h2>
+              <p>Leading models advertise 128k–1M+ token windows. In practice:</p>
+              <ul>
+                <li><strong>Cost and latency</strong> grow with prompt length; long RAG dumps can make prefill dominate.</li>
+                <li><strong>Lost-in-the-middle</strong> — models may under-use information buried mid-prompt; put critical instructions and citations near the start or end.</li>
+                <li><strong>Effective context</strong> for a task is often smaller than the advertised maximum; measure on your eval set.</li>
+              </ul>
+              <p>Strategies: hierarchical summarization, reranking retrieved chunks, metadata filters, and “compress then answer” pipelines instead of stuffing entire wikis into one call.</p>
+
+              <h2 class="h4 mt-5">Grounding with RAG (LLM-specific pitfalls)</h2>
+              <p><strong>Retrieval-augmented generation (RAG)</strong> feeds the LLM excerpts from your knowledge base before it answers. The LLM still predicts tokens; retrieval reduces—but does not eliminate—hallucination on proprietary facts.</p>
+              <ol>
+                <li>Chunk documents with overlap; store embeddings in a vector index (pgvector, OpenSearch k-NN, Pinecone, etc.).</li>
+                <li>On query, retrieve top-<em>k</em> chunks (optionally hybrid keyword + vector).</li>
+                <li>Inject chunks into the prompt with clear delimiters and “answer only from sources” instructions.</li>
+                <li>Require citations or post-check that claims appear in retrieved text for high-stakes answers.</li>
+              </ol>
+              <p>Failure modes: wrong chunks retrieved, stale embeddings, duplicated/conflicting sources, and <strong>indirect prompt injection</strong> when malicious text lives inside a document the model trusts. Refresh pipelines when sources change; version embeddings like schema migrations.</p>
+
+              <h2 class="h4 mt-5">Adaptation beyond prompting</h2>
+              <ul>
+                <li><strong>Prompt engineering</strong> — system role, few-shot examples, output schema in the prompt; version and A/B like application code.</li>
+                <li><strong>LoRA / QLoRA</strong> — train small adapter matrices on domain tone, tool-call formats, or internal jargon; merge or hot-swap adapters per tenant.</li>
+                <li><strong>Full fine-tune</strong> — rare for most products; risk of catastrophic forgetting; justify with eval gains.</li>
+                <li><strong>Distillation</strong> — train a smaller model to mimic a larger one for cost-sensitive paths.</li>
+              </ul>
+              <p>Fine-tune when prompting cannot stabilize format or behavior; use RAG when facts live outside the model; do not fine-tune to “upload” a knowledge base you could retrieve instead.</p>
+
+              <h2 class="h4 mt-5">Evaluation: LLMs need product-specific tests</h2>
+              <p>Perplexity on held-out text is a training metric, not a product metric. Build an <strong>eval harness</strong>:</p>
+              <ul>
+                <li>Golden questions from real users and support tickets.</li>
+                <li>Rubric-based human review (correctness, tone, safety).</li>
+                <li>Automated checks: JSON schema validation, citation overlap with retrieved spans, refusal on blocked topics.</li>
+                <li><strong>LLM-as-judge</strong> — useful for scale; weak when the judge shares the same blind spots; always spot-check humans.</li>
+                <li>Regression runs on every model version or prompt change—treat upgrades like dependency bumps with rollback.</li>
+              </ul>
+
+              <h2 class="h4 mt-5">Security and abuse</h2>
+              <ul>
+                <li><strong>Prompt injection</strong> — untrusted content (emails, web pages, tickets) instructs the model to ignore policy. Mitigate with separation of system vs untrusted channels, output filtering, and least-privilege tools.</li>
+                <li><strong>Jailbreaks</strong> — adversarial prompts bypass refusals; defense in depth, monitoring, and no single-model reliance for safety-critical gates.</li>
+                <li><strong>Data leakage</strong> — PII in prompts logged to third parties; redact before send, regional endpoints, retention policies.</li>
+                <li><strong>Tool abuse</strong> — agents with shell or SQL access need allow lists, confirmations, and timeouts.</li>
+              </ul>
+              <p>Governance frameworks such as <a href="iso-42001-lead-auditor-ai-management.html">ISO/IEC 42001</a> complement technical controls for organizational accountability.</p>
+
+              <h2 class="h4 mt-5">Production stack around the LLM</h2>
+              <pre class="bg-light p-3 rounded small"><code>Client → API gateway (auth, rate limits)
+      → Orchestrator (RAG, tools, memory)
+      → Model service (API or self-hosted GPU)
+      → Vector DB / data plane
+      → Observability (tokens, latency, traces)
+      → Safety filters + human escalation</code></pre>
+              <ul>
+                <li><strong>Observability</strong> — log token usage, latency percentiles, error rates; sample prompts/responses under retention policy.</li>
+                <li><strong>Caching</strong> — identical prompts only; beware stale answers when underlying data changes.</li>
+                <li><strong>Routing</strong> — small model for classification, large model for hard reasoning; fallbacks when primary is down.</li>
+                <li><strong>FinOps</strong> — budgets per team, per-feature token caps; see <a href="finops-greenops-1-invisible-bill.html">FinOps in plain English</a> for cost culture that applies to GPU and token bills alike.</li>
+              </ul>
+              <p>Course-level vocabulary from <a href="aws-generative-ai-foundations.html">AWS Generative AI Foundations</a> and <a href="aws-machine-learning-foundations.html">ML Foundations</a> maps cleanly onto this stack even when you deploy outside AWS.</p>
+
+              <h2 class="h4 mt-5">When an LLM is the wrong tool</h2>
+              <ul>
+                <li>Deterministic business rules with audit requirements — use code or rules engines.</li>
+                <li>Tabular prediction on structured logs — gradient boosting or classical ML often wins on cost and explainability.</li>
+                <li>Sub-millisecond latency at huge QPS — embeddings + classifiers, not 70B autoregressive decode.</li>
+                <li>Guaranteed correctness without human review — LLMs are probabilistic pattern completers, not theorem provers.</li>
+              </ul>
+
+              <h2 class="h4 mt-5">Open vs closed LLMs (decision sketch)</h2>
+              <div class="table-responsive">
+                <table class="table table-sm table-bordered align-middle">
+                  <thead class="table-light">
+                    <tr>
+                      <th scope="col">Choose closed API when…</th>
+                      <th scope="col">Choose open weights when…</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Speed to market, no GPU team</td>
+                      <td>Data residency, air-gapped, custom fine-tune</td>
+                    </tr>
+                    <tr>
+                      <td>Frontier reasoning matters most</td>
+                      <td>Predictable unit economics at high volume</td>
+                    </tr>
+                    <tr>
+                      <td>Vendor handles scaling and safety layers</td>
+                      <td>You can operate vLLM/Kubernetes GPU pools</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <p>Many mature products use <strong>both</strong>: frontier API for hard tasks, distilled or open model for high-volume paths.</p>
+
+              <h2 class="h4 mt-5">Where LLMs are heading</h2>
+              <ul>
+                <li><strong>Longer context + better retrieval hybrids</strong> — raw window size alone does not solve grounding.</li>
+                <li><strong>Multimodal chat defaults</strong> — documents, images, and audio in one thread.</li>
+                <li><strong>Agents with stronger guardrails</strong> — more automation demands platform maturity (identity, audit, SRE).</li>
+                <li><strong>Smaller capable models</strong> — on-device and edge inference for privacy-sensitive flows.</li>
+                <li><strong>Regulation and procurement scrutiny</strong> — model cards, impact assessments, and ISO-style management systems become table stakes.</li>
+              </ul>
+              <p>LLMs are not magic; they are <strong>compressed language statistics</strong> with a convenient interface. Teams that treat them as managed infrastructure—versioned prompts, measured quality, secured data paths—ship durable products; teams that treat them as oracles ship incident reports.</p>
+
+              <h2 class="h4 mt-5">Further reading</h2>
+              <ul>
+                <li>Vaswani et al. — <em>Attention Is All You Need</em></li>
+                <li>Sebastian Raschka — <em>Build a Large Language Model (From Scratch)</em></li>
+                <li>Chip Huyen — <em>Designing Machine Learning Systems</em> (production ML, including LLM ops themes)</li>
+                <li>Christopher Manning — Stanford CS224N (NLP and transformers)</li>
+                <li>Provider docs — OpenAI, Anthropic, vLLM, Hugging Face on chat templates, RAG, and evals</li>
+              </ul>
+
+              <p class="small text-muted mt-4 mb-2"><a href="../index.html#blog">Blog index</a> · <a href="ai-foundation-models-deep-dive.html">Foundation models deep dive</a> · <a href="ai-historical-paradigms.html">AI historical paradigms</a> · <a href="how-to-become-ai-developer.html">How to become an AI developer</a> · <a href="aws-generative-ai-foundations.html">Generative AI Foundations</a></p>
+              <p class="mb-0"><a href="../index.html#blog" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left" aria-hidden="true"></i> Back to blog list</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
