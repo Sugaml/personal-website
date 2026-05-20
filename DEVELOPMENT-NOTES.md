@@ -27,6 +27,12 @@ Short log of design decisions and content changes.
 - **Intent:** Standalone reference—scope nesting, often-confused pairs, themed glossary (paradigms, data, models, training, inference, Gen AI, RAG, evals, MLOps, governance), acronyms. Complements `how-to-become-ai-developer.html`.
 - **Files:** `content/blogs/ai-ml-terminology-glossary.html`, `data/blog-posts.json`, `blogs/ai-ml-terminology-glossary.html` (via build), `index.html` (AI & ML sections), `scripts/update-blog-meta.py`, cross-link from `how-to-become-ai-developer.html`.
 
+## 2026-05-20 — Interview aptitude / logical reasoning question bank (study)
+
+- **Intent:** Expand interview prep with 89 multiple-choice logical and aptitude questions (number series, analogies, syllogisms, puzzles, data interpretation, tech-flavored reasoning), each with worked explanations.
+- **Files:** `study/interview-aptitude-logical-questions.md`, generators `scripts/generate_interview_aptitude_questions.py`, `scripts/interview_aptitude_question_bank.py`.
+- **Regenerate:** `cd scripts && python3 generate_interview_aptitude_questions.py`
+
 ## 2026-05-20 — MLA-C01 practice question bank (study)
 
 - **Intent:** 334 unique practice questions with detailed “why correct / why distractors wrong” for AWS Certified Machine Learning Engineer – Associate (MLA-C01), aligned to official domain weights (28/26/22/24).
