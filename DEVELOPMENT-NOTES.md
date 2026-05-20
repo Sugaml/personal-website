@@ -2,6 +2,12 @@
 
 Short log of design decisions and content changes.
 
+## 2026-05-20 — IAM policy JSON anatomy (guide)
+
+- **Title:** “IAM Policy JSON Anatomy: Read Every Field Before You Click Allow” (article); index card uses shorter “IAM policy JSON anatomy”.
+- **Intent:** Deep-dive companion to Cloud Security Foundations: policy types (identity, resource, boundary, SCP, session), document skeleton (`Version`, `Statement`), every statement field (`Sid`, `Effect`, `Principal`, `Action`/`NotAction`, `Resource`/`NotResource`, `Condition`), evaluation order, trust policies, least-privilege patterns, CI/EKS example, common mistakes, validation tools.
+- **Files:** `blogs/aws-iam-policy-json-anatomy.html`, `index.html` (AWS section after network architecture), cross-link from `aws-cloud-security-foundations.html`.
+
 ## 2026-05-20 — AWS network architecture design (guide)
 
 - **Title:** “Designing AWS Network Architecture: What a Cloud Architect Actually Decides” (article); index card uses shorter “AWS network architecture”.
